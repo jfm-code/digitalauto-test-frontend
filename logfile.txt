@@ -1,0 +1,6 @@
+2024-05-30 10:54:20,842 :INFO: set_up :Started Signing In
+2024-05-30 10:54:23,139 :INFO: set_up :Successfully tested the invalid login attempt.
+2024-05-30 10:54:28,253 :INFO: set_up :Closed the browser and ended the session.
+2024-05-30 10:54:31,921 :INFO: set_up :Started Signing In
+2024-05-30 10:54:41,421 :INFO: set_up :Successfully signed in with the valid password.
+2024-05-30 10:54:46,536 :INFO: set_up :Closed the browser and ended the session.
