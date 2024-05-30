@@ -22,7 +22,7 @@ class Base():
         log_dir = config.get("log_dir", "logs")  # Default to "logs" if not specified
         os.makedirs(log_dir, exist_ok=True)  # Ensure the log directory exists
         log_file_name = os.path.join(log_dir, f"{config['log_file']}_{timestamp}.log")
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger(config["test_file"])
         fileHandler = logging.FileHandler(log_file_name)
         formatter = logging.Formatter("%(asctime)s :%(levelname)s: %(name)s :%(message)s")
         fileHandler.setFormatter(formatter)

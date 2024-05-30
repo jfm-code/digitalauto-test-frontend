@@ -1,6 +1,7 @@
 {
     "web_url": "https://digitalauto.netlify.app/",
     "log_file": "logfile.txt",
+    "test_file": "test_no_data.py",
     "email": "vuy4hc@bosch.com",
     "wrong_password": "31280129850",
     "correct_password": "blablabla"

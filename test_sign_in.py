@@ -41,8 +41,7 @@ class Test_SignIn(unittest.TestCase):
             self.logger.error(f"Failed to open the Sign In pop up: {e}")
         self.driver.find_element(By.XPATH, "//input[@type='password']").send_keys(self.config["wrong_password"])
         self.logger.debug("Entered invalid password")
-        self.driver.find_element(By.XPATH, "//div[@class='px-2']/div[4]").click()
-        self.logger.debug("Clicked the Submit button")
+ 
         try:
             wait = WebDriverWait(self.driver, 2)
             wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//div[@class='text-red-500 text-sm mb-3 pl-1']")))
