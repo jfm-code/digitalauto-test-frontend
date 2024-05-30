@@ -2,6 +2,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
 import unittest
+import json
 from set_up import Base
 
 class Test_SignIn(unittest.TestCase):
@@ -15,6 +16,8 @@ class Test_SignIn(unittest.TestCase):
         self.base.setup_browser()
         self.driver = self.base.driver
         self.logger = self.base.logger
+        with open('user_info.json') as config_file:
+            self.config = json.load(config_file)
 
     def tearDown(self):
         self.base.clean_up()
@@ -32,12 +35,11 @@ class Test_SignIn(unittest.TestCase):
     def test_sign_in_invalid_password(self):
         self.click_sign_in()
         try:
-            self.driver.find_element(By.XPATH, "//input[@type='email']").send_keys("vuy4hc@bosch.com")
+            self.driver.find_element(By.XPATH, "//input[@type='email']").send_keys(self.config["email"])
             self.logger.debug("Entered email")
         except Exception as e:
             self.logger.error(f"Failed to open the Sign In pop up: {e}")
-        wrong_pwd = "31280129850"
-        self.driver.find_element(By.XPATH, "//input[@type='password']").send_keys(wrong_pwd)
+        self.driver.find_element(By.XPATH, "//input[@type='password']").send_keys(self.config["wrong_password"])
         self.logger.debug("Entered invalid password")
         self.driver.find_element(By.XPATH, "//div[@class='px-2']/div[4]").click()
         self.logger.debug("Clicked the Submit button")
@@ -54,10 +56,9 @@ class Test_SignIn(unittest.TestCase):
     def test_sign_in_valid_password(self):
         self.click_sign_in()
         try:
-            self.driver.find_element(By.XPATH, "//input[@type='email']").send_keys("vuy4hc@bosch.com")
+            self.driver.find_element(By.XPATH, "//input[@type='email']").send_keys(self.config["email"])
             self.logger.debug("Entered email")
-            correct_pwd = "blablabla"
-            self.driver.find_element(By.XPATH, "//input[@type='password']").send_keys(correct_pwd)
+            self.driver.find_element(By.XPATH, "//input[@type='password']").send_keys(self.config["correct_password"])
             self.logger.debug("Entered valid password")
             self.driver.find_element(By.XPATH, "//div[@class='px-2']/div[4]").click()
             self.logger.debug("Clicked the Submit button")
