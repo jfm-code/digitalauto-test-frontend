@@ -15,3 +15,15 @@ def click_sign_in(driver, logger, config):
             "content": "<!DOCTYPE html><html lang='en'><body><p>Failed to load the Sign In button.</p><p>Steps to Reproduce:</p><ol><li>Navigate to the home page.</li><li>Wait to see if the Sign In button can be loaded.</li></ol></p></body></html>"
         }
         requests.post(url, json=sending_obj)
+
+def enter_email(driver, logger, config):
+    driver.find_element(By.XPATH, "//input[@type='email']").send_keys(config["email"])
+    logger.debug("Entered email")
+    
+def enter_password(driver, logger, config, validity):
+    if (validity == "valid"):
+        pass_to_enter = config["correct_password"]
+    elif (validity == "invalid"):
+        pass_to_enter = config["wrong_password"]
+    driver.find_element(By.XPATH, "//input[@type='password']").send_keys(pass_to_enter)
+    logger.debug(f"Entered {validity} password")
