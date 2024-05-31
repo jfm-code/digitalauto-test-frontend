@@ -4,7 +4,7 @@ import time
 import json
 import os
 
-with open('user_info.json') as config_file:
+with open('info.json') as config_file:
             config = json.load(config_file)
 
 class Base():

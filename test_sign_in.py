@@ -16,7 +16,7 @@ class Test_SignIn(unittest.TestCase):
         self.base.setup_browser()
         self.driver = self.base.driver
         self.logger = self.base.logger
-        with open('user_info.json') as config_file:
+        with open('info.json') as config_file:
             self.config = json.load(config_file)
 
     def tearDown(self):
