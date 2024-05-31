@@ -11,9 +11,14 @@ class Base():
     def setup_browser(self):
         # Setting up Chrome Browser
         self.driver = webdriver.Chrome()
-        self.driver.get(config["web_url"])
-        self.driver.maximize_window()
-        self.driver.implicitly_wait(10) # Timeout = 10s
+        try:
+            self.driver.get(config["web_url"])
+            self.driver.maximize_window()
+            self.driver.implicitly_wait(10) # Timeout = 10s
+            self.next = True
+        except:
+            self.logger.error("Wrong web URL, the site can't be reached.")
+            self.next = False
 
     def setup_logger(self):
         # Setting up Logger

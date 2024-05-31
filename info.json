@@ -1,6 +1,6 @@
 {
-    "web_url": "https://digitalauto.netlify.app/",
-    "email_url": "https://backend-core-dev.digital.auto/v2/emails",
+    "web_url": "https://digitalauto.netlify.app",
+    "email_url": "https://backend-core-dev.digital.auto/v2/email",
     "log_file": "logfile.txt",
     "test_file": "test_no_data.py",
     "developer_email": "my.giangvu@gmail.com",

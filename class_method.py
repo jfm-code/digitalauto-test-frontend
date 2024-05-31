@@ -10,6 +10,7 @@ class BaseTest:
 
     def setUp(self):
         self.base.setup_browser()
+        self.next = self.base.next
         self.driver = self.base.driver
         self.logger = self.base.logger
         with open('info.json') as config_file:
