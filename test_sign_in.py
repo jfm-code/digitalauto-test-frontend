@@ -1,26 +1,27 @@
 from util import *
+from click_navigationbar import click_sign_in
 
 class Test_SignIn(BaseTest, unittest.TestCase):
     
-    # Clicking the Sign In button
-    def click_sign_in(self):  
-        try:
-            self.logger.info("Started Signing In")
-            self.driver.find_element(By.XPATH, "//div[text()='Sign in']").click()
-            self.logger.debug("Clicked the Sign In button")
-        except Exception as e:
-            self.logger.error(f"Failed to load the Sign In button: {e}")
-            url = self.config["email_url"]
-            sending_obj = {
-                "to": self.config["developer_email"],
-                "subject": "Error occured in the Home page",
-                "content": "<!DOCTYPE html><html lang='en'><body><p>Failed to load the Sign In button.</p><p>Steps to Reproduce:</p><ol><li>Navigate to the home page.</li><li>Wait to see if the Sign In button can be loaded.</li></ol></p></body></html>"
-            }
-            requests.post(url, json = sending_obj)
+    # # Clicking the Sign In button
+    # def click_sign_in(self):  
+    #     try:
+    #         self.logger.info("Started Signing In")
+    #         self.driver.find_element(By.XPATH, "//div[text()='Sign in']").click()
+    #         self.logger.debug("Clicked the Sign In button")
+    #     except Exception as e:
+    #         self.logger.error(f"Failed to load the Sign In button: {e}")
+    #         url = self.config["email_url"]
+    #         sending_obj = {
+    #             "to": self.config["developer_email"],
+    #             "subject": "Error occured in the Home page",
+    #             "content": "<!DOCTYPE html><html lang='en'><body><p>Failed to load the Sign In button.</p><p>Steps to Reproduce:</p><ol><li>Navigate to the home page.</li><li>Wait to see if the Sign In button can be loaded.</li></ol></p></body></html>"
+    #         }
+    #         requests.post(url, json = sending_obj)
 
     # Test Case 1
     def test_sign_in_invalid_password(self):
-        self.click_sign_in()
+        click_sign_in(self.driver, self.logger, self.config)
         
         try:
             self.driver.find_element(By.XPATH, "//input[@type='email']").send_keys(self.config["email"])
@@ -57,7 +58,7 @@ class Test_SignIn(BaseTest, unittest.TestCase):
 
     # Test Case 2
     def test_sign_in_valid_password(self):
-        self.click_sign_in()
+        click_sign_in(self.driver, self.logger, self.config)
         
         try:
             self.driver.find_element(By.XPATH, "//input[@type='email']").send_keys(self.config["email"])

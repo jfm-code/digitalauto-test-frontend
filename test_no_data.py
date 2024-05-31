@@ -41,7 +41,7 @@ class Test_NoData(BaseTest, unittest.TestCase):
     # Test Case 3
     def test_redPin_exist(self):
         try:
-            self.driver.find_element(By.CSS_SELECTOR, "div[class='flex h-full items-center w-full']").click() # Click the Select Model Button
+            self.driver.find_element(By.CSS_SELECTOR, "div[class='flex h-full items-center w-full']").click()
             self.logger.debug("Clicked the Select Model button")
             self.driver.find_element(By.CSS_SELECTOR, "img[src='https://firebasestorage.googleapis.com/v0/b/digital-auto.appspot.com/o/media%2FE-Car_Full_Vehicle.png?alt=media&token=9c9d4cb4-fee0-42e3-bbb1-7feaa407cc8e']").click()
             self.logger.debug("Clicked the ACME Car (EV) v0.1 Model")
