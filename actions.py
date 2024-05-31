@@ -27,3 +27,7 @@ def enter_password(driver, logger, config, validity):
         pass_to_enter = config["wrong_password"]
     driver.find_element(By.XPATH, "//input[@type='password']").send_keys(pass_to_enter)
     logger.debug(f"Entered {validity} password")
+
+def submit_sign_in(driver, logger):
+    driver.find_element(By.XPATH, "//div[@class='px-2']/div[4]").click()
+    logger.debug("Clicked the Submit button")

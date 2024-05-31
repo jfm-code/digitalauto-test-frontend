@@ -7,4 +7,4 @@ from set_up import Base
 import unittest
 import json
 import requests
-from click_actions import click_sign_in, enter_email, enter_password
+from actions import click_sign_in, enter_email, enter_password, submit_sign_in

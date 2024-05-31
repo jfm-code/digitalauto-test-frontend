@@ -9,8 +9,7 @@ class Test_SignIn(BaseTest, unittest.TestCase):
         try:
             enter_email(self.driver, self.logger, self.config)
             enter_password(self.driver, self.logger, self.config, "invalid")
-            self.driver.find_element(By.XPATH, "//div[@class='px-2']/div[4]").click()
-            self.logger.debug("Clicked the Submit button")
+            submit_sign_in(self.driver, self.logger)
         except Exception as e:
             self.logger.error(f"Failed to open the Sign In pop up: {e}")
             url = self.config["email_url"]
@@ -45,8 +44,7 @@ class Test_SignIn(BaseTest, unittest.TestCase):
         try:
             enter_email(self.driver, self.logger, self.config)
             enter_password(self.driver, self.logger, self.config, "valid")
-            self.driver.find_element(By.XPATH, "//div[@class='px-2']/div[4]").click()
-            self.logger.debug("Clicked the Submit button")
+            submit_sign_in(self.driver, self.logger)
         except Exception as e:
             self.logger.error(f"Failed to open the Sign In pop up: {e}")
             url = self.config["email_url"]
