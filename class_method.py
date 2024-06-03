@@ -1,4 +1,5 @@
 import json
+import datetime
 from set_up import Base  # Importing the Base class
 
 class BaseTest:
@@ -10,6 +11,7 @@ class BaseTest:
 
     def setUp(self):
         self.base.setup_browser()
+        self.base.start_timer()
         self.next = self.base.next
         self.driver = self.base.driver
         self.logger = self.base.logger
@@ -18,3 +20,4 @@ class BaseTest:
 
     def tearDown(self):
         self.base.clean_up()
+        

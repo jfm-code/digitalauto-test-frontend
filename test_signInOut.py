@@ -4,6 +4,7 @@ class Test_SignIn(BaseTest, unittest.TestCase):
 
     # Test case 1: Sign in with invalid password, catch the message -> Invalid username or password
     def test_sign_in_invalid_password(self):
+        self.base.beginOfTest_logFormat("test_sign_in_invalid_password")
         if (self.next is True):
             self.logger.info("Started Signing In")
             click_sign_in(self.driver, self.logger, self.config)
@@ -26,7 +27,7 @@ class Test_SignIn(BaseTest, unittest.TestCase):
                     wait = WebDriverWait(self.driver, 2)
                     wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[text()='Incorrect email or password']")))
                     login_error = self.driver.find_element(By.XPATH, "//label[text()='Incorrect email or password']").text
-                    assert (login_error == "Incorrect email or passwor")
+                    assert (login_error == "Incorrect email or password")
                     self.logger.info("Successfully tested the invalid login attempt.")
                 except Exception as e:
                     error_message = "Wrong password passed. Broken implementation"
@@ -38,6 +39,7 @@ class Test_SignIn(BaseTest, unittest.TestCase):
 
     # Test case 2: Sign in with valid password, verify the icon on the top right, then sign out
     def test_sign_in_valid_password_and_sign_out(self):
+        self.base.beginOfTest_logFormat("test_sign_in_valid_password_and_sign_out")
         if (self.next is True):
             self.logger.info("Started Signing In")
             click_sign_in(self.driver, self.logger, self.config)
