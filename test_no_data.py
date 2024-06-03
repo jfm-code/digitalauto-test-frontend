@@ -45,12 +45,10 @@ class Test_NoData(BaseTest, unittest.TestCase):
                 self.logger.debug("Clicked the ACME Car (EV) v0.1 Model")
                 self.driver.find_element(By.XPATH, "//div/div[text()='Vehicle APIs']").click()
                 self.logger.debug("Clicked the Vehicle APIs button")
-                wait = WebDriverWait(self.driver, 20)
-                wait.until(expected_conditions.presence_of_element_located((By.XPATH, "//span[text()='7']")))
-                num_of_pins = self.driver.find_element(By.XPATH, "//span[text()='7']").text
-                assert (num_of_pins == '7')
-                # PROBLEM HERE, number_of_pins returns empty string??????!
-            except NoSuchElementException:
+                hidden_element = self.driver.find_element(By.XPATH, "//span[text()='7']")
+                hidden_text = self.driver.execute_script("return arguments[0].textContent;", hidden_element)
+                assert (hidden_text == "7")
+            except:
                 error_message = "Failed to load the red pins on the canvas"
                 self.logger.error(error_message)
                 email_content = "<!DOCTYPE html><html lang='en'><body><p>Failed to load the red pins on the canvas.</p><p>Steps to Reproduce:</p><ol><li>Navigate to the home page.</li><li>Click on the 'Select Model' button.</li><li>Click on the 'ACME Car (EV) v0.1 Model' image.</li><li>Click on the 'Vehicle APIs' button.</li><li>Check for the existence of red pins on the canvas.</li></ol></p></body></html>"
