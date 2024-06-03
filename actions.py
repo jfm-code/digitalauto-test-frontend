@@ -3,7 +3,6 @@ from selenium.webdriver.common.by import By
 
 def click_sign_in(driver, logger, config):
     try:
-        logger.info("Started Signing In")
         driver.find_element(By.XPATH, "//button[text()='Sign in']").click()
         logger.debug("Clicked the Sign In button")
     except Exception as e:
