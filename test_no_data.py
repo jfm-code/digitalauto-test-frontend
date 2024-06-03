@@ -33,6 +33,7 @@ class Test_NoData(BaseTest, unittest.TestCase):
                 email_content = "<!DOCTYPE html><html lang='en'><body><p>Failed to load the prototype components in home page.</p><p>Steps to Reproduce:</p><ol><li>Navigate to the home page.</li><li>Count the number of prototypes.</li></ol></p></body></html>"
                 email_subject = "Error occured in the Home page"
                 send_email(self.config, email_content, email_subject)
+
     
     # Test Case 3
     def test_redPin_exist(self):

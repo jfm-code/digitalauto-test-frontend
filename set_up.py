@@ -35,8 +35,15 @@ class Base():
         self.logger.addHandler(fileHandler)
         
         self.logger.setLevel(logging.INFO) # Do not print the DEBUG statements
+        
+    def endOfTest_logFormat(self):
+        for handler in self.logger.handlers:
+            if isinstance(handler, logging.FileHandler):
+                handler.stream.write("\n------------------------------------------------------------------------------------\n\n")
+                handler.flush()
 
     def clean_up(self):
         time.sleep(5)
         self.driver.close()
         self.logger.info("Closed the browser and ended the session.")
+        self.endOfTest_logFormat()
