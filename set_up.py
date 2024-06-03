@@ -28,10 +28,12 @@ class Base():
         os.makedirs(log_dir, exist_ok=True)  # Ensure the log directory exists
         log_file_name = os.path.join(log_dir, f"{config['log_file']}_{timestamp}.log")
         self.logger = logging.getLogger(config["test_file"])
+        
         fileHandler = logging.FileHandler(log_file_name)
         formatter = logging.Formatter("%(asctime)s :%(levelname)s: %(name)s :%(message)s")
         fileHandler.setFormatter(formatter)
         self.logger.addHandler(fileHandler)
+        
         self.logger.setLevel(logging.INFO) # Do not print the DEBUG statements
 
     def clean_up(self):
