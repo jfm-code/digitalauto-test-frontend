@@ -8,4 +8,4 @@ import unittest
 import json
 import requests
 import time
-from actions import click_sign_in, enter_email, enter_password, submit_sign_in, send_email
+from actions import *

@@ -5,13 +5,14 @@ import json
 import os
 
 with open('info.json') as config_file:
-            config = json.load(config_file)
+    config = json.load(config_file)
 
 class Base():
     def setup_browser(self):
         # Setting up Chrome Browser
         self.driver = webdriver.Chrome()
         try:
+            self.driver.execute_script("localStorage.setItem('isTesting', 'true')")
             self.driver.get(config["web_url"])
             self.driver.maximize_window()
             self.driver.implicitly_wait(10) # Timeout = 10s
@@ -47,3 +48,4 @@ class Base():
         self.driver.close()
         self.logger.info("Closed the browser and ended the session.")
         self.endOfTest_logFormat()
+        # self.driver.execute_script("localStorage.removeItem('isTesting')")
