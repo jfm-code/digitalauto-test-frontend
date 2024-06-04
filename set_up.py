@@ -24,17 +24,15 @@ class Base():
     def setup_logger(self):
         # Setting up Logger
         timestamp = time.strftime("%d-%m-%Y_%H-%M-%S")
-        log_file_name = f"logfile_{timestamp}.log"
         log_dir = config.get("log_dir", "logs")  # Default to "logs" if not specified
         os.makedirs(log_dir, exist_ok=True)  # Ensure the log directory exists
-        log_file_name = os.path.join(log_dir, f"logfile_{timestamp}.log")
+        self.log_file_name = os.path.join(log_dir, f"logfile_{timestamp}.log")
         self.logger = logging.getLogger(config["test_file"])
-        fileHandler = logging.FileHandler(log_file_name)
+        fileHandler = logging.FileHandler(self.log_file_name)
         formatter = logging.Formatter("%(asctime)s :%(levelname)s: %(name)s :%(message)s")
         fileHandler.setFormatter(formatter)
         self.logger.addHandler(fileHandler)
         self.logger.setLevel(logging.INFO) # Do not print the DEBUG statements
-        #self.beginOfTest_logFormat()
         
     def beginOfTest_logFormat(self, test_name):
         for handler in self.logger.handlers:
@@ -52,6 +50,27 @@ class Base():
                 handler.stream.write("\n------------------------------------------------------------------------------------\n")
                 handler.flush()
                 
+    def logSummarizer(self):
+        with open(self.log_file_name, 'r') as fileReader:
+            countFailed = 0
+            numOfTest = 0
+            failed_tests = []
+            for line in fileReader.readlines():
+                if ("Begin" in line):
+                    test_name = line[6:]
+                    numOfTest += 1
+                if ("ERROR" in line) or ("CRITICAL" in line):
+                    countFailed += 1
+                    failed_tests.append(test_name)
+            for handler in self.logger.handlers:
+                if isinstance(handler, logging.FileHandler):
+                    handler.stream.write("SUMMARY:\n")
+                    handler.stream.write(f"\tNumber of failed test cases: {countFailed} / {numOfTest}\n")
+                    if (len(failed_tests) > 0):
+                        handler.stream.write("Test cases that failed:\n")
+                        for test in failed_tests:
+                            handler.stream.write(f"\t{test}")
+    
     def start_timer(self):
         self.start_time = datetime.now()
         

@@ -7,7 +7,12 @@ class BaseTest:
     def setUpClass(cls):
         cls.base = Base()
         cls.base.setup_logger()
-        # Making sure that logger is configured only once
+        # Making sure that logger is configured only once at the beginning of every test cases
+    
+    @classmethod
+    def tearDownClass(cls):
+        cls.base.logSummarizer()
+        # Making sure that the summarizer is configured only once at the end of every test cases
 
     def setUp(self):
         self.base.setup_browser()
