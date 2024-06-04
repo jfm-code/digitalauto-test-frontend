@@ -48,3 +48,4 @@ def send_email(config, input_content, input_subject):
         "content": input_content
     }
     requests.post(url, json = sending_obj)
+    #requests.delete(url) # to delete the model
