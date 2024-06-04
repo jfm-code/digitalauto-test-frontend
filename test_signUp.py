@@ -149,4 +149,3 @@ class Test_SignUp(BaseTest, unittest.TestCase):
                     
                     
 # Test case 5: Enter all info but invalid email address, catch the message -> this is failing
-os.system("pytest -v -s test_signInOut.py")
