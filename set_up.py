@@ -29,7 +29,7 @@ class Base():
         self.log_file_name = os.path.join(log_dir, f"logfile {timestamp}.log")
         self.logger = logging.getLogger(config["test_file"])
         fileHandler = logging.FileHandler(self.log_file_name)
-        formatter = logging.Formatter(f"{timestamp} :%(levelname)s: %(name)s :%(message)s")
+        formatter = logging.Formatter(f"{timestamp} :%(levelname)s: %(filename)s :%(message)s")
         fileHandler.setFormatter(formatter)
         self.logger.addHandler(fileHandler)
         self.logger.setLevel(logging.INFO) # Do not print the DEBUG statements
