@@ -87,7 +87,7 @@ class Test_Model(BaseTest, unittest.TestCase):
             # Hit Create New Prototype without entering name
             try:
                 self.driver.find_element(By.XPATH, "//button[text()='Create']").click()
-                self.logger.debug("Clicked the Create button")
+                self.logger.debug("Clicked the Create Prototype button")
                 self.driver.find_element(By.XPATH, "//label[@class='da-label-small mt-4 text-da-accent-500']")
                 wait = WebDriverWait(self.driver, 5)
                 wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[@class='da-label-small mt-4 text-da-accent-500']")))
@@ -97,8 +97,33 @@ class Test_Model(BaseTest, unittest.TestCase):
             except Exception as e:
                 error_message = "Failed the test. Empty input field passed"
                 self.logger.error(f"{error_message}: {e}")
-                email_content = "<!DOCTYPE html><html lang='en'><body><p>Failed the test. Empty input field passed.</p><p>Steps to Reproduce:</p><ol><li>Navigate to the home page.</li><li>Sign in and click Select Model, choose a model and click Prototype Library</li><li>Click the Create New Prototype, leave the name field empty and click Create.</li></ol></p></body></html>"
+                #email_content = "<!DOCTYPE html><html lang='en'><body><p>Failed the test. Empty input field passed.</p><p>Steps to Reproduce:</p><ol><li>Navigate to the home page.</li><li>Sign in and click Select Model, choose a model and click Prototype Library</li><li>Click the Create New Prototype, leave the name field empty and click Create.</li></ol></p></body></html>"
                 email_content = "%3C!DOCTYPE%20html%3E%3Chtml%20lang%3D'en'%3E%3Cbody%3E%3Cp%3EFailed%20the%20test.%20Empty%20input%20field%20passed.%3C%2Fp%3E%3Cp%3ESteps%20to%20Reproduce%3A%3C%2Fp%3E%3Col%3E%3Cli%3ENavigate%20to%20the%20home%20page.%3C%2Fli%3E%3Cli%3ESign%20in%20and%20click%20Select%20Model%2C%20choose%20a%20model%20and%20click%20Prototype%20Library%3C%2Fli%3E%3Cli%3EClick%20the%20Create%20New%20Prototype%2C%20leave%20the%20name%20field%20empty%20and%20click%20Create.%3C%2Fli%3E%3C%2Fol%3E%3C%2Fp%3E%3C%2Fbody%3E%3C%2Fhtml%3E"
                 email_subject = "Error occured in the Model page"
                 send_email(self.config, email_content, email_subject)
-                
+            
+            # Hit Create New Prototype without entering name
+            try:
+                expected_name = "Cat Prototype"
+                self.driver.find_element(By.XPATH, "//input[@placeholder='Name']").send_keys(expected_name)
+                self.driver.find_element(By.XPATH, "//button[text()='Create']").click()
+                self.logger.debug("Clicked the Create Prototype button")
+                wait = WebDriverWait(self.driver, 5)
+                wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[@class='da-label-regular text-da-gray-dark']")))
+                prototype_name_left = self.driver.find_element(By.XPATH, "//label[@class='da-label-regular text-da-gray-dark']").text
+                assert (prototype_name_left == expected_name)
+                self.driver.find_element(By.XPATH, "//div[@style='max-width: 2000px;']").click()
+                self.logger.debug("Clicked the prototype box")
+                self.logger.info("Successfully verified the name of the newly created prototype")
+                wait = WebDriverWait(self.driver, 2)
+                wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[@class='da-label-title text-gray-600']")))
+                prototype_name_right = self.driver.find_element(By.XPATH, "//label[@class='da-label-title text-gray-600']").text
+                assert (prototype_name_right == expected_name)
+            except Exception as e:
+                error_message = "Failed the test. Incorrect name of the newly created prototype"
+                self.logger.error(f"{error_message}: {e}")
+                #email_content = "<!DOCTYPE html><html lang='en'><body><p>Failed the test. Incorrect name of the newly created prototype.</p><p>Steps to Reproduce:</p><ol><li>Navigate to the home page.</li><li>Sign in and click Select Model, choose a model and click Prototype Library</li><li>Click the Create New Prototype, enter the name and click Create.</li><li>Wait and see the prototype name on the prototype page</li></ol></p></body></html>"
+                email_content = "%3C!DOCTYPE%20html%3E%3Chtml%20lang%3D'en'%3E%3Cbody%3E%3Cp%3EFailed%20the%20test.%20Incorrect%20name%20of%20the%20newly%20created%20prototype.%3C%2Fp%3E%3Cp%3ESteps%20to%20Reproduce%3A%3C%2Fp%3E%3Col%3E%3Cli%3ENavigate%20to%20the%20home%20page.%3C%2Fli%3E%3Cli%3ESign%20in%20and%20click%20Select%20Model%2C%20choose%20a%20model%20and%20click%20Prototype%20Library%3C%2Fli%3E%3Cli%3EClick%20the%20Create%20New%20Prototype%2C%20enter%20the%20name%20and%20click%20Create.%3C%2Fli%3E%3Cli%3EWait%20and%20see%20the%20prototype%20name%20on%20the%20prototype%20page%3C%2Fli%3E%3C%2Fol%3E%3C%2Fp%3E%3C%2Fbody%3E%3C%2Fhtml%3E"
+                email_subject = "Error occured in the Model page"
+                send_email(self.config, email_content, email_subject)
+
