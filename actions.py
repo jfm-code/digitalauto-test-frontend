@@ -1,4 +1,5 @@
 import requests
+import json
 from selenium.webdriver.common.by import By
 
 def click_sign_in(driver, logger, config):
@@ -39,7 +40,8 @@ def submit_sign_in(driver, logger):
 def click_register(driver, logger):
     driver.find_element(By.XPATH, "//button[text()='Register']").click()
     logger.debug("Clicked the Register button")
-    
+
+# Postman helper functions
 def send_email(config, input_content, input_subject):
     url = config["email_url"]
     sending_obj = {
@@ -48,4 +50,21 @@ def send_email(config, input_content, input_subject):
         "content": input_content
     }
     requests.post(url, json = sending_obj)
-    #requests.delete(url) # to delete the model
+    
+def get_access_token(config):
+    email = config["signIn_email"]
+    password = config["correct_password"]
+    url = "https://backend-core-etas.digital.auto/v2/auth/login"
+    sending_obj = {"email": email, "password": password}
+    response = requests.post(url, json=sending_obj)
+    data = json.loads(response.content)
+    if "tokens" in data and "access" in data["tokens"] and "token" in data["tokens"]["access"]:
+        return data["tokens"]["access"]["token"]
+    else:
+        print("Unexpected response structure:", data)
+        return None
+
+def delete_model(token, model_id):
+    url = f"https://backend-core-etas.digital.auto/v2/models/{model_id}"
+    headers = {"Authorization": f"Bearer {token}"}
+    requests.delete(url, headers=headers)
