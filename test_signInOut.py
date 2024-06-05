@@ -66,7 +66,7 @@ class Test_SignIn(BaseTest, unittest.TestCase):
                     wait = WebDriverWait(self.driver, 2)
                     wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[contains(text(),'Logout')]")))
                     logout_icon = self.driver.find_element(By.XPATH, "//label[contains(text(),'Logout')]")
-                    assert (logout_icon.text == "Logout")
+                    assert (logout_icon.text == "Logou")
                     self.logger.info("Successfully signed in with the valid password.")
                     logout_icon.click()
                     self.logger.debug("Clicked the logout icon")
