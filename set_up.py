@@ -23,13 +23,13 @@ class Base():
 
     def setup_logger(self):
         # Setting up Logger
-        timestamp = time.strftime("%d-%m-%Y_%H-%M-%S")
+        timestamp = time.strftime("%H:%M:%S %d-%m-%Y")
         log_dir = config.get("log_dir", "logs")  # Default to "logs" if not specified
         os.makedirs(log_dir, exist_ok=True)  # Ensure the log directory exists
-        self.log_file_name = os.path.join(log_dir, f"logfile_{timestamp}.log")
+        self.log_file_name = os.path.join(log_dir, f"logfile {timestamp}.log")
         self.logger = logging.getLogger(config["test_file"])
         fileHandler = logging.FileHandler(self.log_file_name)
-        formatter = logging.Formatter("%(asctime)s :%(levelname)s: %(name)s :%(message)s")
+        formatter = logging.Formatter(f"{timestamp} :%(levelname)s: %(name)s :%(message)s")
         fileHandler.setFormatter(formatter)
         self.logger.addHandler(fileHandler)
         self.logger.setLevel(logging.INFO) # Do not print the DEBUG statements
