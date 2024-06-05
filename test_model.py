@@ -2,28 +2,28 @@ from util import *
 
 class Test_Model(BaseTest, unittest.TestCase):
     
-    # # Test case 1: Not sign in, if "Create New Model" button is visible then fail the test
-    # def test_noSignIn_createNewModel(self):
-    #     self.base.beginOfTest_logFormat("test_noSignIn_createNewModel")
-    #     if (self.next is True):
-    #         self.logger.info("Started checking the visibility of 'Create New Model' button when not signing in")
-    #         signIn_button = self.driver.find_element(By.XPATH, "//button[text()='Sign in']")
-    #         if (signIn_button.is_displayed()):
-    #             self.logger.debug("User is not signing in")
-    #             self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
-    #             self.logger.debug("Clicked the Select Model button")
-    #             try:
-    #                 createModel_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]")
-    #                 # assert (not createModel_button.is_displayed())
-    #                 assert (createModel_button.is_displayed())
-    #                 self.logger.info("Successfully tested the case of not seeing the 'Create New Model' button when not signing in")
-    #             except Exception as e:
-    #                 error_message = "Failed the test. User did not sign in but can still see the 'Create New Model' button"
-    #                 self.logger.critical(f"{error_message}: {e}")
-    #                 #email_content = "<!DOCTYPE html><html lang='en'><body><p>Failed the test. User did not sign in but can still see the 'Create New Model' button.</p><p>Steps to Reproduce:</p><ol><li>Navigate to the home page.</li><li>Do not sign in and click the Select Model button</li><li>Wait to see if there is the Create New Model button</li></ol></p></body></html>"
-    #                 email_content = "%3C!DOCTYPE%20html%3E%3Chtml%20lang%3D'en'%3E%3Cbody%3E%3Cp%3EFailed%20the%20test.%20User%20did%20not%20sign%20in%20but%20can%20still%20see%20the%20'Create%20New%20Model'%20button.%3C%2Fp%3E%3Cp%3ESteps%20to%20Reproduce%3A%3C%2Fp%3E%3Col%3E%3Cli%3ENavigate%20to%20the%20home%20page.%3C%2Fli%3E%3Cli%3EDo%20not%20sign%20in%20and%20click%20the%20Select%20Model%20button%3C%2Fli%3E%3Cli%3EWait%20to%20see%20if%20there%20is%20the%20Create%20New%20Model%20button%3C%2Fli%3E%3C%2Fol%3E%3C%2Fp%3E%3C%2Fbody%3E%3C%2Fhtml%3E"
-    #                 email_subject = "Error occured in the Model page"
-    #                 send_email(self.config, email_content, email_subject)
+    # Test case 1: Not sign in, if "Create New Model" button is visible then fail the test
+    def test_noSignIn_createNewModel(self):
+        self.base.beginOfTest_logFormat("test_noSignIn_createNewModel")
+        if (self.next is True):
+            self.logger.info("Started checking the visibility of 'Create New Model' button when not signing in")
+            signIn_button = self.driver.find_element(By.XPATH, "//button[text()='Sign in']")
+            if (signIn_button.is_displayed()):
+                self.logger.debug("User is not signing in")
+                self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
+                self.logger.debug("Clicked the Select Model button")
+                try:
+                    createModel_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]")
+                    # assert (not createModel_button.is_displayed())
+                    assert (createModel_button.is_displayed())
+                    self.logger.info("Successfully tested the case of not seeing the 'Create New Model' button when not signing in")
+                except Exception as e:
+                    error_message = "Failed the test. User did not sign in but can still see the 'Create New Model' button"
+                    self.logger.critical(f"{error_message}: {e}")
+                    #email_content = "<!DOCTYPE html><html lang='en'><body><p>Failed the test. User did not sign in but can still see the 'Create New Model' button.</p><p>Steps to Reproduce:</p><ol><li>Navigate to the home page.</li><li>Do not sign in and click the Select Model button</li><li>Wait to see if there is the Create New Model button</li></ol></p></body></html>"
+                    email_content = "%3C!DOCTYPE%20html%3E%3Chtml%20lang%3D'en'%3E%3Cbody%3E%3Cp%3EFailed%20the%20test.%20User%20did%20not%20sign%20in%20but%20can%20still%20see%20the%20'Create%20New%20Model'%20button.%3C%2Fp%3E%3Cp%3ESteps%20to%20Reproduce%3A%3C%2Fp%3E%3Col%3E%3Cli%3ENavigate%20to%20the%20home%20page.%3C%2Fli%3E%3Cli%3EDo%20not%20sign%20in%20and%20click%20the%20Select%20Model%20button%3C%2Fli%3E%3Cli%3EWait%20to%20see%20if%20there%20is%20the%20Create%20New%20Model%20button%3C%2Fli%3E%3C%2Fol%3E%3C%2Fp%3E%3C%2Fbody%3E%3C%2Fhtml%3E"
+                    email_subject = "Error occured in the Model page"
+                    send_email(self.config, email_content, email_subject)
                     
     # Test case 2: Sign in, test create new model and create new prototype
     def test_SignIn_createNewModel(self):
