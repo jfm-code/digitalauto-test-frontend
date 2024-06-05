@@ -68,3 +68,8 @@ def delete_model(token, model_id):
     url = f"https://backend-core-etas.digital.auto/v2/models/{model_id}"
     headers = {"Authorization": f"Bearer {token}"}
     requests.delete(url, headers=headers)
+    
+def delete_prototype(token, prototype_id):
+    url = f"https://backend-core-etas.digital.auto/v2/prototypes/{prototype_id}"
+    headers = {"Authorization": f"Bearer {token}"}
+    requests.delete(url, headers=headers)

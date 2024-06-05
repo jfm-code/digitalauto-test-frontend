@@ -121,6 +121,14 @@ class Test_Model(BaseTest, unittest.TestCase):
                 wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[@class='da-label-title text-gray-600']")))
                 prototype_name_right = self.driver.find_element(By.XPATH, "//label[@class='da-label-title text-gray-600']").text
                 assert (prototype_name_right == expected_name)
+                self.driver.find_element(By.XPATH, "//a/button[text()='Open']").click()
+                
+                # Delete the testing prototype
+                token = get_access_token(self.config)
+                current_url = self.driver.current_url
+                prototype_id = current_url[83:107]
+                delete_prototype(token,prototype_id)
+                
             except Exception as e:
                 error_message = "Failed the test. Incorrect name of the newly created prototype"
                 self.logger.error(f"{error_message}: {e}")
@@ -132,9 +140,4 @@ class Test_Model(BaseTest, unittest.TestCase):
             # Delete the testing model
             current_url = self.driver.current_url
             model_id = current_url[40:64]
-            print(f"URL is: {current_url}\n")
-            print(f"Model ID is: {model_id}\n")
-            token = get_access_token(self.config)
-            print(f"The token is: {token}\n")
             delete_model(token, model_id)
-
