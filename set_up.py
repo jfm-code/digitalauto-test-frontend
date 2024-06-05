@@ -11,7 +11,10 @@ with open('info.json') as config_file:
 class Base():
     def setup_browser(self):
         # Setting up Chrome Browser
-        self.driver = webdriver.Chrome()
+        self.driver = webdriver.Chrome() # Use this for normal mode
+        # chrome_option = webdriver.EdgeOptions()
+        # chrome_option.add_argument("--headless") # Use this for headless mode
+        # self.driver = webdriver.Edge(options=chrome_option)
         try:
             self.driver.get(config["web_url"])
             self.driver.maximize_window()

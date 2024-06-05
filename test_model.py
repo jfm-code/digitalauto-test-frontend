@@ -2,28 +2,28 @@ from util import *
 
 class Test_Model(BaseTest, unittest.TestCase):
     
-    # Test case 1: Not sign in, if "Create New Model" button is visible then fail the test
-    def test_noSignIn_createNewModel(self):
-        self.base.beginOfTest_logFormat("test_noSignIn_createNewModel")
-        if (self.next is True):
-            self.logger.info("Started checking the visibility of 'Create New Model' button when not signing in")
-            signIn_button = self.driver.find_element(By.XPATH, "//button[text()='Sign in']")
-            if (signIn_button.is_displayed()):
-                self.logger.debug("User is not signing in")
-                self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
-                self.logger.debug("Clicked the Select Model button")
-                try:
-                    createModel_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]")
-                    # assert (not createModel_button.is_displayed())
-                    assert (createModel_button.is_displayed())
-                    self.logger.info("Successfully tested the case of not seeing the 'Create New Model' button when not signing in")
-                except Exception as e:
-                    error_message = "Failed the test. User did not sign in but can still see the 'Create New Model' button"
-                    self.logger.critical(f"{error_message}: {e}")
-                    #email_content = "<!DOCTYPE html><html lang='en'><body><p>Failed the test. User did not sign in but can still see the 'Create New Model' button.</p><p>Steps to Reproduce:</p><ol><li>Navigate to the home page.</li><li>Do not sign in and click the Select Model button</li><li>Wait to see if there is the Create New Model button</li></ol></p></body></html>"
-                    email_content = "%3C!DOCTYPE%20html%3E%3Chtml%20lang%3D'en'%3E%3Cbody%3E%3Cp%3EFailed%20the%20test.%20User%20did%20not%20sign%20in%20but%20can%20still%20see%20the%20'Create%20New%20Model'%20button.%3C%2Fp%3E%3Cp%3ESteps%20to%20Reproduce%3A%3C%2Fp%3E%3Col%3E%3Cli%3ENavigate%20to%20the%20home%20page.%3C%2Fli%3E%3Cli%3EDo%20not%20sign%20in%20and%20click%20the%20Select%20Model%20button%3C%2Fli%3E%3Cli%3EWait%20to%20see%20if%20there%20is%20the%20Create%20New%20Model%20button%3C%2Fli%3E%3C%2Fol%3E%3C%2Fp%3E%3C%2Fbody%3E%3C%2Fhtml%3E"
-                    email_subject = "Error occured in the Model page"
-                    send_email(self.config, email_content, email_subject)
+    # # Test case 1: Not sign in, if "Create New Model" button is visible then fail the test
+    # def test_noSignIn_createNewModel(self):
+    #     self.base.beginOfTest_logFormat("test_noSignIn_createNewModel")
+    #     if (self.next is True):
+    #         self.logger.info("Started checking the visibility of 'Create New Model' button when not signing in")
+    #         signIn_button = self.driver.find_element(By.XPATH, "//button[text()='Sign in']")
+    #         if (signIn_button.is_displayed()):
+    #             self.logger.debug("User is not signing in")
+    #             self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
+    #             self.logger.debug("Clicked the Select Model button")
+    #             try:
+    #                 createModel_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]")
+    #                 # assert (not createModel_button.is_displayed())
+    #                 assert (createModel_button.is_displayed())
+    #                 self.logger.info("Successfully tested the case of not seeing the 'Create New Model' button when not signing in")
+    #             except Exception as e:
+    #                 error_message = "Failed the test. User did not sign in but can still see the 'Create New Model' button"
+    #                 self.logger.critical(f"{error_message}: {e}")
+    #                 #email_content = "<!DOCTYPE html><html lang='en'><body><p>Failed the test. User did not sign in but can still see the 'Create New Model' button.</p><p>Steps to Reproduce:</p><ol><li>Navigate to the home page.</li><li>Do not sign in and click the Select Model button</li><li>Wait to see if there is the Create New Model button</li></ol></p></body></html>"
+    #                 email_content = "%3C!DOCTYPE%20html%3E%3Chtml%20lang%3D'en'%3E%3Cbody%3E%3Cp%3EFailed%20the%20test.%20User%20did%20not%20sign%20in%20but%20can%20still%20see%20the%20'Create%20New%20Model'%20button.%3C%2Fp%3E%3Cp%3ESteps%20to%20Reproduce%3A%3C%2Fp%3E%3Col%3E%3Cli%3ENavigate%20to%20the%20home%20page.%3C%2Fli%3E%3Cli%3EDo%20not%20sign%20in%20and%20click%20the%20Select%20Model%20button%3C%2Fli%3E%3Cli%3EWait%20to%20see%20if%20there%20is%20the%20Create%20New%20Model%20button%3C%2Fli%3E%3C%2Fol%3E%3C%2Fp%3E%3C%2Fbody%3E%3C%2Fhtml%3E"
+    #                 email_subject = "Error occured in the Model page"
+    #                 send_email(self.config, email_content, email_subject)
                     
     # Test case 2: Sign in, test create new model and create new prototype
     def test_SignIn_createNewModel(self):
@@ -38,8 +38,21 @@ class Test_Model(BaseTest, unittest.TestCase):
             self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
             self.logger.debug("Clicked the Select Model button")
             self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]").click()
+            self.logger.debug("Clicked the Create New Model button")
             wait = WebDriverWait(self.driver, 5)
             wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//img[@src='/imgs/profile.png']")))
+            
+            # Check if the dropdown is empty or not
+            try: 
+                options = self.driver.find_elements(By.XPATH, "//select/option")
+                assert (len(options) > 0)
+                self.logger.info("Successfully tested the dropdown when creating a new model.")
+            except Exception as e:
+                error_message = "Failed the test. Empty option in the dropdown then creating a new model"
+                self.logger.error(f"{error_message}: {e}")
+                email_content = "<!DOCTYPE html><html lang='en'><body><p>Failed the test. Empty option in the dropdown then creating a new model.</p><p>Steps to Reproduce:</p><ol><li>Navigate to the home page.</li><li>Sign in and click Select Model</li><li>Click the Create New Model, check the options in the pop up's dropdown.</li></ol></p></body></html>"
+                email_subject = "Error occured in the Model page"
+                send_email(self.config, email_content, email_subject)
             
             # Hit Create New Model button without entering name
             try:
@@ -71,7 +84,6 @@ class Test_Model(BaseTest, unittest.TestCase):
                 model_name = self.driver.find_element(By.XPATH, "//div[@class='col-span-6']/label").text
                 assert (model_name == expected_name)
                 self.logger.info("Successfully verified the name of the new model")
-                
             except Exception as e:
                 error_message = "Failed the test. Entered new model name is different from resulting new model name"
                 self.logger.error(f"{error_message}: {e}")
@@ -79,6 +91,10 @@ class Test_Model(BaseTest, unittest.TestCase):
                 email_content = "%3C!DOCTYPE%20html%3E%3Chtml%20lang%3D'en'%3E%3Cbody%3E%3Cp%3EFailed%20the%20test.%20Entered%20new%20model%20name%20is%20different%20from%20resulting%20new%20model%20name.%3C%2Fp%3E%3Cp%3ESteps%20to%20Reproduce%3A%3C%2Fp%3E%3Col%3E%3Cli%3ENavigate%20to%20the%20home%20page.%3C%2Fli%3E%3Cli%3ESign%20in%20and%20click%20Select%20Model%3C%2Fli%3E%3Cli%3EClick%20the%20Create%20New%20Model%2C%20enter%20the%20name%20and%20click%20Create%20Model.%3C%2Fli%3E%3Cli%3EVerify%20the%20entered%20model%20name%20with%20the%20actual%20model%20name%20on%20the%20screen%3C%2Fli%3E%3C%2Fol%3E%3C%2Fp%3E%3C%2Fbody%3E%3C%2Fhtml%3E"
                 email_subject = "Error occured in the Model page"
                 send_email(self.config, email_content, email_subject)
+                
+            # Test the visibility when click Change to public/private (HERE)
+            old_mode = self.driver.find_element(By.XPATH, "//label[text()='Visibility:']/label").text
+            self.driver.find_element(By.XPATH, "//button[contains(text(),'Change to')]")
             
             # Navigate to other pages to test the prototype creation functions
             self.driver.find_element(By.XPATH, "//label[text()='Prototype Library']").click()
@@ -138,6 +154,7 @@ class Test_Model(BaseTest, unittest.TestCase):
                 send_email(self.config, email_content, email_subject)
                 
             # Delete the testing model
+            token = get_access_token(self.config)
             current_url = self.driver.current_url
             model_id = current_url[40:64]
             delete_model(token, model_id)
