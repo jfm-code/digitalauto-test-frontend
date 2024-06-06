@@ -144,7 +144,8 @@ class Test_Model(BaseTest, unittest.TestCase):
                 token = get_user_info(self.config, "token", "signIn")
                 current_url = self.driver.current_url
                 prototype_id = current_url[83:107]
-                delete_prototype(token,prototype_id)
+                print(f"\nPrototype ID is: {prototype_id}")
+                print(delete_prototype(token,prototype_id))
                 
             except Exception as e:
                 error_message = "Failed the test. Incorrect name of the newly created prototype"

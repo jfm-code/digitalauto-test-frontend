@@ -90,4 +90,6 @@ def delete_prototype(token, prototype_id):
 def delete_user(admin_token, user_id):
     url = f"https://backend-core-etas.digital.auto/v2/users/{user_id}"
     headers = {"Authorization": f"Bearer {admin_token}"}
-    requests.delete(url, headers=headers)
+    response = requests.delete(url, headers=headers)
+    data = json.loads(response.content)
+    return data
