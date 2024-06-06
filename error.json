@@ -1,0 +1,3 @@
+{
+    "cannot_open_register_popup": "%3C!DOCTYPE%20html%3E%3Chtml%20lang%3D'en'%3E%3Cbody%3E%3Cp%3EFailed%20to%20open%20the%20Sign%20In%20pop%20up.%3C%2Fp%3E%3Cp%3ESteps%20to%20Reproduce%3A%3C%2Fp%3E%3Col%3E%3Cli%3ENavigate%20to%20the%20home%20page.%3C%2Fli%3E%3Cli%3EClick%20the%20Sign%20In%20button%3C%2Fli%3E%3Cli%3EWait%20to%20see%20if%20the%20Sign%20In%20pop%20up%20can%20be%20loaded.%3C%2Fli%3E%3C%2Fol%3E%3C%2Fp%3E%3C%2Fbody%3E%3C%2Fhtml%3E"
+}

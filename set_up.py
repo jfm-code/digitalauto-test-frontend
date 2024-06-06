@@ -6,7 +6,7 @@ import json
 import os
 
 with open('info.json') as config_file:
-    config = json.load(config_file)
+    configInfo = json.load(config_file)
 
 class Base():
     def setup_browser(self):
@@ -16,7 +16,7 @@ class Base():
         # chrome_option.add_argument("--headless") # Use this for headless mode
         # self.driver = webdriver.Edge(options=chrome_option)
         try:
-            self.driver.get(config["web_url"])
+            self.driver.get(configInfo["web_url"])
             self.driver.maximize_window()
             self.driver.implicitly_wait(10) # Timeout = 10s
             self.next = True
@@ -27,10 +27,10 @@ class Base():
     def setup_logger(self):
         # Setting up Logger
         timestamp = time.strftime("%H:%M:%S %d-%m-%Y")
-        log_dir = config.get("log_dir", "logs")  # Default to "logs" if not specified
+        log_dir = configInfo.get("log_dir", "logs")  # Default to "logs" if not specified
         os.makedirs(log_dir, exist_ok=True)  # Ensure the log directory exists
         self.log_file_name = os.path.join(log_dir, f"logfile {timestamp}.log")
-        self.logger = logging.getLogger(config["test_file"])
+        self.logger = logging.getLogger(configInfo["test_file"])
         fileHandler = logging.FileHandler(self.log_file_name)
         formatter = logging.Formatter(f"{timestamp} :%(levelname)s: %(filename)s :%(message)s")
         fileHandler.setFormatter(formatter)
