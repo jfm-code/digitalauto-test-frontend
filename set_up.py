@@ -61,6 +61,7 @@ class Base():
             for line in fileReader.readlines():
                 if ("Begin" in line):
                     test_name = line[6:]
+                if ("Success" in line) or ("Failure" in line):
                     numOfTest += 1
                 if ("ERROR" in line) or ("CRITICAL" in line):
                     countFailed += 1
