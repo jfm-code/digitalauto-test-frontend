@@ -79,9 +79,9 @@ class Test_Model(BaseTest, unittest.TestCase):
                 self.driver.find_element(By. XPATH, "//button[text()='Create Model']").click()
                 self.logger.debug("Submitted the Create Model button")
                 wait = WebDriverWait(self.driver, 4)
-                wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//div[@class='col-span-6']/label")))
+                wait.until(expected_conditions.visibility_of_element_located((By.XPATH, f"//label[text()='{expected_name}']")))
                 self.logger.debug("Created successfully a new model")
-                model_name = self.driver.find_element(By.XPATH, "//div[@class='col-span-6']/label").text
+                model_name = self.driver.find_element(By.XPATH, f"//label[text()='{expected_name}']").text
                 assert (model_name == expected_name)
                 self.logger.info("Successfully verified the name of the new model")
             except Exception as e:
@@ -127,16 +127,17 @@ class Test_Model(BaseTest, unittest.TestCase):
                 self.driver.find_element(By.XPATH, "//button[text()='Create']").click()
                 self.logger.debug("Clicked the Create Prototype button")
                 wait = WebDriverWait(self.driver, 5)
-                wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[@class='da-label-regular text-da-gray-dark']")))
-                prototype_name_left = self.driver.find_element(By.XPATH, "//label[@class='da-label-regular text-da-gray-dark']").text
+                wait.until(expected_conditions.visibility_of_element_located((By.XPATH, f"//label[text()='{expected_name}']")))
+                prototype_name_left = self.driver.find_element(By.XPATH, f"//label[text()='{expected_name}']").text
                 assert (prototype_name_left == expected_name)
-                self.driver.find_element(By.XPATH, "//div[@style='max-width: 2000px;']").click()
+                self.driver.find_element(By.XPATH, f"//label[text()='{expected_name}']").click()
                 self.logger.debug("Clicked the prototype box")
-                self.logger.info("Successfully verified the name of the newly created prototype")
+                self.logger.info("Successfully verified the name of the newly created prototype on the left")
                 wait = WebDriverWait(self.driver, 2)
-                wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[@class='da-label-title text-gray-600']")))
-                prototype_name_right = self.driver.find_element(By.XPATH, "//label[@class='da-label-title text-gray-600']").text
+                wait.until(expected_conditions.visibility_of_element_located((By.XPATH, f"//div[@class='p-5']/div/label[text()='{expected_name}']")))
+                prototype_name_right = self.driver.find_element(By.XPATH, f"//div[@class='p-5']/div/label[text()='{expected_name}']").text
                 assert (prototype_name_right == expected_name)
+                self.logger.info("Successfully verified the name of the newly created prototype on the right")
                 self.driver.find_element(By.XPATH, "//a/button[text()='Open']").click()
                 
                 # Delete the testing prototype
