@@ -104,10 +104,11 @@ class Test_SignUp(BaseTest, unittest.TestCase):
             if (execute_next is True):
                 try:
                     click_register(self.driver, self.logger)
+                    expected_message = '"password" and "confirm password" must be the same'
                     wait = WebDriverWait(self.driver, 3)
-                    wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[@class='da-label-small mt-3 block text-da-accent-500']")))
-                    message = self.driver.find_element(By.XPATH, "//label[@class='da-label-small mt-3 block text-da-accent-500']").text
-                    assert (message == '"password" and "confirm password" must be the same')
+                    wait.until(expected_conditions.visibility_of_element_located((By.XPATH, f"//label[text()='{expected_message}']")))
+                    message = self.driver.find_element(By.XPATH, f"//label[text()='{expected_message}']").text
+                    assert (message == expected_message)
                     self.logger.info("Success. Tested the case of different entered password and confirmed password.")
                 except Exception as e:
                     error_message = "Failure. Confirm password was different from entered password. Broken implementation"
@@ -140,10 +141,11 @@ class Test_SignUp(BaseTest, unittest.TestCase):
             if (execute_next is True):
                 try:
                     click_register(self.driver, self.logger)
+                    expected_message = '"email" is required'
                     wait = WebDriverWait(self.driver, 3)
-                    wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[@class='da-label-small mt-3 block text-da-accent-500']")))
-                    message = self.driver.find_element(By.XPATH, "//label[@class='da-label-small mt-3 block text-da-accent-500']").text
-                    assert (message == '"email" is required')
+                    wait.until(expected_conditions.visibility_of_element_located((By.XPATH, f"//label[text()='{expected_message}']")))
+                    message = self.driver.find_element(By.XPATH,f"//label[text()='{expected_message}']").text
+                    assert (message == expected_message)
                     self.logger.info("Success. Tested the case of not entered the email field.")
                 except Exception as e:
                     error_message = "Failure. Empty email field but can still registered. Broken implementation"

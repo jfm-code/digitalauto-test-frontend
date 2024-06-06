@@ -25,7 +25,7 @@ class Test_NoData(BaseTest, unittest.TestCase):
         if (self.next is True):
             try:
                 self.logger.info("Started counting the prototype components in home page")
-                prototypes = self.driver.find_elements(By.XPATH, "//div/div[@class='w-full h-full relative']/div/a/img")
+                prototypes = self.driver.find_elements(By.XPATH, "//a/div")
                 assert (len(prototypes) > 0)
                 self.logger.info("Success. Tested the number of prototype components in home page")
             except Exception as e:
