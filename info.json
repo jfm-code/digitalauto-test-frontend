@@ -6,6 +6,8 @@
     "signIn_email": "vuy4hc@bosch.com",
     "wrong_password": "31280129850",
     "correct_password": "blablabla",
-    "signUp_email": "bcd@gmail.com",
-    "signUp_name": "Bcd"
+    "signUp_email": "automation.test@gmail.com",
+    "signUp_name": "Automation Test Account",
+    "admin_email": "dev@gmail.com",
+    "admin_password": "abcd1234"
 }

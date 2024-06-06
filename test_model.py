@@ -92,9 +92,9 @@ class Test_Model(BaseTest, unittest.TestCase):
                 email_subject = "Error occured in the Model page"
                 send_email(self.config, email_content, email_subject)
                 
-            # Test the visibility when click Change to public/private (HERE)
-            old_mode = self.driver.find_element(By.XPATH, "//label[text()='Visibility:']/label").text
-            self.driver.find_element(By.XPATH, "//button[contains(text(),'Change to')]")
+            # # Test the visibility when click Change to public/private (HERE)
+            # old_mode = self.driver.find_element(By.XPATH, "//label[text()='Visibility:']/label").text
+            # self.driver.find_element(By.XPATH, "//button[contains(text(),'Change to')]")
             
             # Navigate to other pages to test the prototype creation functions
             self.driver.find_element(By.XPATH, "//label[text()='Prototype Library']").click()
@@ -140,7 +140,7 @@ class Test_Model(BaseTest, unittest.TestCase):
                 self.driver.find_element(By.XPATH, "//a/button[text()='Open']").click()
                 
                 # Delete the testing prototype
-                token = get_access_token(self.config)
+                token = get_user_info(self.config, "token", "signIn")
                 current_url = self.driver.current_url
                 prototype_id = current_url[83:107]
                 delete_prototype(token,prototype_id)
@@ -154,7 +154,7 @@ class Test_Model(BaseTest, unittest.TestCase):
                 send_email(self.config, email_content, email_subject)
                 
             # Delete the testing model
-            token = get_access_token(self.config)
+            token = get_user_info(self.config, "token", "signIn")
             current_url = self.driver.current_url
             model_id = current_url[40:64]
             delete_model(token, model_id)

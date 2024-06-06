@@ -51,18 +51,31 @@ def send_email(config, input_content, input_subject):
     }
     requests.post(url, json = sending_obj)
     
-def get_access_token(config):
-    email = config["signIn_email"]
-    password = config["correct_password"]
+def get_user_info(config, element, mode):
+    if (mode == "signIn"):
+        email = config["signIn_email"]
+        password = config["correct_password"]
+    elif (mode == "signUp"):
+        email = config["signUp_email"]
+        password = config["correct_password"]
+    elif (mode == "admin"):
+        email = config["admin_email"]
+        password = config["admin_password"]
     url = "https://backend-core-etas.digital.auto/v2/auth/login"
     sending_obj = {"email": email, "password": password}
     response = requests.post(url, json=sending_obj)
     data = json.loads(response.content)
-    if "tokens" in data and "access" in data["tokens"] and "token" in data["tokens"]["access"]:
-        return data["tokens"]["access"]["token"]
-    else:
-        print("Unexpected response structure:", data)
-        return None
+    if (element == "token"):
+        if "tokens" in data and "access" in data["tokens"] and "token" in data["tokens"]["access"]:
+            return data["tokens"]["access"]["token"]
+        else:
+            print("Unexpected response structure:", data)
+            return None
+    elif (element == "id"):
+        if "user" in data and "id" in data["user"]:
+            return data["user"]["id"]
+        else:
+            print("Unexpected response structure:", data)
 
 def delete_model(token, model_id):
     url = f"https://backend-core-etas.digital.auto/v2/models/{model_id}"
