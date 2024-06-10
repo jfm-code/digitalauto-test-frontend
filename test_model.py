@@ -28,6 +28,7 @@ class Test_Model(BaseTest, unittest.TestCase):
     def test_SignIn_createNewModel(self):
         self.base.beginOfTest_logFormat("test_SignIn_createNewModel")
         if (self.next is True):
+            self.logger.info("Started creating new model and new prototype when signing in")
             click_sign_in(self.driver, self.logger, self.configInfo)
             enter_email(self.driver, self.logger, self.configInfo, self.configInfo["signIn_email"])
             enter_password(self.driver, self.logger, self.configInfo, "valid", "first_enter")
@@ -90,8 +91,41 @@ class Test_Model(BaseTest, unittest.TestCase):
                 send_email(self.configInfo, email_content, email_subject)
                 
             # Test the visibility when click Change to public/private
-            old_mode = self.driver.find_element(By.XPATH, "//label[text()='Visibility:']/label").text
-            self.driver.find_element(By.XPATH, "//button[contains(text(),'Change to')]")
+            current_mode = self.driver.find_element(By.XPATH, "//label[text()='Visibility:']/label").text
+            visibility_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Change to')]")
+            button_mode = visibility_button.text
+            try:
+                self.logger.info("Started to switch from private to public mode")
+                assert (button_mode == "Change to public")
+                visibility_button.click()
+                self.logger.debug("Clicked the 'Change to public' button")
+                current_mode = self.driver.find_element(By.XPATH, "//label[text()='Visibility:']/label").text
+                assert (current_mode == "Public")
+                self.logger.info("Success. Switched successfully from private to public mode")
+                time.sleep(3)
+                try:
+                    self.logger.info("Started to switch from public to private mode")
+                    visibility_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Change to')]")
+                    button_mode = visibility_button.text
+                    assert (button_mode == "Change to private")
+                    visibility_button.click()
+                    self.logger.debug("Clicked the 'Change to private' button")
+                    current_mode = self.driver.find_element(By.XPATH, "//label[text()='Visibility:']/label").text
+                    assert (current_mode == "Private")
+                    self.logger.info("Success. Switched successfully from public to private mode")
+                    time.sleep(3)
+                except Exception as e:
+                    error_message = "Failure. Failed to switch from public mode to private mode"
+                    self.logger.error(f"{error_message}: {e}")
+                    email_content = self.configError["cannotSwitchTo_private"]
+                    email_subject = "Error occured in the Modeld page"
+                    send_email(self.configInfo, email_content, email_subject)
+            except Exception as e:
+                error_message = "Failure. Failed to switch from private mode to public mode"
+                self.logger.error(f"{error_message}: {e}")
+                email_content = self.configError["cannotSwitchTo_public"]
+                email_subject = "Error occured in the Modeld page"
+                send_email(self.configInfo, email_content, email_subject)
             
             # Navigate to other pages to test the prototype creation functions
             self.driver.find_element(By.XPATH, "//label[text()='Prototype Library']").click()
@@ -142,8 +176,7 @@ class Test_Model(BaseTest, unittest.TestCase):
                     token = get_user_info(self.configInfo, "token", "signIn")
                     current_url = self.driver.current_url
                     prototype_id = current_url[83:107]
-                    print(f"\nPrototype ID is: {prototype_id}")
-                    print(delete_prototype(token,prototype_id))
+                    delete_prototype(token,prototype_id)
                     
                 except Exception as e:
                     error_message = "Failure. Incorrect name of the newly created prototype on the right"
