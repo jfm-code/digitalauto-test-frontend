@@ -2,26 +2,26 @@ from util import *
 
 class Test_Model(BaseTest, unittest.TestCase):
     
-    # # Test case 1: Not sign in, if "Create New Model" button is visible then fail the test
-    # def test_noSignIn_createNewModel(self):
-    #     self.base.beginOfTest_logFormat("test_noSignIn_createNewModel")
-    #     if (self.next is True):
-    #         self.logger.info("Started checking the visibility of 'Create New Model' button when not signing in")
-    #         signIn_button = self.driver.find_element(By.XPATH, "//button[text()='Sign in']")
-    #         if (signIn_button.is_displayed()):
-    #             self.logger.debug("User is not signing in")
-    #             self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
-    #             self.logger.debug("Clicked the Select Model button")
-    #             try:
-    #                 createModel_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]")
-    #                 if (createModel_button.is_displayed()):
-    #                     error_message = "Failure. User did not sign in but can still see the 'Create New Model' button"
-    #                     self.logger.critical(f"{error_message}")
-    #                     email_content = self.configError["not_signIn_see_CreateModel"]
-    #                     email_subject = "Error occured in the Model page"
-    #                     send_email(self.configInfo, email_content, email_subject)
-    #             except Exception as e:
-    #                 self.logger.info("Success. Tested the case of not seeing the 'Create New Model' button when not signing in")
+    # Test case 1: Not sign in, if "Create New Model" button is visible then fail the test
+    def test_noSignIn_createNewModel(self):
+        self.base.beginOfTest_logFormat("test_noSignIn_createNewModel")
+        if (self.next is True):
+            self.logger.info("Started checking the visibility of 'Create New Model' button when not signing in")
+            signIn_button = self.driver.find_element(By.XPATH, "//button[text()='Sign in']")
+            if (signIn_button.is_displayed()):
+                self.logger.debug("User is not signing in")
+                self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
+                self.logger.debug("Clicked the Select Model button")
+                try:
+                    createModel_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]")
+                    if (createModel_button.is_displayed()):
+                        error_message = "Failure. User did not sign in but can still see the 'Create New Model' button"
+                        self.logger.critical(f"{error_message}")
+                        email_content = self.configError["not_signIn_see_CreateModel"]
+                        email_subject = "Error occured in the Model page"
+                        send_email(self.configInfo, email_content, email_subject)
+                except Exception as e:
+                    self.logger.info("Success. Tested the case of not seeing the 'Create New Model' button when not signing in")
                     
                     
     # Test case 2: Sign in, test create new model and create new prototype
@@ -152,15 +152,17 @@ class Test_Model(BaseTest, unittest.TestCase):
                 result_text = self.driver.find_element(By.XPATH, "//div[@class='py-1 grow']/div").text
                 assert (result_text == "vuy4hc@bosch.com via @Email")
                 self.logger.info("Success. Found the correct user after typing characters in the search box.")
-                self.driver.find_element(By.XPATH, "//button[text()='Close']").click()
-                time.sleep(2)
             except Exception as e:
                 error_message = "Failure. The filter list in the add user pop up doesn't work properly."
                 self.logger.error(f"{error_message}: {e}")
                 email_content = self.configError["filter_list_in_addUser_isNotWorking"]
                 email_subject = "Error occured in the Model page"
                 send_email(self.configInfo, email_content, email_subject)
-
+            
+            # Close the add user pop up to click other buttons
+            self.driver.find_element(By.XPATH, "//button[text()='Close']").click()
+            time.sleep(2)
+            
             # Navigate to other pages to test the prototype creation functions
             self.driver.find_element(By.XPATH, "//label[text()='Prototype Library']").click()
             self.logger.debug("Clicked the Prototype Library button")

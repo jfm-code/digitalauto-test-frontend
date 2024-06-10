@@ -61,12 +61,12 @@ class Base():
             for line in fileReader.readlines():
                 if ("Begin" in line):
                     test_name = line[6:]
-                    if ("Success" in line) or ("Failure" in line):
-                        numOfTest += 1
-                    if ("ERROR" in line) or ("CRITICAL" in line):
-                        countFailed += 1
-                        failed_tests.append(test_name)
-                        failed_tests.append(line[21:])
+                if ("Success" in line) or ("Failure" in line):
+                    numOfTest += 1
+                if ("ERROR" in line) or ("CRITICAL" in line):
+                    countFailed += 1
+                    failed_tests.append(test_name)
+                    failed_tests.append(line[21:])
             for handler in self.logger.handlers:
                 if isinstance(handler, logging.FileHandler):
                     handler.stream.write("SUMMARY:\n")
