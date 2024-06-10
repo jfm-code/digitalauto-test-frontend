@@ -42,12 +42,12 @@ def click_register(driver, logger):
     logger.debug("Clicked the Register button")
 
 # Postman helper functions
-def send_email(config, input_content, input_subject):
+def send_email(config, email_content, email_subject):
     url = config["email_url"]
     sending_obj = {
         "to": config["developer_email"],
-        "subject": input_subject,
-        "content": input_content
+        "subject": email_subject,
+        "content": email_content
     }
     requests.post(url, json = sending_obj)
     
@@ -93,3 +93,17 @@ def delete_user(admin_token, user_id):
     response = requests.delete(url, headers=headers)
     data = json.loads(response.content)
     return data
+
+def get_emailSubject(place_that_occur):
+    return f"An error occured in the {place_that_occur} page"
+
+def cannotOpenPopUp_errorHandler(exception, logger, configError, configInfo, mode):
+    if (mode == "sign_in"):
+        error_message = "Failure. Cannot open the Sign In pop up"
+        email_content = configError["cannot_open_signIn_popup"]
+    elif (mode == "register"):
+        error_message = "Failure. Cannot open the Register pop up"
+        email_content = configError["cannot_open_register_popup"]
+    logger.error(f"{error_message}: {exception}")
+    email_subject = get_emailSubject("Home")
+    send_email(configInfo, email_content, email_subject)

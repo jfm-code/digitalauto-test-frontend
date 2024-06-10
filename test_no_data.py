@@ -16,7 +16,7 @@ class Test_NoData(BaseTest, unittest.TestCase):
                 error_message = "Failure. Cannot load the model components in model page"
                 self.logger.error(f"{error_message}: {e}")
                 email_content = self.configError["cannotLoad_model"]
-                email_subject = "Error occured in the Select Vehicle Models page"
+                email_subject = get_emailSubject("Model")
                 send_email(self.configInfo, email_content, email_subject)
     
     # Test Case 2: Count and make sure the number of prototypes in home page is greater than 0
@@ -31,7 +31,7 @@ class Test_NoData(BaseTest, unittest.TestCase):
                 error_message = "Failure. Cannot load the prototype components in home page"
                 self.logger.error(f"{error_message}: {e}")
                 email_content = self.configError["cannotLoad_prototype"]
-                email_subject = "Error occured in the Home page"
+                email_subject = get_emailSubject("Home")
                 send_email(self.configInfo, email_content, email_subject)
 
     
@@ -54,6 +54,6 @@ class Test_NoData(BaseTest, unittest.TestCase):
                 error_message = "Failure. Cannot load the red pins on the canvas"
                 self.logger.error(error_message)
                 email_content = self.configError["cannotLoad_redPins"]
-                email_subject = "Error occured in the Vehicle APIs page"
+                email_subject = get_emailSubject("Vehicle APIs")
                 send_email(self.configInfo, email_content, email_subject)
                 

@@ -18,7 +18,7 @@ class Test_Model(BaseTest, unittest.TestCase):
                         error_message = "Failure. User did not sign in but can still see the 'Create New Model' button"
                         self.logger.critical(f"{error_message}")
                         email_content = self.configError["not_signIn_see_CreateModel"]
-                        email_subject = "Error occured in the Model page"
+                        email_subject = get_emailSubject("Model")
                         send_email(self.configInfo, email_content, email_subject)
                 except Exception as e:
                     self.logger.info("Success. Tested the case of not seeing the 'Create New Model' button when not signing in")
@@ -51,7 +51,7 @@ class Test_Model(BaseTest, unittest.TestCase):
                 error_message = "Failure. Empty option in the dropdown then creating a new model"
                 self.logger.error(f"{error_message}: {e}")
                 email_content = self.configError["empty_dropdown_CreateModel"]
-                email_subject = "Error occured in the Model page"
+                email_subject = get_emailSubject("Model")
                 send_email(self.configInfo, email_content, email_subject)
             
             # Hit Create New Model button without entering name
@@ -67,7 +67,7 @@ class Test_Model(BaseTest, unittest.TestCase):
                 error_message = "Failure. Empty input name passed"
                 self.logger.error(f"{error_message}: {e}")
                 email_content = self.configError["empty_nameInput_passed_CreateModel"]
-                email_subject = "Error occured in the Model page"
+                email_subject = get_emailSubject("Model")
                 send_email(self.configInfo, email_content, email_subject)
             
             # Hit Create New Model button and entering name
@@ -87,7 +87,7 @@ class Test_Model(BaseTest, unittest.TestCase):
                 error_message = "Failure. Entered new model name is different from resulting new model name"
                 self.logger.error(f"{error_message}: {e}")
                 email_content = self.configError["wrong_newModel_name"]
-                email_subject = "Error occured in the Model page"
+                email_subject = get_emailSubject("Model")
                 send_email(self.configInfo, email_content, email_subject)
                 
             # Test the visibility when click Change to public/private
@@ -118,13 +118,13 @@ class Test_Model(BaseTest, unittest.TestCase):
                     error_message = "Failure. Failed to switch from public mode to private mode"
                     self.logger.error(f"{error_message}: {e}")
                     email_content = self.configError["cannotSwitchTo_private"]
-                    email_subject = "Error occured in the Modeld page"
+                    email_subject = get_emailSubject("Model")
                     send_email(self.configInfo, email_content, email_subject)
             except Exception as e:
                 error_message = "Failure. Failed to switch from private mode to public mode"
                 self.logger.error(f"{error_message}: {e}")
                 email_content = self.configError["cannotSwitchTo_public"]
-                email_subject = "Error occured in the Modeld page"
+                email_subject = get_emailSubject("Model")
                 send_email(self.configInfo, email_content, email_subject)
             
             # Test the add user functionality in model detail page
@@ -137,7 +137,7 @@ class Test_Model(BaseTest, unittest.TestCase):
                 error_message = "Failure. The list of user in the 'add user' pop up is empty."
                 self.logger.error(f"{error_message}: {e}")
                 email_content = self.configError["empty_userList_in_addUserButton"]
-                email_subject = "Error occured in the Model page"
+                email_subject = get_emailSubject("Model")
                 send_email(self.configInfo, email_content, email_subject)
             try:
                 search_box = self.driver.find_element(By.XPATH, "//input[@placeholder='Search']")
@@ -156,7 +156,7 @@ class Test_Model(BaseTest, unittest.TestCase):
                 error_message = "Failure. The filter list in the add user pop up doesn't work properly."
                 self.logger.error(f"{error_message}: {e}")
                 email_content = self.configError["filter_list_in_addUser_isNotWorking"]
-                email_subject = "Error occured in the Model page"
+                email_subject = get_emailSubject("Model")
                 send_email(self.configInfo, email_content, email_subject)
             
             # Close the add user pop up to click other buttons
@@ -183,7 +183,7 @@ class Test_Model(BaseTest, unittest.TestCase):
                 error_message = "Failure. Empty name field passed"
                 self.logger.error(f"{error_message}: {e}")
                 email_content = self.configError["empty_nameInput_passed_CreatePrototype"]
-                email_subject = "Error occured in the Model page"
+                email_subject = get_emailSubject("Model")
                 send_email(self.configInfo, email_content, email_subject)
             
             # Hit Create New Prototype and entering name
@@ -218,15 +218,14 @@ class Test_Model(BaseTest, unittest.TestCase):
                     error_message = "Failure. Incorrect name of the newly created prototype on the right"
                     self.logger.error(f"{error_message}: {e}")
                     email_content = self.configError["wrong_newPrototype_name"]
-                    email_subject = "Error occured in the Model page"
+                    email_subject = get_emailSubject("Model")
                     send_email(self.configInfo, email_content, email_subject)
                 
             except Exception as e:
                 error_message = "Failure. Incorrect name of the newly created prototype on the left"
                 self.logger.error(f"{error_message}: {e}")
-                # email_content = "<!DOCTYPE html><html lang='en'><body><p>Failed the test. Incorrect name of the newly created prototype on the left.</p><p>Steps to Reproduce:</p><ol><li>Navigate to the home page.</li><li>Sign in and click Select Model, choose a model and click Prototype Library</li><li>Click the Create New Prototype, enter the name and click Create.</li><li>Wait and see the prototype name on the prototype page</li></ol></p></body></html>"
                 email_content = self.configError["wrong_newPrototype_name"]
-                email_subject = "Error occured in the Model page"
+                email_subject = get_emailSubject("Model")
                 send_email(self.configInfo, email_content, email_subject)
                 
             # Delete the testing model

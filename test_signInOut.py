@@ -14,11 +14,7 @@ class Test_SignIn(BaseTest, unittest.TestCase):
                 enter_password(self.driver, self.logger, self.configInfo, "invalid", "first_enter")
                 submit_sign_in(self.driver, self.logger)
             except Exception as e:
-                error_message = "Failure. Cannot open the Sign In pop up"
-                self.logger.error(f"{error_message}: {e}")
-                email_content = self.configError["cannot_open_signIn_popup"]
-                email_subject = "Error occured in the Home page"
-                send_email(self.configInfo, email_content, email_subject)
+                cannotOpenPopUp_errorHandler(e, self.logger, self.configError, self.configInfo, "sign_in")
                 execute_next = False
                 
             if (execute_next is True):
@@ -32,7 +28,7 @@ class Test_SignIn(BaseTest, unittest.TestCase):
                     error_message = "Failure. Wrong password passed. Broken implementation"
                     self.logger.critical(f"{error_message}: {e}")
                     email_content = self.configError["wrong_password_passed"]
-                    email_subject = "Error occured in the Home page"
+                    email_subject = get_emailSubject("Home")
                     send_email(self.configInfo, email_content, email_subject)
 
     # Test case 2: Sign in with valid password, verify the icon on the top right, then sign out
@@ -47,11 +43,7 @@ class Test_SignIn(BaseTest, unittest.TestCase):
                 enter_password(self.driver, self.logger, self.configInfo, "valid", "first_enter")
                 submit_sign_in(self.driver, self.logger)
             except Exception as e:
-                error_message = "Failure. Cannot open the Sign In pop up"
-                self.logger.error(f"{error_message}: {e}")
-                email_content = self.configError["cannot_open_signIn_popup"]
-                email_subject = "Error occured in the Home page"
-                send_email(self.configInfo, email_content, email_subject)
+                cannotOpenPopUp_errorHandler(e, self.logger, self.configError, self.configInfo, "sign_in")
                 execute_next = False
 
             if (execute_next is True):
@@ -74,5 +66,5 @@ class Test_SignIn(BaseTest, unittest.TestCase):
                     error_message = "Failure. Cannot sign in and log out with valid password. Broken implementation"
                     self.logger.critical(f"{error_message}: {e}")
                     email_content = self.configError["cannot_signIn_logOut"]
-                    email_subject = "Error occured in the Home page"
+                    email_subject = get_emailSubject("Home")
                     send_email(self.configInfo, email_content, email_subject)
