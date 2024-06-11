@@ -2,7 +2,7 @@ from util import *
 
 class Test_PageTraversal(BaseTest, unittest.TestCase):
     
-    # Test case 1: 
+    # Test case 1: Test partners link
     def test_link_partners(self):
         self.base.beginOfTest_logFormat("test_link_partners")
         if (self.next is True):
