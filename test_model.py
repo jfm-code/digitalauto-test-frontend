@@ -21,7 +21,7 @@ class Test_Model(BaseTest, unittest.TestCase):
                         send_email(self.configInfo, email_content, email_subject)
                 except Exception as e:
                     self.logger.info("Success. Tested the case of not seeing the 'Create New Model' button when not signing in")
-                    
+
                     
     # Test case 2: Sign in, test create new model and create new prototype
     def test_SignIn_createNewModel(self):
@@ -32,14 +32,14 @@ class Test_Model(BaseTest, unittest.TestCase):
             enter_email(self.driver, self.logger, self.configInfo, self.configInfo["signIn_email"])
             enter_password(self.driver, self.logger, self.configInfo, "valid", "first_enter")
             submit_sign_in(self.driver, self.logger)
-            
+
             time.sleep(5) # Explicit wait doesn't work here
             click_select_model(self.driver, self.logger)
             self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]").click()
             self.logger.debug("Clicked the Create New Model button")
             wait = WebDriverWait(self.driver, 5)
             wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//img[@src='/imgs/profile.png']")))
-            
+
             # Check if the dropdown is empty or not
             try: 
                 options = self.driver.find_elements(By.XPATH, "//select/option")
@@ -51,7 +51,7 @@ class Test_Model(BaseTest, unittest.TestCase):
                 email_content = self.configError["empty_dropdown_CreateModel"]
                 email_subject = get_emailSubject("Model")
                 send_email(self.configInfo, email_content, email_subject)
-            
+
             # Hit Create New Model button without entering name
             try:
                 self.driver.find_element(By. XPATH, "//button[text()='Create Model']").click()
@@ -162,8 +162,7 @@ class Test_Model(BaseTest, unittest.TestCase):
             time.sleep(2)
             
             # Navigate to other pages to test the prototype creation functions
-            self.driver.find_element(By.XPATH, "//label[text()='Prototype Library']").click()
-            self.logger.debug("Clicked the Prototype Library button")
+            click_prototype_library(self.driver, self.logger)
             self.driver.find_element(By.XPATH, "//button[text()='Create New Prototype']").click()
             self.logger.debug("Clicked the Create New Prototype button")
 

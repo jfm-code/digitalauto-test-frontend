@@ -35,7 +35,7 @@ class Base():
         formatter = logging.Formatter(f"{timestamp} :%(levelname)s: %(filename)s :%(message)s")
         fileHandler.setFormatter(formatter)
         self.logger.addHandler(fileHandler)
-        self.logger.setLevel(logging.INFO) # Do not print the DEBUG statements
+        self.logger.setLevel(logging.DEBUG) # Do not print the DEBUG statements
         
     def beginOfTest_logFormat(self, test_name):
         for handler in self.logger.handlers:

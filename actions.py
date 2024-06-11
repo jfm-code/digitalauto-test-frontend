@@ -44,6 +44,10 @@ def click_register(driver, logger):
 def click_select_model(driver, logger):
     driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
     logger.debug("Clicked the Select Model button")
+
+def click_prototype_library(driver, logger):
+    driver.find_element(By.XPATH, "//label[text()='Prototype Library']").click()
+    logger.debug("Clicked the Prototype Library button")
     
 def get_emailSubject(place_that_occur):
     return f"An error occured in the {place_that_occur} page"
