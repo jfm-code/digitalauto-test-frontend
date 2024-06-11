@@ -40,6 +40,24 @@ def submit_sign_in(driver, logger):
 def click_register(driver, logger):
     driver.find_element(By.XPATH, "//button[text()='Register']").click()
     logger.debug("Clicked the Register button")
+    
+def click_select_model(driver, logger):
+    driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
+    logger.debug("Clicked the Select Model button")
+    
+def get_emailSubject(place_that_occur):
+    return f"An error occured in the {place_that_occur} page"
+
+def cannotOpenPopUp_errorHandler(exception, logger, configError, configInfo, mode):
+    if (mode == "sign_in"):
+        error_message = "Failure. Cannot open the Sign In pop up"
+        email_content = configError["cannot_open_signIn_popup"]
+    elif (mode == "register"):
+        error_message = "Failure. Cannot open the Register pop up"
+        email_content = configError["cannot_open_register_popup"]
+    logger.error(f"{error_message}: {exception}")
+    email_subject = get_emailSubject("Home")
+    send_email(configInfo, email_content, email_subject)
 
 # Postman helper functions
 def send_email(config, email_content, email_subject):
@@ -94,16 +112,3 @@ def delete_user(admin_token, user_id):
     data = json.loads(response.content)
     return data
 
-def get_emailSubject(place_that_occur):
-    return f"An error occured in the {place_that_occur} page"
-
-def cannotOpenPopUp_errorHandler(exception, logger, configError, configInfo, mode):
-    if (mode == "sign_in"):
-        error_message = "Failure. Cannot open the Sign In pop up"
-        email_content = configError["cannot_open_signIn_popup"]
-    elif (mode == "register"):
-        error_message = "Failure. Cannot open the Register pop up"
-        email_content = configError["cannot_open_register_popup"]
-    logger.error(f"{error_message}: {exception}")
-    email_subject = get_emailSubject("Home")
-    send_email(configInfo, email_content, email_subject)

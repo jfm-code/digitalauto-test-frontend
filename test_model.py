@@ -10,8 +10,7 @@ class Test_Model(BaseTest, unittest.TestCase):
             signIn_button = self.driver.find_element(By.XPATH, "//button[text()='Sign in']")
             if (signIn_button.is_displayed()):
                 self.logger.debug("User is not signing in")
-                self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
-                self.logger.debug("Clicked the Select Model button")
+                click_select_model(self.driver, self.logger)
                 try:
                     createModel_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]")
                     if (createModel_button.is_displayed()):
@@ -35,8 +34,7 @@ class Test_Model(BaseTest, unittest.TestCase):
             submit_sign_in(self.driver, self.logger)
             
             time.sleep(5) # Explicit wait doesn't work here
-            self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
-            self.logger.debug("Clicked the Select Model button")
+            click_select_model(self.driver, self.logger)
             self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]").click()
             self.logger.debug("Clicked the Create New Model button")
             wait = WebDriverWait(self.driver, 5)
