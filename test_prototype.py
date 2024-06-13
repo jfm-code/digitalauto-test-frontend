@@ -30,7 +30,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         click_prototype_library(self.driver, self.logger)
         click_create_prototype(self.driver, self.logger)
         
-        # Hit Create New Prototype without entering name 
+        # Hit Create New Prototype without entering name
         try:
             self.driver.find_element(By.XPATH, "//button[text()='Create']").click()
             self.logger.debug("Clicked the Create Prototype button")
