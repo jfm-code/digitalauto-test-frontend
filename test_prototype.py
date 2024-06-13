@@ -14,6 +14,8 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.use_Dashboard_Config()
             self.check_widgetList_content()
             self.add_widget()
+            self.edit_widget()
+            # self.delete_widget()
             
             # Delete the testing prototype
             token = get_user_info(self.configInfo, "token", "signIn")
@@ -118,7 +120,6 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         self.base.beginOfTest_logFormat("check_widgetList_content")
         try:
             widgets = self.driver.find_elements(By.XPATH, "//div[@class='grow']/div/div")
-            print(len(widgets))
             assert (len(widgets) > 0)
             self.logger.info("Success. The list of widgets is not empty.")
         except:
@@ -142,3 +143,28 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             email_content = self.configError["addWidget_failed"]
             email_subject = get_emailSubject("Prototype")
             send_email(self.configInfo, email_content, email_subject)
+            
+    def delete_widget(self):
+        action = ActionChains(self.driver)
+        action.move_to_element(self.driver.find_element(By.XPATH, "//div[text()='Simple Wiper Widget']")).perform()
+        # self.driver.find_element(By.XPATH, "//button[@class='da-btn da-btn-plain da-btn-md !px-0']").click()
+        self.driver.find_element(By.XPATH, "//button[@class='da-btn da-btn-plain da-btn-md !px-0']//*[name()='svg']").click()
+        alert_popup = self.driver.switch_to.alert
+        alert_popup.accept()
+            
+    def edit_widget(self):
+        action = ActionChains(self.driver)
+        action.move_to_element(self.driver.find_element(By.XPATH, "//div[text()='Simple Wiper Widget']")).perform()
+        self.driver.find_element(By.XPATH, "//button[@class='da-btn da-btn-plain da-btn-md !px-0 hover:text-da-primary-500']//*[name()='svg']").click()
+        
+        # JavaScript to find elements with innerText 'Builtin'
+        js_script = """
+        const elements = document.querySelectorAll('*'); // Select all elements
+        const builtinElements = Array.from(elements).filter(element => element.innerHTML === '"Builtin"');
+        return builtinElements;
+        """
+        
+        # Execute the script and get the number of elements
+        num_elements = self.driver.execute_script(js_script)
+        
+        print("Num of elements: ", num_elements)
