@@ -24,7 +24,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
     def create_and_verify_prototypeName(self):
         self.base.beginOfTest_logFormat("create_and_verify_prototypeName")
         
-        # Choose the Combustion Car model to create testing prototype
+        # Choose the Combustion Car model to create testing prototype 
         click_select_model(self.driver, self.logger)
         self.driver.find_element(By.XPATH, "//label[text()='Combustion Car']").click()
         click_prototype_library(self.driver, self.logger)
