@@ -49,6 +49,10 @@ def click_prototype_library(driver, logger):
     driver.find_element(By.XPATH, "//label[text()='Prototype Library']").click()
     logger.debug("Clicked the Prototype Library button")
     
+def click_create_prototype(driver, logger):
+    driver.find_element(By.XPATH, "//button[text()='Create New Prototype']").click()
+    logger.debug("Clicked the Create New Prototype button")
+    
 def get_emailSubject(place_that_occur):
     return f"An error occured in the {place_that_occur} page"
 
