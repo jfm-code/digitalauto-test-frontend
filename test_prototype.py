@@ -2,19 +2,28 @@ from util import *
 
 class Test_Prototype(BaseTest, unittest.TestCase):
     def test_Prototype_functionalities(self):
-        self.base.beginOfTest_logFormat("test_Prototype_functionalities")
         if (self.next is True):
             click_sign_in(self.driver, self.logger, self.configInfo)
             enter_email(self.driver, self.logger, self.configInfo, self.configInfo["signIn_email"])
             enter_password(self.driver, self.logger, self.configInfo, "valid", "first_enter")
             submit_sign_in(self.driver, self.logger)
-            self.logger.info("Started testing prototype functionalities after signing in")
             time.sleep(5)
             
-            # Test case 1: Create new prototype and verify the name
             self.create_and_verify_prototypeName()
+            self.driver.find_element(By.XPATH, "//button[text()='Open']").click() # Open the prototype detail page
+            self.use_Dashboard_Config()
+            self.check_widgetList_content()
+            self.add_widget()
+            
+            # Delete the testing prototype
+            token = get_user_info(self.configInfo, "token", "signIn")
+            current_url = self.driver.current_url
+            prototype_id = current_url[83:107]
+            delete_prototype(token, prototype_id)
             
     def create_and_verify_prototypeName(self):
+        self.base.beginOfTest_logFormat("create_and_verify_prototypeName")
+        
         # Choose the Combustion Car model to create testing prototype
         click_select_model(self.driver, self.logger)
         self.driver.find_element(By.XPATH, "//label[text()='Combustion Car']").click()
@@ -52,31 +61,84 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.driver.find_element(By.XPATH, f"//label[text()='{expected_name}']").click()
             self.logger.debug("Clicked the prototype box")
             self.logger.info("Success. Verified the name of the newly created prototype on the left")
-            
-            try:
-                wait = WebDriverWait(self.driver, 2)
-                wait.until(expected_conditions.visibility_of_element_located((By.XPATH, f"//div[@class='p-5']/div/label[text()='{expected_name}']")))
-                prototype_name_right = self.driver.find_element(By.XPATH, f"//div[@class='p-5']/div/label[text()='{expected_name}']").text
-                assert (prototype_name_right == expected_name)
-                self.logger.info("Success. Verified the name of the newly created prototype on the right")
-                self.driver.find_element(By.XPATH, "//a/button[text()='Open']").click()
-                
-                # Delete the testing prototype
-                token = get_user_info(self.configInfo, "token", "signIn")
-                current_url = self.driver.current_url
-                prototype_id = current_url[83:107]
-                delete_prototype(token,prototype_id)
-                
-            except Exception as e:
-                error_message = "Failure. Incorrect name of the newly created prototype on the right"
-                self.logger.error(f"{error_message}: {e}")
-                email_content = self.configError["wrong_newPrototype_name"]
-                email_subject = get_emailSubject("Model")
-                send_email(self.configInfo, email_content, email_subject)
-            
         except Exception as e:
             error_message = "Failure. Incorrect name of the newly created prototype on the left"
             self.logger.error(f"{error_message}: {e}")
             email_content = self.configError["wrong_newPrototype_name"]
             email_subject = get_emailSubject("Model")
+            send_email(self.configInfo, email_content, email_subject)
+            
+        try:
+            wait = WebDriverWait(self.driver, 2)
+            wait.until(expected_conditions.visibility_of_element_located((By.XPATH, f"//div[@class='p-5']/div/label[text()='{expected_name}']")))
+            prototype_name_right = self.driver.find_element(By.XPATH, f"//div[@class='p-5']/div/label[text()='{expected_name}']").text
+            assert (prototype_name_right == expected_name)
+            self.logger.info("Success. Verified the name of the newly created prototype on the right")
+        except Exception as e:
+            error_message = "Failure. Incorrect name of the newly created prototype on the right"
+            self.logger.error(f"{error_message}: {e}")
+            email_content = self.configError["wrong_newPrototype_name"]
+            email_subject = get_emailSubject("Model")
+            send_email(self.configInfo, email_content, email_subject)
+
+    def use_Dashboard_Config(self):
+        self.base.beginOfTest_logFormat("use_Dashboard_Config")
+
+        self.driver.find_element(By.XPATH, "//div[text()='Code']").click()
+        self.driver.find_element(By.XPATH, "//div[text()='Dashboard Config']").click()
+        self.driver.find_element(By.XPATH, "//div[text()='1']").click()
+        self.driver.find_element(By.XPATH, "//div[text()='3']").click()
+        self.driver.find_element(By.XPATH, "//div[text()='4']").click()
+        self.driver.find_element(By.XPATH, "//div[text()='8']").click()
+        self.driver.find_element(By.XPATH, "//div[text()='9']").click()
+        
+        try:
+            add_widget_btn = self.driver.find_element(By.XPATH, "//button[text()='Add widget']")
+            if (add_widget_btn.is_displayed()):
+                error_message = "Failure. 'Add widget' button appeared when invalid boxes are selected"
+                self.logger.critical(f"{error_message}")
+                email_content = self.configError["addWidget_invalidBoxes"]
+                email_subject = get_emailSubject("Prototype")
+                send_email(self.configInfo, email_content, email_subject)
+        except:
+            self.logger.info("Success. The 'Add widget' button did not appear when invalid boxes are selected.")
+            
+        try:
+            self.driver.find_element(By.XPATH, "//div[@class='flex-1 flex flex-col w-full overflow-hidden']/div/div/div[text()='1']").click()
+            self.driver.find_element(By.XPATH, "//button[text()='Add widget']").click()
+            self.logger.info("Success. The 'Add widget' button appeared when valid boxes are selected")
+        except:
+            error_message = "Failure. 'Add widget' button did not appear when valid boxes are selected"
+            self.logger.critical(f"{error_message}")
+            email_content = self.configError["addWidget_validBoxes"]
+            email_subject = get_emailSubject("Prototype")
+            send_email(self.configInfo, email_content, email_subject)
+
+    def check_widgetList_content(self):
+        self.base.beginOfTest_logFormat("check_widgetList_content")
+        try:
+            widgets = self.driver.find_elements(By.XPATH, "//div[@class='grow']/div/div")
+            print(len(widgets))
+            assert (len(widgets) > 0)
+            self.logger.info("Success. The list of widgets is not empty.")
+        except:
+            error_message = "Failure. List of widgets is empty."
+            self.logger.critical(f"{error_message}")
+            email_content = self.configError["addWidget_widgetList_empty"]
+            email_subject = get_emailSubject("Prototype")
+            send_email(self.configInfo, email_content, email_subject)
+            
+    def add_widget(self):
+        self.base.beginOfTest_logFormat("add_widget")
+        try:
+            self.driver.find_element(By.XPATH, "//label[text()='Simple Wiper Widget']").click()
+            self.driver.find_element(By.XPATH, "//button[text()='Add selected widget']").click()
+            widget_text = self.driver.find_element(By.XPATH, "//div[text()='Simple Wiper Widget']").text
+            assert (widget_text == "Simple Wiper Widget")
+            self.logger.info("Success. Added a widget to the Dashboard Config.")
+        except:
+            error_message = "Failure. Cannot add a widget to the Dashboard Config."
+            self.logger.critical(f"{error_message}")
+            email_content = self.configError["addWidget_failed"]
+            email_subject = get_emailSubject("Prototype")
             send_email(self.configInfo, email_content, email_subject)
