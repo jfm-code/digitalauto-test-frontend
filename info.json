@@ -1,0 +1,17 @@
+{
+    "web_url": "https://autowrx-etas.digital.auto/",
+    "email_url": "https://backend-core-dev.digital.auto/v2/emails",
+    "test_file": "test_no_data.py",
+    "developer_email": "my.giangvu@gmail.com",
+    "signIn_email": "vuy4hc@bosch.com",
+    "wrong_password": "31280129850",
+    "correct_password": "blablabla",
+    "signUp_email": "automation.test@gmail.com",
+    "signUp_name": "Automation Test Account",
+    "admin_email": "dev@gmail.com",
+    "admin_password": "abcd1234",
+    "bosch_link": "https://www.bosch.com/",
+    "covesa_link": "https://covesa.global/",
+    "eclipse_link": "https://www.eclipse.org/",
+    "institut_link": "https://ferdinand-steinbeis-institut.de/"
+}
