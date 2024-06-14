@@ -24,7 +24,8 @@ git push -uf origin main
 
 - [ ] [Set up project integrations](https://gitlab.eclipse.org/eclipse/autowrx/ui-automation-test/-/settings/integrations)
 
-## Collaborate with your team
+## Collaborate with your team 
+
 
 - [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
 - [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
