@@ -1,0 +1,15 @@
+# Ignore log files and directories
+logs/
+
+# Ignore Python compiled files
+*.pyc
+__pycache__/
+
+# Ignore virtual environment directories
+venv/
+env/
+
+# Ignore other sensitive or temporary files
+*.env
+*.tmp
+.DS_Store
