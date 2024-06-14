@@ -156,15 +156,43 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         action = ActionChains(self.driver)
         action.move_to_element(self.driver.find_element(By.XPATH, "//div[text()='Simple Wiper Widget']")).perform()
         self.driver.find_element(By.XPATH, "//button[@class='da-btn da-btn-plain da-btn-md !px-0 hover:text-da-primary-500']//*[name()='svg']").click()
-        
-        # JavaScript to find elements with innerText 'Builtin'
-        js_script = """
-        const elements = document.querySelectorAll('*'); // Select all elements
-        const builtinElements = Array.from(elements).filter(element => element.innerHTML === '"Builtin"');
-        return builtinElements;
-        """
-        
-        # Execute the script and get the number of elements
-        num_elements = self.driver.execute_script(js_script)
-        
-        print("Num of elements: ", num_elements)
+        time.sleep(2)
+        try:
+            wait = WebDriverWait(self.driver, 10)
+            modal = wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//div[@class='MuiModal-root css-8ndowl']")))
+            code_block = modal.find_element(By.XPATH, ".//div[contains(@class, 'monaco-editor')]")
+            line_of_code = code_block.find_element(By.XPATH, ".//div[@class='view-line' and .//span[text()='\"Builtin\"']]")
+            line_of_code.click()
+            
+            self.driver.execute_script("""
+                var line = arguments[0];
+                line.querySelector('span.mtk5').textContent = '"Builtin Testing"';
+                var event = new Event('input', { bubbles: true });
+                line.dispatchEvent(event);
+                """, line_of_code)
+            
+            # script = """
+            # var editor = monaco.editor.getModels()[0];
+            # var value = editor.getValue();
+            # var lines = value.split('\\n');
+            
+            # for (var i = 0; i < lines.length; i++) {
+            #     if (lines[i].includes('"plugin": "Builtin"')) {
+            #         lines[i] = '    "plugin": "Builtin Testing",';
+            #         break;
+            #     }
+            # }
+            
+            # var newValue = lines.join('\\n');
+            # editor.setValue(newValue);
+            # """
+            # self.driver.execute_script(script)
+            
+            time.sleep(2)
+            action.move_to_element(self.driver.find_element(By.XPATH, "//button[contains(text(), 'Save')]")).perform()
+            self.driver.find_element(By.XPATH, "//button[contains(text(), 'Save')]").click()
+            time.sleep(2)
+            self.driver.find_element(By.XPATH, "//button/div[text()='Show all raw config text']").click()
+            time.sleep(10)
+        except:
+            print("Haiz")
