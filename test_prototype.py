@@ -173,7 +173,10 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.driver.find_element(By.XPATH, "//button[contains(text(), 'Save')]").click()
             time.sleep(2)
             self.driver.find_element(By.XPATH, "//button/div[text()='Show all raw config text']").click()
-            # result = self.driver.find_element(By.XPATH, "//span[text()='\"Builtin Testing\"']").text
-            # assert (result == '\"Builtin Testing\"')
+            
+            wait = WebDriverWait(self.driver, 10)
+            code_block = wait.until(expected_conditions.visibility_of_element_located(By.XPATH, "//div[contains(@class, 'view-lines monaco-mouse-cursor-text')]"))
+            result = code_block.find_element(By.XPATH, ".//div[@class='view-line' and .//span[text()='\"Builtin Testing\"')]")
+            assert (result.text == '"Builtin Testing"')
         except Exception as e:
             print(e)
