@@ -1,4 +1,5 @@
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import logging
 import time
 from datetime import datetime
@@ -10,15 +11,18 @@ with open('info.json') as config_file:
 
 class Base():
     def setup_browser(self):
+        headless_mode = os.getenv("HEADLESS", "false").lower() == "true"
+        options = Options()
+
+        if headless_mode:
+            options.add_argument("--headless=new")
+            self.logger.info("Running in headless mode")
         # Setting up Chrome Browser
-        self.driver = webdriver.Chrome() # Use this for normal mode
-        # chrome_option = webdriver.EdgeOptions()
-        # chrome_option.add_argument("--headless") # Use this for headless mode
-        # self.driver = webdriver.Edge(options=chrome_option)
+        self.driver = webdriver.Chrome(options=options)
         try:
             self.driver.get(configInfo["web_url"])
             self.driver.maximize_window()
-            self.driver.implicitly_wait(10) # Timeout = 10s
+            self.driver.implicitly_wait(10)  # Timeout = 10s
             self.next = True
         except:
             self.logger.error("Wrong web URL, the site can't be reached.")

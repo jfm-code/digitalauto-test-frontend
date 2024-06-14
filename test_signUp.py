@@ -5,6 +5,7 @@ class Test_SignUp(BaseTest, unittest.TestCase):
     # Test case 1: Enter all info and sign up successfully
     def test_SignUp_successfully(self):
         if (self.next is True):
+            self.base.beginOfTest_logFormat("test_SignUp_successfully")
             click_sign_in(self.driver, self.logger, self.configInfo)
             self.logger.info("Started Signing Up")
             click_register(self.driver, self.logger)
@@ -37,6 +38,7 @@ class Test_SignUp(BaseTest, unittest.TestCase):
     # Test case 2: Enter all info but using existing email, sign up failed and catch the message -> Email taken
     def test_signUp_existingEmail(self):
         if (self.next is True):
+            self.base.beginOfTest_logFormat("test_signUp_existingEmail")
             click_sign_in(self.driver, self.logger, self.configInfo)
             self.logger.info("Started Signing Up")
             click_register(self.driver, self.logger)
@@ -68,6 +70,7 @@ class Test_SignUp(BaseTest, unittest.TestCase):
     # Test case 3: Confirm password and password is different, catch the message -> "password" and "confirm password" must be the same
     def test_signUp_confirmPassword(self):
         if (self.next is True):
+            self.base.beginOfTest_logFormat("test_signUp_confirmPassword")
             click_sign_in(self.driver, self.logger, self.configInfo)
             self.logger.info("Started Signing Up")
             click_register(self.driver, self.logger)
@@ -100,6 +103,7 @@ class Test_SignUp(BaseTest, unittest.TestCase):
     # Test case 4: Lack 1 field of input, catch the message -> "email" is required
     def test_signUp_lackOneField(self):
         if (self.next is True):
+            self.base.beginOfTest_logFormat("test_signUp_lackOneField")
             click_sign_in(self.driver, self.logger, self.configInfo)
             self.logger.info("Started Signing Up")
             click_register(self.driver, self.logger)

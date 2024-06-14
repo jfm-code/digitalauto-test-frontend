@@ -4,8 +4,8 @@ class Test_SignIn(BaseTest, unittest.TestCase):
 
     # Test case 1: Sign in with invalid password, catch the message -> Invalid username or password
     def test_sign_in_invalid_password(self):
-        self.base.beginOfTest_logFormat("test_sign_in_invalid_password")
         if (self.next is True):
+            self.base.beginOfTest_logFormat("test_sign_in_invalid_password")
             self.logger.info("Started Signing In")
             click_sign_in(self.driver, self.logger, self.configInfo)
             execute_next = True
@@ -33,8 +33,8 @@ class Test_SignIn(BaseTest, unittest.TestCase):
 
     # Test case 2: Sign in with valid password, verify the icon on the top right, then sign out
     def test_sign_in_valid_password_and_sign_out(self):
-        self.base.beginOfTest_logFormat("test_sign_in_valid_password_and_sign_out")
         if (self.next is True):
+            self.base.beginOfTest_logFormat("test_sign_in_valid_password_and_sign_out")
             self.logger.info("Started Signing In")
             click_sign_in(self.driver, self.logger, self.configInfo)
             execute_next = True

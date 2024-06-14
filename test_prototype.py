@@ -27,6 +27,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         self.base.beginOfTest_logFormat("create_and_verify_prototypeName")
         
         # Choose the Combustion Car model to create testing prototype 
+        time.sleep(3)
         click_select_model(self.driver, self.logger)
         self.driver.find_element(By.XPATH, "//label[text()='Combustion Car']").click()
         click_prototype_library(self.driver, self.logger)
@@ -164,35 +165,15 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             line_of_code = code_block.find_element(By.XPATH, ".//div[@class='view-line' and .//span[text()='\"Builtin\"']]")
             line_of_code.click()
             
-            self.driver.execute_script("""
-                var line = arguments[0];
-                line.querySelector('span.mtk5').textContent = '"Builtin Testing"';
-                var event = new Event('input', { bubbles: true });
-                line.dispatchEvent(event);
-                """, line_of_code)
+            for _ in range(2):
+                action.send_keys(Keys.ARROW_LEFT).perform()
+            action.send_keys(" Testing").perform()
             
-            # script = """
-            # var editor = monaco.editor.getModels()[0];
-            # var value = editor.getValue();
-            # var lines = value.split('\\n');
-            
-            # for (var i = 0; i < lines.length; i++) {
-            #     if (lines[i].includes('"plugin": "Builtin"')) {
-            #         lines[i] = '    "plugin": "Builtin Testing",';
-            #         break;
-            #     }
-            # }
-            
-            # var newValue = lines.join('\\n');
-            # editor.setValue(newValue);
-            # """
-            # self.driver.execute_script(script)
-            
-            time.sleep(2)
             action.move_to_element(self.driver.find_element(By.XPATH, "//button[contains(text(), 'Save')]")).perform()
             self.driver.find_element(By.XPATH, "//button[contains(text(), 'Save')]").click()
             time.sleep(2)
             self.driver.find_element(By.XPATH, "//button/div[text()='Show all raw config text']").click()
-            time.sleep(10)
-        except:
-            print("Haiz")
+            # result = self.driver.find_element(By.XPATH, "//span[text()='\"Builtin Testing\"']").text
+            # assert (result == '\"Builtin Testing\"')
+        except Exception as e:
+            print(e)
