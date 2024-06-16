@@ -146,14 +146,15 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             send_email(self.configInfo, email_content, email_subject)
             
     def delete_widget(self):
+        self.base.beginOfTest_logFormat("delete_widget")
         action = ActionChains(self.driver)
         action.move_to_element(self.driver.find_element(By.XPATH, "//div[text()='Simple Wiper Widget']")).perform()
-        # self.driver.find_element(By.XPATH, "//button[@class='da-btn da-btn-plain da-btn-md !px-0']").click()
         self.driver.find_element(By.XPATH, "//button[@class='da-btn da-btn-plain da-btn-md !px-0']//*[name()='svg']").click()
         alert_popup = self.driver.switch_to.alert
         alert_popup.accept()
             
     def edit_widget(self):
+        self.base.beginOfTest_logFormat("edit_widget")
         action = ActionChains(self.driver)
         action.move_to_element(self.driver.find_element(By.XPATH, "//div[text()='Simple Wiper Widget']")).perform()
         self.driver.find_element(By.XPATH, "//button[@class='da-btn da-btn-plain da-btn-md !px-0 hover:text-da-primary-500']//*[name()='svg']").click()
@@ -175,8 +176,15 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.driver.find_element(By.XPATH, "//button/div[text()='Show all raw config text']").click()
             
             wait = WebDriverWait(self.driver, 10)
-            code_block = wait.until(expected_conditions.visibility_of_element_located(By.XPATH, "//div[contains(@class, 'view-lines monaco-mouse-cursor-text')]"))
-            result = code_block.find_element(By.XPATH, ".//div[@class='view-line' and .//span[text()='\"Builtin Testing\"')]")
+            code_block = wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//div[contains(@class, 'view-lines monaco-mouse-cursor-text')]")))
+            result = code_block.find_element(By.XPATH, ".//div[@class='view-line' and .//span[text()='\"Builtin Testing\"']]")
+            print("Real text is ", result.text)
             assert (result.text == '"Builtin Testing"')
+            self.logger.info("Success. Tested the case of editing the widget config text.")
         except Exception as e:
             print(e)
+            error_message = "Failure. Cannot edit the widget config text."
+            self.logger.critical(f"{error_message}")
+            email_content = self.configError["editWidget_failed"]
+            email_subject = get_emailSubject("Prototype")
+            send_email(self.configInfo, email_content, email_subject)
