@@ -30,6 +30,7 @@ class Test_SignUp(BaseTest, unittest.TestCase):
                     testUser_id = get_user_info(self.configInfo, "id", "signUp")
                     admin_token = get_user_info(self.configInfo, "token", "admin")
                     delete_user(admin_token, testUser_id)
+                    self.logger.debug("Deleting the testing user.")
                     
                 except Exception as e:
                     cannotOpenPopUp_errorHandler(e, self.logger, self.configError, self.configInfo, "register")
