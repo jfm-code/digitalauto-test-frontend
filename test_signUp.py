@@ -34,7 +34,6 @@ class Test_SignUp(BaseTest, unittest.TestCase):
                     
                 except Exception as e:
                     cannotOpenPopUp_errorHandler(e, self.logger, self.configError, self.configInfo, "register")
-
                 
     # Test case 2: Enter all info but using existing email, sign up failed and catch the message -> Email taken
     def test_signUp_existingEmail(self):

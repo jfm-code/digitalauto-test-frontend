@@ -52,19 +52,21 @@ def click_prototype_library(driver, logger):
 def click_create_prototype(driver, logger):
     driver.find_element(By.XPATH, "//button[text()='Create New Prototype']").click()
     logger.debug("Clicked the Create New Prototype button")
-    
-def get_emailSubject(place_that_occur):
-    return f"An error occured in the {place_that_occur} page"
 
-def cannotOpenPopUp_errorHandler(exception, logger, configError, configInfo, mode):
-    if (mode == "sign_in"):
-        error_message = "Failure. Cannot open the Sign In pop up"
-        email_content = configError["cannot_open_signIn_popup"]
-    elif (mode == "register"):
-        error_message = "Failure. Cannot open the Register pop up"
-        email_content = configError["cannot_open_register_popup"]
+# def cannotOpenPopUp_errorHandler(exception, logger, configError, configInfo, mode):
+#     if (mode == "sign_in"):
+#         error_message = "Failure. Cannot open the Sign In pop up"
+#         email_content = configError["cannot_open_signIn_popup"]
+#     elif (mode == "register"):
+#         error_message = "Failure. Cannot open the Register pop up"
+#         email_content = configError["cannot_open_register_popup"]
+#     logger.error(f"{error_message}: {exception}")
+#     email_subject = get_emailSubject("Home")
+#     send_email(configInfo, email_content, email_subject)
+    
+def error_handler(logger, configInfo, error_message, exception, email_content, place_occur):
     logger.error(f"{error_message}: {exception}")
-    email_subject = get_emailSubject("Home")
+    email_subject = f"An error occured in the {place_occur} page"
     send_email(configInfo, email_content, email_subject)
 
 # Postman helper functions
