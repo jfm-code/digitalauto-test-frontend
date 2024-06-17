@@ -14,11 +14,8 @@ class Test_NoData(BaseTest, unittest.TestCase):
             assert (len(models) > 0)
             self.logger.info("Success. Tested the number of model components in model page")
         except Exception as e:
-            error_message = "Failure. Cannot load the model components in model page"
-            self.logger.error(f"{error_message}: {e}")
-            email_content = self.configError["cannotLoad_model"]
-            email_subject = get_emailSubject("Model")
-            send_email(self.configInfo, email_content, email_subject)
+            error_handler(self.logger, self.configInfo, "Failure. Cannot load the model components in model page", e,
+                self.configError["cannotLoad_model"], "Model")
     
     def count_numOf_prototypes(self):
         self.base.beginOfTest_logFormat("count_numOf_prototypes")
@@ -27,14 +24,9 @@ class Test_NoData(BaseTest, unittest.TestCase):
             assert (len(prototypes) > 0)
             self.logger.info("Success. Tested the number of prototype components in home page")
         except Exception as e:
-            error_message = "Failure. Cannot load the prototype components in home page"
-            self.logger.error(f"{error_message}: {e}")
-            email_content = self.configError["cannotLoad_prototype"]
-            email_subject = get_emailSubject("Home")
-            send_email(self.configInfo, email_content, email_subject)
-
+            error_handler(self.logger, self.configInfo, "Failure. Cannot load the prototype components in home page", e,
+                self.configError["cannotLoad_prototype"], "Home")
     
-    # Test Case 3: Count and make sure the number of red pins in model page is greater than 0
     # def count_numOf_redPins(self):
     #     try:
     #         self.logger.info("Started counting the number of pins")
@@ -48,10 +40,7 @@ class Test_NoData(BaseTest, unittest.TestCase):
     #         hidden_text = self.driver.execute_script("return arguments[0].textContent;", hidden_element)
     #         assert (hidden_text == "7")
     #         self.logger.info("Success tested the number of pins")
-    #     except:
-    #         error_message = "Failure. Cannot load the red pins on the canvas"
-    #         self.logger.error(error_message)
-    #         email_content = self.configError["cannotLoad_redPins"]
-    #         email_subject = get_emailSubject("Vehicle APIs")
-    #         send_email(self.configInfo, email_content, email_subject)
+    #     except Exception as e:
+    #         error_handler(self.logger, self.configInfo, "Failure. Cannot load the red pins on the canvas", e,
+    #             self.configError["cannotLoad_redPins"], "Vehicle APIs")
                 
