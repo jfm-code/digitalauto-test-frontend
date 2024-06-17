@@ -15,7 +15,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.check_widgetList_content()
             self.add_widget()
             self.edit_widget()
-            # self.delete_widget()
+            self.delete_widget()
             
             # Delete the testing prototype
             token = get_user_info(self.configInfo, "token", "signIn")
@@ -176,11 +176,24 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.driver.find_element(By.XPATH, "//button/div[text()='Show all raw config text']").click()
             
             wait = WebDriverWait(self.driver, 10)
-            code_block = wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//div[contains(@class, 'view-lines monaco-mouse-cursor-text')]")))
-            result = code_block.find_element(By.XPATH, ".//div[@class='view-line' and .//span[text()='\"Builtin Testing\"']]")
-            print("Real text is ", result.text)
-            assert (result.text == '"Builtin Testing"')
+            code_block = wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "(//div[contains(@class, 'view-lines monaco-mouse-cursor-text')])[2]")))
+            self.logger.debug("Found the code_block")
+            inner_html = code_block.get_attribute('innerHTML')
+            self.logger.debug("Code block inner HTML: %s", inner_html)
+            span_elements = code_block.find_elements(By.XPATH, ".//span[@class='mtk5']")
+            
+            found = False
+            for span in span_elements:
+                if span.text == '"Builtin Testing"':
+                    self.logger.debug("Found the span with text: %s", span.text)
+                    found = True
+                    break
+            if not found:
+                self.logger.debug("Did not find the span with text 'Builtin Testing'")
+            else:
+                assert (span.text == '"Builtin Testing"')
             self.logger.info("Success. Tested the case of editing the widget config text.")
+        
         except Exception as e:
             print(e)
             error_message = "Failure. Cannot edit the widget config text."
