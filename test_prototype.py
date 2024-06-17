@@ -147,11 +147,19 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             
     def delete_widget(self):
         self.base.beginOfTest_logFormat("delete_widget")
-        action = ActionChains(self.driver)
-        action.move_to_element(self.driver.find_element(By.XPATH, "//div[text()='Simple Wiper Widget']")).perform()
-        self.driver.find_element(By.XPATH, "//button[@class='da-btn da-btn-plain da-btn-md !px-0']//*[name()='svg']").click()
-        alert_popup = self.driver.switch_to.alert
-        alert_popup.accept()
+        try:
+            action = ActionChains(self.driver)
+            action.move_to_element(self.driver.find_element(By.XPATH, "//div[text()='Simple Wiper Widget']")).perform()
+            self.driver.find_element(By.XPATH, "//button[@class='da-btn da-btn-plain da-btn-md !px-0']//*[name()='svg']").click()
+            alert_popup = self.driver.switch_to.alert
+            alert_popup.accept()
+            self.logger.info("Success. Deleted a widget in the Dashboard Config.")
+        except:
+            error_message = "Failure. Cannot delete a widget in the Dashboard Config."
+            self.logger.critical(f"{error_message}")
+            email_content = self.configError["deleteWidget_failed"]
+            email_subject = get_emailSubject("Prototype")
+            send_email(self.configInfo, email_content, email_subject)
             
     def edit_widget(self):
         self.base.beginOfTest_logFormat("edit_widget")
