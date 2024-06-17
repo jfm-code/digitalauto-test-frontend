@@ -37,7 +37,6 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         try:
             self.driver.find_element(By.XPATH, "//button[text()='Create']").click()
             self.logger.debug("Clicked the Create Prototype button")
-            self.driver.find_element(By.XPATH, "//label[@class='da-label-small mt-4 text-da-accent-500']")
             wait = WebDriverWait(self.driver, 5)
             wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[@class='da-label-small mt-4 text-da-accent-500']")))
             message = self.driver.find_element(By.XPATH, "//label[@class='da-label-small mt-4 text-da-accent-500']").text
