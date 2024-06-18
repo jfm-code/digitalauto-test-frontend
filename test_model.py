@@ -24,12 +24,9 @@ class Test_Model(BaseTest, unittest.TestCase):
             try:
                 createModel_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]")
                 if (createModel_button.is_displayed()):
-                    error_message = "Failure. User did not sign in but can still see the 'Create New Model' button"
-                    self.logger.critical(f"{error_message}")
-                    email_content = self.configError["not_signIn_see_CreateModel"]
-                    email_subject = get_emailSubject("Model")
-                    send_email(self.configInfo, email_content, email_subject)
-            except Exception as e:
+                    error_handler(self.logger, self.congigInfo, "Failure. User did not sign in but can still see the 'Create New Model' button",
+                        "", self.configError["not_signIn_see_CreateModel"], "Model")
+            except:
                 self.logger.info("Success. Tested the case of not seeing the 'Create New Model' button when not signing in")
     
     def SignIn_createModel(self):
@@ -60,11 +57,8 @@ class Test_Model(BaseTest, unittest.TestCase):
             assert (message == '"name" is not allowed to be empty')
             self.logger.info("Success. Tested the case of empty input field when creating new model.")
         except Exception as e:
-            error_message = "Failure. Empty input name passed"
-            self.logger.error(f"{error_message}: {e}")
-            email_content = self.configError["empty_nameInput_passed_CreateModel"]
-            email_subject = get_emailSubject("Model")
-            send_email(self.configInfo, email_content, email_subject)
+            error_handler(self.logger, self.configInfo, "Failure. Empty input name passed", e,
+                self.configError["empty_nameInput_passed_CreateModel"], "Model")
             
         # Hit Create New Model button and entering name
         try:
@@ -80,11 +74,8 @@ class Test_Model(BaseTest, unittest.TestCase):
             assert (model_name == expected_name)
             self.logger.info("Success. Verified the name of the new model")
         except Exception as e:
-            error_message = "Failure. Entered new model name is different from resulting new model name"
-            self.logger.error(f"{error_message}: {e}")
-            email_content = self.configError["wrong_newModel_name"]
-            email_subject = get_emailSubject("Model")
-            send_email(self.configInfo, email_content, email_subject)
+            error_handler(self.logger, self.configInfo, "Failure. Entered new model name is different from resulting new model name", e,
+                self.configError["wrong_newModel_name"], "Model")
                     
     def check_dropdownContent(self):
         self.base.beginOfTest_logFormat("check_dropdownContent")
@@ -94,11 +85,8 @@ class Test_Model(BaseTest, unittest.TestCase):
             assert (len(options) > 0)
             self.logger.info("Success. Tested the dropdown content when creating a new model.")
         except Exception as e:
-            error_message = "Failure. Empty option in the dropdown then creating a new model"
-            self.logger.error(f"{error_message}: {e}")
-            email_content = self.configError["empty_dropdown_CreateModel"]
-            email_subject = get_emailSubject("Model")
-            send_email(self.configInfo, email_content, email_subject)
+            error_handler(self.logger, self.configInfo, "Failure. Empty option in the dropdown then creating a new model", e,
+                self.configError["empty_dropdown_CreateModel"], "Model")
     
     def check_modelVisibility(self):
         self.base.beginOfTest_logFormat("check_modelVisibility")
@@ -127,17 +115,11 @@ class Test_Model(BaseTest, unittest.TestCase):
                 self.logger.info("Success. Switched successfully from public to private mode")
                 time.sleep(3)
             except Exception as e:
-                error_message = "Failure. Failed to switch from public mode to private mode"
-                self.logger.error(f"{error_message}: {e}")
-                email_content = self.configError["cannotSwitchTo_private"]
-                email_subject = get_emailSubject("Model")
-                send_email(self.configInfo, email_content, email_subject)
+                error_handler(self.logger, self.configInfo, "Failure. Failed to switch from public mode to private mode", e,
+                    self.configError["cannotSwitchTo_private"], "Model")
         except Exception as e:
-            error_message = "Failure. Failed to switch from private mode to public mode"
-            self.logger.error(f"{error_message}: {e}")
-            email_content = self.configError["cannotSwitchTo_public"]
-            email_subject = get_emailSubject("Model")
-            send_email(self.configInfo, email_content, email_subject)
+            error_handler(self.logger, self.configInfo, "Failure. Failed to switch from private mode to public mode", e,
+                self.configError["cannotSwitchTo_public"], "Model")
     
     def add_member_contributor(self):
         self.base.beginOfTest_logFormat("add_member_contributor")
@@ -149,11 +131,8 @@ class Test_Model(BaseTest, unittest.TestCase):
             assert (len(users) > 0)
             self.logger.info("Success. The list of user in the 'add user' pop up is not empty.")
         except Exception as e:
-            error_message = "Failure. The list of user in the 'add user' pop up is empty."
-            self.logger.error(f"{error_message}: {e}")
-            email_content = self.configError["empty_userList_in_addUserButton"]
-            email_subject = get_emailSubject("Model")
-            send_email(self.configInfo, email_content, email_subject)
+            error_handler(self.logger, self.configInfo, "Failure. The list of user in the 'add user' pop up is empty.", e,
+                self.configError["empty_userList_in_addUserButton"], "Model")
         try:
             search_box = self.driver.find_element(By.XPATH, "//input[@placeholder='Search']")
             self.search_user("my", "My")
@@ -164,11 +143,8 @@ class Test_Model(BaseTest, unittest.TestCase):
             time.sleep(2)
             self.logger.info("Success. Found the correct user after typing characters in the search box.")
         except Exception as e:
-            error_message = "Failure. The filter list in the add user pop up doesn't work properly."
-            self.logger.error(f"{error_message}: {e}")
-            email_content = self.configError["filter_list_in_addUser_isNotWorking"]
-            email_subject = get_emailSubject("Model")
-            send_email(self.configInfo, email_content, email_subject)
+            error_handler(self.logger, self.configInfo, "Failure. The filter list in the add user pop up doesn't work properly.", e,
+                self.configError["filter_list_in_addUser_isNotWorking"], "Model")
             
         # Close the add user pop up to click other buttons
         self.driver.find_element(By.XPATH, "//button[text()='Close']").click()

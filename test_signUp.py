@@ -16,7 +16,8 @@ class Test_SignUp(BaseTest, unittest.TestCase):
                 enter_password(self.driver, self.logger, self.configInfo, "valid", "first_enter")
                 enter_password(self.driver, self.logger, self.configInfo, "valid", "re_enter")
             except Exception as e:
-                cannotOpenPopUp_errorHandler(e, self.logger, self.configError, self.configInfo, "register")
+                error_handler(self.logger, self.configInfo, "Failure. Cannot open the Register pop up", e,
+                    self.configError["cannot_open_register_popup"], "Home")
                 execute_next = False
             
             if (execute_next is True):
@@ -30,10 +31,11 @@ class Test_SignUp(BaseTest, unittest.TestCase):
                     testUser_id = get_user_info(self.configInfo, "id", "signUp")
                     admin_token = get_user_info(self.configInfo, "token", "admin")
                     delete_user(admin_token, testUser_id)
+                    self.logger.debug("Deleting the testing user.")
                     
                 except Exception as e:
-                    cannotOpenPopUp_errorHandler(e, self.logger, self.configError, self.configInfo, "register")
-
+                    error_handler(self.logger, self.configInfo, "Failure. Cannot open the Register pop up", e,
+                        self.configError["cannot_open_register_popup"], "Home")
                 
     # Test case 2: Enter all info but using existing email, sign up failed and catch the message -> Email taken
     def test_signUp_existingEmail(self):
@@ -49,7 +51,8 @@ class Test_SignUp(BaseTest, unittest.TestCase):
                 enter_password(self.driver, self.logger, self.configInfo, "valid", "first_enter")
                 enter_password(self.driver, self.logger, self.configInfo, "valid", "re_enter")
             except Exception as e:
-                cannotOpenPopUp_errorHandler(e, self.logger, self.configError, self.configInfo, "register")
+                error_handler(self.logger, self.configInfo, "Failure. Cannot open the Register pop up", e,
+                    self.configError["cannot_open_register_popup"], "Home")
                 execute_next = False
             
             if (execute_next is True):
@@ -61,11 +64,8 @@ class Test_SignUp(BaseTest, unittest.TestCase):
                     assert (message == "Email already taken")
                     self.logger.info("Success. Tested the case of using existing email.")
                 except Exception as e:
-                    error_message = "Failure. Existing email was used to sign up the account. Broken implementation"
-                    self.logger.critical(f"{error_message}: {e}")
-                    email_content = self.configError["existing_email_passed"]
-                    email_subject = get_emailSubject("Home")
-                    send_email(self.configInfo, email_content, email_subject)
+                    error_handler(self.logger, self.configInfo, "Failure. Existing email was used to sign up the account. Broken implementation", e,
+                        self.configError["existing_email_passed"], "Home")
 
     # Test case 3: Confirm password and password is different, catch the message -> "password" and "confirm password" must be the same
     def test_signUp_confirmPassword(self):
@@ -81,7 +81,8 @@ class Test_SignUp(BaseTest, unittest.TestCase):
                 enter_password(self.driver, self.logger, self.configInfo, "valid", "first_enter")
                 enter_password(self.driver, self.logger, self.configInfo, "invalid", "re_enter")
             except Exception as e:
-                cannotOpenPopUp_errorHandler(e, self.logger, self.configError, self.configInfo, "register")
+                error_handler(self.logger, self.configInfo, "Failure. Cannot open the Register pop up", e,
+                    self.configError["cannot_open_register_popup"], "Home")
                 execute_next = False
             
             if (execute_next is True):
@@ -94,11 +95,8 @@ class Test_SignUp(BaseTest, unittest.TestCase):
                     assert (message == expected_message)
                     self.logger.info("Success. Tested the case of different entered password and confirmed password.")
                 except Exception as e:
-                    error_message = "Failure. Confirm password was different from entered password. Broken implementation"
-                    self.logger.critical(f"{error_message}: {e}")
-                    email_content = self.configError["incorrect_confirm_password"]
-                    email_subject = get_emailSubject("Home")
-                    send_email(self.configInfo, email_content, email_subject)
+                    error_handler(self.logger, self.configInfo, "Failure. Confirm password was different from entered password. Broken implementation", e,
+                        self.configError["incorrect_confirm_password"], "Home")
 
     # Test case 4: Lack 1 field of input, catch the message -> "email" is required
     def test_signUp_lackOneField(self):
@@ -113,7 +111,8 @@ class Test_SignUp(BaseTest, unittest.TestCase):
                 enter_password(self.driver, self.logger, self.configInfo, "valid", "first_enter")
                 enter_password(self.driver, self.logger, self.configInfo, "valid", "re_enter")
             except Exception as e:
-                cannotOpenPopUp_errorHandler(e, self.logger, self.configError, self.configInfo, "register")
+                error_handler(self.logger, self.configInfo, "Failure. Cannot open the Register pop up", e,
+                    self.configError["cannot_open_register_popup"], "Home")
                 execute_next = False
             
             if (execute_next is True):
@@ -126,10 +125,7 @@ class Test_SignUp(BaseTest, unittest.TestCase):
                     assert (message == expected_message)
                     self.logger.info("Success. Tested the case of not entered the email field.")
                 except Exception as e:
-                    error_message = "Failure. Empty email field but can still registered. Broken implementation"
-                    self.logger.critical(f"{error_message}: {e}")
-                    email_content = self.configError["empty_email_passed"]
-                    email_subject = get_emailSubject("Home")
-                    send_email(self.configInfo, email_content, email_subject)
+                    error_handler(self.logger, self.configInfo, "Failure. Empty email field but can still registered. Broken implementation", e,
+                        self.configError["empty_email_passed"], "Home")
                     
     # Test case 5: Enter all info but invalid email address, catch the message -> this is failing
