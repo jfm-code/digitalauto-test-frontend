@@ -15,7 +15,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.check_widgetList_content()
             self.add_widget()
             self.edit_widget()
-            # self.delete_widget()
+            self.delete_widget()
             
             # Delete the testing prototype
             token = get_user_info(self.configInfo, "token", "signIn")
@@ -37,18 +37,14 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         try:
             self.driver.find_element(By.XPATH, "//button[text()='Create']").click()
             self.logger.debug("Clicked the Create Prototype button")
-            self.driver.find_element(By.XPATH, "//label[@class='da-label-small mt-4 text-da-accent-500']")
             wait = WebDriverWait(self.driver, 5)
             wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[@class='da-label-small mt-4 text-da-accent-500']")))
             message = self.driver.find_element(By.XPATH, "//label[@class='da-label-small mt-4 text-da-accent-500']").text
             assert (message == "Something went wrong")
             self.logger.info("Success. Tested the case of empty input field when creating new prototype.")
         except Exception as e:
-            error_message = "Failure. Empty name field passed"
-            self.logger.error(f"{error_message}: {e}")
-            email_content = self.configError["empty_nameInput_passed_CreatePrototype"]
-            email_subject = get_emailSubject("Model")
-            send_email(self.configInfo, email_content, email_subject)
+            error_handler(self.logger, self.configInfo, "Failure. Empty name field passed", e,
+                self.configError["empty_nameInput_passed_CreatePrototype"], "Model")
         
         # Hit Create New Prototype and entering name
         try:
@@ -65,11 +61,8 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.logger.debug("Clicked the prototype box")
             self.logger.info("Success. Verified the name of the newly created prototype on the left")
         except Exception as e:
-            error_message = "Failure. Incorrect name of the newly created prototype on the left"
-            self.logger.error(f"{error_message}: {e}")
-            email_content = self.configError["wrong_newPrototype_name"]
-            email_subject = get_emailSubject("Model")
-            send_email(self.configInfo, email_content, email_subject)
+            error_handler(self.logger, self.configInfo, "Failure. Incorrect name of the newly created prototype on the left", e,
+                self.configError["wrong_newPrototype_name"], "Model")
             
         try:
             wait = WebDriverWait(self.driver, 2)
@@ -78,11 +71,8 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             assert (prototype_name_right == expected_name)
             self.logger.info("Success. Verified the name of the newly created prototype on the right")
         except Exception as e:
-            error_message = "Failure. Incorrect name of the newly created prototype on the right"
-            self.logger.error(f"{error_message}: {e}")
-            email_content = self.configError["wrong_newPrototype_name"]
-            email_subject = get_emailSubject("Model")
-            send_email(self.configInfo, email_content, email_subject)
+            error_handler(self.logger, self.configInfo, "Failure. Incorrect name of the newly created prototype on the right", e,
+                self.configError["wrong_newPrototype_name"], "Model")
 
     def use_Dashboard_Config(self):
         self.base.beginOfTest_logFormat("use_Dashboard_Config")
@@ -98,11 +88,8 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         try:
             add_widget_btn = self.driver.find_element(By.XPATH, "//button[text()='Add widget']")
             if (add_widget_btn.is_displayed()):
-                error_message = "Failure. 'Add widget' button appeared when invalid boxes are selected"
-                self.logger.critical(f"{error_message}")
-                email_content = self.configError["addWidget_invalidBoxes"]
-                email_subject = get_emailSubject("Prototype")
-                send_email(self.configInfo, email_content, email_subject)
+                error_handler(self.logger, self.configInfo, "Failure. 'Add widget' button appeared when invalid boxes are selected",
+                    "", self.configError["addWidget_invalidBoxes"], "Prototype")
         except:
             self.logger.info("Success. The 'Add widget' button did not appear when invalid boxes are selected.")
             
@@ -110,12 +97,9 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.driver.find_element(By.XPATH, "//div[@class='flex-1 flex flex-col w-full overflow-hidden']/div/div/div[text()='1']").click()
             self.driver.find_element(By.XPATH, "//button[text()='Add widget']").click()
             self.logger.info("Success. The 'Add widget' button appeared when valid boxes are selected")
-        except:
-            error_message = "Failure. 'Add widget' button did not appear when valid boxes are selected"
-            self.logger.critical(f"{error_message}")
-            email_content = self.configError["addWidget_validBoxes"]
-            email_subject = get_emailSubject("Prototype")
-            send_email(self.configInfo, email_content, email_subject)
+        except Exception as e:
+            error_handler(self.logger, self.configInfo, "Failure. 'Add widget' button did not appear when valid boxes are selected", e,
+                self.configError["addWidget_validBoxes"], "Prototype")
 
     def check_widgetList_content(self):
         self.base.beginOfTest_logFormat("check_widgetList_content")
@@ -123,12 +107,9 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             widgets = self.driver.find_elements(By.XPATH, "//div[@class='grow']/div/div")
             assert (len(widgets) > 0)
             self.logger.info("Success. The list of widgets is not empty.")
-        except:
-            error_message = "Failure. List of widgets is empty."
-            self.logger.critical(f"{error_message}")
-            email_content = self.configError["addWidget_widgetList_empty"]
-            email_subject = get_emailSubject("Prototype")
-            send_email(self.configInfo, email_content, email_subject)
+        except Exception as e:
+            error_handler(self.logger, self.configInfo, "Failure. List of widgets is empty.", e,
+                self.configError["addWidget_widgetList_empty"], "Prototype")
             
     def add_widget(self):
         self.base.beginOfTest_logFormat("add_widget")
@@ -138,22 +119,25 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             widget_text = self.driver.find_element(By.XPATH, "//div[text()='Simple Wiper Widget']").text
             assert (widget_text == "Simple Wiper Widget")
             self.logger.info("Success. Added a widget to the Dashboard Config.")
-        except:
-            error_message = "Failure. Cannot add a widget to the Dashboard Config."
-            self.logger.critical(f"{error_message}")
-            email_content = self.configError["addWidget_failed"]
-            email_subject = get_emailSubject("Prototype")
-            send_email(self.configInfo, email_content, email_subject)
+        except Exception as e:
+            error_handler(self.logger, self.configInfo, "Failure. Cannot add a widget to the Dashboard Config.", e,
+                self.configError["addWidget_failed"], "Prototype")
             
     def delete_widget(self):
-        action = ActionChains(self.driver)
-        action.move_to_element(self.driver.find_element(By.XPATH, "//div[text()='Simple Wiper Widget']")).perform()
-        # self.driver.find_element(By.XPATH, "//button[@class='da-btn da-btn-plain da-btn-md !px-0']").click()
-        self.driver.find_element(By.XPATH, "//button[@class='da-btn da-btn-plain da-btn-md !px-0']//*[name()='svg']").click()
-        alert_popup = self.driver.switch_to.alert
-        alert_popup.accept()
+        self.base.beginOfTest_logFormat("delete_widget")
+        try:
+            action = ActionChains(self.driver)
+            action.move_to_element(self.driver.find_element(By.XPATH, "//div[text()='Simple Wiper Widget']")).perform()
+            self.driver.find_element(By.XPATH, "//button[@class='da-btn da-btn-plain da-btn-md !px-0']//*[name()='svg']").click()
+            alert_popup = self.driver.switch_to.alert
+            alert_popup.accept()
+            self.logger.info("Success. Deleted a widget in the Dashboard Config.")
+        except Exception as e:
+            error_handler(self.logger, self.configInfo, "Failure. Cannot delete a widget in the Dashboard Config.", e,
+                self.configError["deleteWidget_failed"], "Prototype")
             
     def edit_widget(self):
+        self.base.beginOfTest_logFormat("edit_widget")
         action = ActionChains(self.driver)
         action.move_to_element(self.driver.find_element(By.XPATH, "//div[text()='Simple Wiper Widget']")).perform()
         self.driver.find_element(By.XPATH, "//button[@class='da-btn da-btn-plain da-btn-md !px-0 hover:text-da-primary-500']//*[name()='svg']").click()
@@ -173,7 +157,26 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.driver.find_element(By.XPATH, "//button[contains(text(), 'Save')]").click()
             time.sleep(2)
             self.driver.find_element(By.XPATH, "//button/div[text()='Show all raw config text']").click()
-            # result = self.driver.find_element(By.XPATH, "//span[text()='\"Builtin Testing\"']").text
-            # assert (result == '\"Builtin Testing\"')
+            
+            wait = WebDriverWait(self.driver, 10)
+            code_block = wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "(//div[contains(@class, 'view-lines monaco-mouse-cursor-text')])[2]")))
+            self.logger.debug("Found the code_block")
+            inner_html = code_block.get_attribute('innerHTML')
+            self.logger.debug("Code block inner HTML: %s", inner_html)
+            span_elements = code_block.find_elements(By.XPATH, ".//span[@class='mtk5']")
+            
+            found = False
+            for span in span_elements:
+                if span.text == '"Builtin Testing"':
+                    self.logger.debug("Found the span with text: %s", span.text)
+                    found = True
+                    break
+            if not found:
+                self.logger.debug("Did not find the span with text 'Builtin Testing'")
+            else:
+                assert (span.text == '"Builtin Testing"')
+            self.logger.info("Success. Tested the case of editing the widget config text.")
+        
         except Exception as e:
-            print(e)
+            error_handler(self.logger, self.configInfo, "Failure. Cannot edit the widget config text.", e,
+                    self.configError["editWidget_failed"], "Prototype")

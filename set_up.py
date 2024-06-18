@@ -30,7 +30,7 @@ class Base():
 
     def setup_logger(self):
         # Setting up Logger
-        timestamp = time.strftime("%H:%M:%S %d-%m-%Y")
+        timestamp = time.strftime("%H-%M-%S %d-%m-%Y")
         log_dir = configInfo.get("log_dir", "logs")  # Default to "logs" if not specified
         os.makedirs(log_dir, exist_ok=True)  # Ensure the log directory exists
         self.log_file_name = os.path.join(log_dir, f"logfile {timestamp}.log")
