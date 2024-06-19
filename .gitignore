@@ -2,8 +2,8 @@
 logs/
 
 # Ignore Python compiled files
-*.pyc
 __pycache__/
+*.pyc
 
 # Ignore virtual environment directories
 venv/
@@ -13,3 +13,8 @@ env/
 *.env
 *.tmp
 .DS_Store
+
+# Ignore common editor directories and files
+.vscode/
+.idea/
+*.swp
