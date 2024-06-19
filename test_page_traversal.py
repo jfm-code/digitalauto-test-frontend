@@ -1,59 +1,25 @@
 from util import *
 
 class Test_PageTraversal(BaseTest, unittest.TestCase):
+    # NOT DONE, WAIT FOR CONSISTENCY IN THE HREF LINK AND ACTUAL LINK
     def test_open_links(self):
         if (self.next is True):
-            self.open_partner_link()
-    
-    def open_partner_link(self):
-        self.base.beginOfTest_logFormat("open_partner_link")
+            self.verify_link("Bosch")
+            self.verify_link("Covesa")
+            self.verify_link("Eclipse")
+            self.verify_link("Ferdinand_Steinbeis_Institut")
+                        
+    def verify_link(self, name):
+        self.base.beginOfTest_logFormat(f"open_{name}_link")
         try:
-            self.driver.find_element(By.XPATH, "//a[@href='https://www.bosch.com/']").click()
+            page_url = self.configInfo[f"{name}_link"]
+            self.driver.find_element(By.XPATH, f"//a[@href='{page_url}']").click()
             windows_opened = self.driver.window_handles
             self.driver.switch_to.window(windows_opened[1])
-            assert (self.driver.current_url == self.configInfo["bosch_link"])
-            self.logger.info("Success. Opened and verified Bosch Link")
+            assert (self.driver.current_url == page_url)
+            self.logger.info(f"Success. Opened and verified {name} Link")
+            self.driver.close()
+            self.driver.switch_to.window(windows_opened[0])
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Cannot open Bosch Link in the Home Page", e,
-                self.configError["bosch_link_failed"], "Home")
-            
-        self.driver.close()
-        self.driver.switch_to.window(windows_opened[0])
-
-        try:
-            self.driver.find_element(By.XPATH, "//a[@href='https://www.covesa.global']").click()
-            windows_opened = self.driver.window_handles
-            self.driver.switch_to.window(windows_opened[1])
-            assert (self.driver.current_url == self.configInfo["covesa_link"])
-            self.logger.info("Success. Opened and verified Covesa Link")
-        except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Cannot open Covesa Link in the Home Page", e,
-                self.configError["covesa_link_failed"], "Home")
-            
-        self.driver.close()
-        self.driver.switch_to.window(windows_opened[0])
-        
-        try:
-            self.driver.find_element(By.XPATH, "//a[@href='https://www.eclipse.org']").click()
-            windows_opened = self.driver.window_handles
-            self.driver.switch_to.window(windows_opened[1])
-            assert (self.driver.current_url == self.configInfo["eclipse_link"])
-            self.logger.info("Success. Opened and verified Eclipse Partner Link")
-        except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Cannot open Eclipse Link in the Home Page", e,
-                self.configError["eclipse_link_failed"], "Home")
-        
-        self.driver.close()
-        self.driver.switch_to.window(windows_opened[0])
-
-        try:
-            self.driver.find_element(By.XPATH, "//a[@href='https://ferdinand-steinbeis-institut.de']").click()
-            windows_opened = self.driver.window_handles
-            self.driver.switch_to.window(windows_opened[1])
-            assert (self.driver.current_url == self.configInfo["institut_link"])
-            self.logger.info("Success. Opened and verified Ferdinand Steinbeis Institut Partner Link")
-        except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Cannot open Ferdinand Steinbeis Institut Link in the Home Page", e,
-                self.configError["institut_link_failed"], "Home")
-
-    
+            error_handler(self.logger, self.configInfo, f"Failure. Cannot open {name} Link in the Home Page", e,
+                self.configError[f"{name}_link_failed"], "Home")
