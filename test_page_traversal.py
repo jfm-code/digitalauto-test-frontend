@@ -55,3 +55,5 @@ class Test_PageTraversal(BaseTest, unittest.TestCase):
         except Exception as e:
             error_handler(self.logger, self.configInfo, "Failure. Cannot open Ferdinand Steinbeis Institut Link in the Home Page", e,
                 self.configError["institut_link_failed"], "Home")
+
+    
