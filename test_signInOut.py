@@ -17,6 +17,7 @@ class Test_SignIn_SignOut(BaseTest, unittest.TestCase):
             popup = self.driver.find_element(By.TAG_NAME, "form")
             assert (popup.is_displayed())
             canOpen_popUp = True
+            self.logger.info("Success. Can open the sign in popup.")
         except Exception as e:
             error_handler(self.logger, self.configInfo, "Failure. Cannot open the Sign In pop up", e,
                 self.configError["cannot_open_signIn_popup"], "Home")
