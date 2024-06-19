@@ -18,7 +18,7 @@ def main():
 
     os.system("pytest -v -s test_signInOut.py")
     os.system("pytest -v -s test_signUp.py")
-
+    os.system("pytest -v -s test_no_data.py")
 
 if __name__ == "__main__":
     main()

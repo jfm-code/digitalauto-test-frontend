@@ -24,7 +24,7 @@ class Test_Model(BaseTest, unittest.TestCase):
             try:
                 createModel_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]")
                 if (createModel_button.is_displayed()):
-                    error_handler(self.logger, self.congigInfo, "Failure. User did not sign in but can still see the 'Create New Model' button",
+                    error_handler(self.logger, self.configInfo, "Failure. User did not sign in but can still see the 'Create New Model' button",
                         "", self.configError["not_signIn_see_CreateModel"], "Model")
             except:
                 self.logger.info("Success. Tested the case of not seeing the 'Create New Model' button when not signing in")
