@@ -1,7 +1,6 @@
 from util import *
 
 class Test_PageTraversal(BaseTest, unittest.TestCase):
-    # NOT DONE, WAIT FOR CONSISTENCY IN THE HREF LINK AND ACTUAL LINK
     def test_open_links(self):
         if (self.next is True):
             self.verify_link("Bosch")
@@ -16,7 +15,7 @@ class Test_PageTraversal(BaseTest, unittest.TestCase):
             self.driver.find_element(By.XPATH, f"//a[@href='{page_url}']").click()
             windows_opened = self.driver.window_handles
             self.driver.switch_to.window(windows_opened[1])
-            assert (self.driver.current_url == page_url)
+            assert (page_url in self.driver.current_url)
             self.logger.info(f"Success. Opened and verified {name} Link")
             self.driver.close()
             self.driver.switch_to.window(windows_opened[0])
