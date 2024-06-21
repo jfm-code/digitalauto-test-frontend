@@ -71,7 +71,7 @@ class Test_Model(BaseTest, unittest.TestCase):
             wait.until(expected_conditions.visibility_of_element_located((By.XPATH, f"//label[text()='{expected_name}']")))
             self.logger.debug("Created a new model")
             model_name = self.driver.find_element(By.XPATH, f"//label[text()='{expected_name}']").text
-            assert (model_name == expected_name)
+            assert (model_name == 'Model "Automation Test Model" created successfully')
             self.logger.info("Success. Verified the name of the new model")
         except Exception as e:
             error_handler(self.logger, self.configInfo, "Failure. Entered new model name is different from resulting new model name", e,
