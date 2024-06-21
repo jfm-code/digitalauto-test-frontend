@@ -1,7 +1,6 @@
 import os
 import argparse
 
-
 def main():
     parser = argparse.ArgumentParser(
         description="Run tests with optional headless mode."
