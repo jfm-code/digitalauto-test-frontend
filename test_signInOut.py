@@ -38,6 +38,7 @@ class Test_SignIn_SignOut(BaseTest, unittest.TestCase):
             error_handler(self.logger, self.configInfo, "Failure. Wrong password passed. Broken implementation", e,
                 self.configError["wrong_password_passed"], "Home")
 
+
     def signIn_valid_password(self):
         self.base.beginOfTest_logFormat("signIn_valid_password")
         try:
@@ -50,6 +51,7 @@ class Test_SignIn_SignOut(BaseTest, unittest.TestCase):
         except Exception as e:
             error_handler(self.logger, self.configInfo, "Failure. Cannot sign in with correct password. Broken implementation", e,
                 self.configError["cannot_signIn"], "Home")
+
     
     def logOut(self):
         self.base.beginOfTest_logFormat("logOut")

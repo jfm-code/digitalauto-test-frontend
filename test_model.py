@@ -24,7 +24,7 @@ class Test_Model(BaseTest, unittest.TestCase):
             try:
                 createModel_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]")
                 if (createModel_button.is_displayed()):
-                    error_handler(self.logger, self.congigInfo, "Failure. User did not sign in but can still see the 'Create New Model' button",
+                    error_handler(self.logger, self.configInfo, "Failure. User did not sign in but can still see the 'Create New Model' button",
                         "", self.configError["not_signIn_see_CreateModel"], "Model")
             except:
                 self.logger.info("Success. Tested the case of not seeing the 'Create New Model' button when not signing in")
@@ -71,7 +71,7 @@ class Test_Model(BaseTest, unittest.TestCase):
             wait.until(expected_conditions.visibility_of_element_located((By.XPATH, f"//label[text()='{expected_name}']")))
             self.logger.debug("Created a new model")
             model_name = self.driver.find_element(By.XPATH, f"//label[text()='{expected_name}']").text
-            assert (model_name == expected_name)
+            assert (model_name == 'Model "Automation Test Model" created successfully')
             self.logger.info("Success. Verified the name of the new model")
         except Exception as e:
             error_handler(self.logger, self.configInfo, "Failure. Entered new model name is different from resulting new model name", e,

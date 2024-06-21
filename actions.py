@@ -52,12 +52,15 @@ def click_prototype_library(driver, logger):
 def click_create_prototype(driver, logger):
     driver.find_element(By.XPATH, "//button[text()='Create New Prototype']").click()
     logger.debug("Clicked the Create New Prototype button")
-    
+        
 def error_handler(logger, configInfo, error_message, exception, email_content, place_occur):
     logger.error(f"{error_message}: {exception}")
-    email_subject = f"An error occured in the {place_occur} page"
+    instance = "local machine"
+    if ("autowrx-etas.digital.auto" in configInfo["web_url"]):
+        instance = "autowrx-etas.digital.auto"
+    email_subject = f"Error occured in the {place_occur} page of {instance}"
     send_email(configInfo, email_content, email_subject)
-
+    
 # Postman helper functions
 def send_email(config, email_content, email_subject):
     url = config["email_url"]
