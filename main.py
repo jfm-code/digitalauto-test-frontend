@@ -18,7 +18,7 @@ def main():
     os.system("pytest -v -s --disable-warnings test_model.py")
     os.system("pytest -v -s --disable-warnings test_no_data.py")
     os.system("pytest -v -s --disable-warnings test_page_traversal.py")
-    # fixing the test_prototype
+    # fixing the test_prototype, will include later
     os.system("pytest -v -s --disable-warnings test_signInOut.py")
     os.system("pytest -v -s --disable-warnings test_signUp.py")
 
