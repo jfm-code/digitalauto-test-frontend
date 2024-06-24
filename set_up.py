@@ -67,7 +67,7 @@ class Base():
                     test_name = line[6:]
                 if ("Success" in line) or ("Failure" in line):
                     numOfTest += 1
-                if ("ERROR" in line) or ("CRITICAL" in line):
+                if ("ERROR" in line) or ("CRITICAL" in line) or ("WARNING" in line):
                     countFailed += 1
                     failed_tests.append(test_name)
                     failed_tests.append(line[21:])

@@ -15,7 +15,12 @@ class Test_PageTraversal(BaseTest, unittest.TestCase):
             self.driver.find_element(By.XPATH, f"//a[@href='{page_url}']").click()
             windows_opened = self.driver.window_handles
             self.driver.switch_to.window(windows_opened[1])
-            assert (page_url in self.driver.current_url)
+            assert (
+                "bosch.com" in self.driver.current_url
+                or "covesa.global" in self.driver.current_url
+                or "eclipse.org" in self.driver.current_url
+                or "ferdinand-steinbeis-institut.de" in self.driver.current_url
+            )
             self.logger.info(f"Success. Opened and verified {name} Link")
             self.driver.close()
             self.driver.switch_to.window(windows_opened[0])

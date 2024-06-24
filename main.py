@@ -1,5 +1,7 @@
 import os
+import json
 import argparse
+from actions import send_email, get_instance_name
 
 def main():
     parser = argparse.ArgumentParser(
@@ -24,3 +26,8 @@ def main():
 
 if __name__ == "__main__":
     main()
+    with open('info.json') as config_file:
+        configInfo = json.load(config_file)
+    instance = get_instance_name(configInfo)
+    subject = f"Warnings and errors occured in the {instance}"
+    send_email(configInfo, "", subject, "later")

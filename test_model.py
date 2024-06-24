@@ -8,7 +8,7 @@ class Test_Model(BaseTest, unittest.TestCase):
             self.check_modelVisibility() 
             self.add_member_contributor()
             
-                # Delete the testing model
+            # Delete the testing model
             try:
                 token = get_user_info(self.configInfo, "token", "signIn")
                 current_url = self.driver.current_url
@@ -127,7 +127,7 @@ class Test_Model(BaseTest, unittest.TestCase):
         
         self.driver.find_element(By.XPATH, "//button[normalize-space()='Add user']").click()
         try:
-            users = self.driver.find_elements(By.XPATH, "//div[@class='border-b border-slate-200 flex mt-2']")
+            users = self.driver.find_elements(By.XPATH, "//div[@class='border-b border-slate-200 flex']")
             assert (len(users) > 0)
             self.logger.info("Success. The list of user in the 'add user' pop up is not empty.")
         except Exception as e:
