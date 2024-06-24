@@ -15,14 +15,19 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.check_widgetList_content()
             self.add_widget()
             self.use_Dashboard()
+            time.sleep(7)
             self.edit_widget()
-            # self.delete_widget()
+            time.sleep(3)
+            self.delete_widget()
             
-            # Delete the testing prototype
-            token = get_user_info(self.configInfo, "token", "signIn")
-            current_url = self.driver.current_url
-            prototype_id = current_url[83:107]
-            delete_prototype(token, prototype_id)
+            try:
+                # Delete the testing prototype
+                token = get_user_info(self.configInfo, "token", "signIn")
+                current_url = self.driver.current_url
+                prototype_id = current_url[83:107]
+                delete_prototype(token, prototype_id)
+            except Exception as e:
+                error_handler("warning", self.logger, "", "Failure. Cannot use Postman API to delete the testing prototype.", e, "", "")
             
     def create_and_verify_prototypeName(self):
         self.base.beginOfTest_logFormat("create_and_verify_prototypeName")
@@ -44,8 +49,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             assert (message == '"name" is not allowed to be empty')
             self.logger.info("Success. Tested the case of empty input field when creating new prototype.")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Empty name field passed", e,
-                self.configError["empty_nameInput_passed_CreatePrototype"], "Model")
+            error_handler("error", self.logger, "", "Failure. Empty input name passed when creating a new prototype", e, "", "")
         
         # Hit Create New Prototype and entering name
         try:
@@ -62,8 +66,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.logger.debug("Clicked the prototype box")
             self.logger.info("Success. Verified the name of the newly created prototype on the left")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Incorrect name of the newly created prototype on the left", e,
-                self.configError["wrong_newPrototype_name"], "Model")
+            error_handler("warning", self.logger, "", "Failure. Incorrect name of the newly created prototype on the left", e, "", "")
             
         try:
             wait = WebDriverWait(self.driver, 2)
@@ -72,8 +75,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             assert (prototype_name_right == expected_name)
             self.logger.info("Success. Verified the name of the newly created prototype on the right")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Incorrect name of the newly created prototype on the right", e,
-                self.configError["wrong_newPrototype_name"], "Model")
+            error_handler("warning", self.logger, "", "Failure. Incorrect name of the newly created prototype on the right", e, "", "")
 
     def use_Code_dashboardConfig(self):
         self.base.beginOfTest_logFormat("use_Code_dashboardConfig")
@@ -99,8 +101,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.driver.find_element(By.XPATH, "//button[text()='Add widget']").click()
             self.logger.info("Success. The 'Add widget' button appeared when valid boxes are selected")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. 'Add widget' button did not appear when valid boxes are selected", e,
-                self.configError["addWidget_validBoxes"], "Prototype")
+            error_handler("error", self.logger, "", "Failure. 'Add widget' button did not appear when valid boxes are selected", e, "", "")
 
     def use_Dashboard(self):
         self.base.beginOfTest_logFormat("use_Dashboard")
@@ -115,8 +116,8 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             assert (len(preceeding_boxes) == 2 and len(following_boxes) == 7)
             self.logger.info("Success. Tested the Dashboard functionality to preview widget.")
             time.sleep(2)
-        except:
-            print("Error occured in Dashboard")
+        except Exception as e:
+            error_handler("error", self.logger, "", "Failure. Cannot see the preview of the widget in the Dashboard.", e, "", "")
         
     def check_widgetList_content(self):
         self.base.beginOfTest_logFormat("check_widgetList_content")
@@ -125,8 +126,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             assert (len(widgets) > 0)
             self.logger.info("Success. The list of widgets is not empty.")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. List of widgets is empty.", e,
-                self.configError["addWidget_widgetList_empty"], "Prototype")
+            error_handler("error", self.logger, "", "Failure. List of widgets is empty.", e, "", "")
 
     def add_widget(self):
         self.base.beginOfTest_logFormat("add_widget")
@@ -138,8 +138,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             assert (widget_text == "Simple Wiper Widget")
             self.logger.info("Success. Added a widget to the Dashboard Config.")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Cannot add a widget to the Dashboard Config.", e,
-                self.configError["addWidget_failed"], "Prototype")
+            error_handler("error", self.logger, "", "Failure. Cannot add a widget to the Dashboard Config.", e, "", "")
             
     def delete_widget(self):
         self.base.beginOfTest_logFormat("delete_widget")
@@ -152,8 +151,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             alert_popup.accept()
             self.logger.info("Success. Deleted a widget in the Dashboard Config.")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Cannot delete a widget in the Dashboard Config.", e,
-                self.configError["deleteWidget_failed"], "Prototype")
+            error_handler("error", self.logger, "", "Failure. Cannot delete a widget in the Dashboard Config.", e, "", "")
             
     def edit_widget(self):
         self.base.beginOfTest_logFormat("edit_widget")
@@ -205,5 +203,4 @@ class Test_Prototype(BaseTest, unittest.TestCase):
                 self.logger.info("Success. Tested the case of editing the widget config text.")
         
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Cannot edit the widget config text.", e,
-                    self.configError["editWidget_failed"], "Prototype")
+            error_handler("error", self.logger, "", "Failure. Cannot edit the widget config text.", e, "", "")

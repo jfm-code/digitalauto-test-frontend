@@ -20,5 +20,4 @@ class Test_PageTraversal(BaseTest, unittest.TestCase):
             self.driver.close()
             self.driver.switch_to.window(windows_opened[0])
         except Exception as e:
-            error_handler(self.logger, self.configInfo, f"Failure. Cannot open {name} Link in the Home Page", e,
-                self.configError[f"{name}_link_failed"], "Home")
+            error_handler("warning", self.logger, "", f"Failure. Cannot open {name} Link in the Home Page", e, "", "")

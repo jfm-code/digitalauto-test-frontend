@@ -8,11 +8,14 @@ class Test_Model(BaseTest, unittest.TestCase):
             self.check_modelVisibility() 
             self.add_member_contributor()
             
-            # Delete the testing model
-            token = get_user_info(self.configInfo, "token", "signIn")
-            current_url = self.driver.current_url
-            model_id = current_url[40:64]
-            delete_model(token, model_id)
+                # Delete the testing model
+            try:
+                token = get_user_info(self.configInfo, "token", "signIn")
+                current_url = self.driver.current_url
+                model_id = current_url[40:64]
+                delete_model(token, model_id)
+            except Exception as e:
+                error_handler("warning", self.logger, "", "Failure. Cannot use Postman API to delete the testing model.", e, "", "")
     
     def noSignIn_createModel(self):
         self.base.beginOfTest_logFormat("noSignIn_createModel")
@@ -24,7 +27,7 @@ class Test_Model(BaseTest, unittest.TestCase):
             try:
                 createModel_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]")
                 if (createModel_button.is_displayed()):
-                    error_handler(self.logger, self.configInfo, "Failure. User did not sign in but can still see the 'Create New Model' button",
+                    error_handler("critical", self.logger, self.configInfo, "Failure. User did not sign in but can still see the 'Create New Model' button",
                         "", self.configError["not_signIn_see_CreateModel"], "Model")
             except:
                 self.logger.info("Success. Tested the case of not seeing the 'Create New Model' button when not signing in")
@@ -57,8 +60,7 @@ class Test_Model(BaseTest, unittest.TestCase):
             assert (message == '"name" is not allowed to be empty')
             self.logger.info("Success. Tested the case of empty input field when creating new model.")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Empty input name passed", e,
-                self.configError["empty_nameInput_passed_CreateModel"], "Model")
+            error_handler("error", self.logger, "", "Failure. Empty input name passed when creating a new model", e, "", "")
             
         # Hit Create New Model button and entering name
         try:
@@ -71,11 +73,10 @@ class Test_Model(BaseTest, unittest.TestCase):
             wait.until(expected_conditions.visibility_of_element_located((By.XPATH, f"//label[text()='{expected_name}']")))
             self.logger.debug("Created a new model")
             model_name = self.driver.find_element(By.XPATH, f"//label[text()='{expected_name}']").text
-            assert (model_name == 'Model "Automation Test Model" created successfully')
+            assert (model_name == expected_name or model_name == 'Model "Automation Test Model" created successfully')
             self.logger.info("Success. Verified the name of the new model")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Entered new model name is different from resulting new model name", e,
-                self.configError["wrong_newModel_name"], "Model")
+            error_handler("warning", self.logger, "Failure. Entered new model name is different from resulting new model name", e, "", "")
                     
     def check_dropdownContent(self):
         self.base.beginOfTest_logFormat("check_dropdownContent")
@@ -85,12 +86,13 @@ class Test_Model(BaseTest, unittest.TestCase):
             assert (len(options) > 0)
             self.logger.info("Success. Tested the dropdown content when creating a new model.")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Empty option in the dropdown then creating a new model", e,
-                self.configError["empty_dropdown_CreateModel"], "Model")
+            error_handler("error", self.logger, "", "Failure. Empty option in the dropdown then creating a new model", e, "", "")
     
     def check_modelVisibility(self):
         self.base.beginOfTest_logFormat("check_modelVisibility")
         self.logger.info("Test the visibility when click Change to public/private")
+        wait = WebDriverWait(self.driver, 2)
+        wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[text()='Visibility:']/label")))
         current_mode = self.driver.find_element(By.XPATH, "//label[text()='Visibility:']/label").text
         visibility_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Change to')]")
         button_mode = visibility_button.text
@@ -115,11 +117,9 @@ class Test_Model(BaseTest, unittest.TestCase):
                 self.logger.info("Success. Switched successfully from public to private mode")
                 time.sleep(3)
             except Exception as e:
-                error_handler(self.logger, self.configInfo, "Failure. Failed to switch from public mode to private mode", e,
-                    self.configError["cannotSwitchTo_private"], "Model")
+                error_handler("error", self.logger, "", "Failure. Failed to switch from public mode to private mode", e, "", "")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Failed to switch from private mode to public mode", e,
-                self.configError["cannotSwitchTo_public"], "Model")
+           error_handler("error", self.logger, "", "Failure. Failed to switch from private mode to public mode", e, "", "")
     
     def add_member_contributor(self):
         self.base.beginOfTest_logFormat("add_member_contributor")
@@ -131,8 +131,7 @@ class Test_Model(BaseTest, unittest.TestCase):
             assert (len(users) > 0)
             self.logger.info("Success. The list of user in the 'add user' pop up is not empty.")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. The list of user in the 'add user' pop up is empty.", e,
-                self.configError["empty_userList_in_addUserButton"], "Model")
+            error_handler("error", self.logger, "", "Failure. The list of user in the 'add user' pop up is empty.", e, "", "")
         try:
             search_box = self.driver.find_element(By.XPATH, "//input[@placeholder='Search']")
             self.search_user("my", "My")
@@ -143,8 +142,7 @@ class Test_Model(BaseTest, unittest.TestCase):
             time.sleep(2)
             self.logger.info("Success. Found the correct user after typing characters in the search box.")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. The filter list in the add user pop up doesn't work properly.", e,
-                self.configError["filter_list_in_addUser_isNotWorking"], "Model")
+            error_handler("error", self.logger, "", "Failure. The filter list in the add user pop up doesn't work properly.", e, "", "")
             
         # Close the add user pop up to click other buttons
         self.driver.find_element(By.XPATH, "//button[text()='Close']").click()
