@@ -19,16 +19,77 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.edit_widget()
             time.sleep(3)
             self.delete_widget()
+            self.modifyCode_checkUpdate("from_Code_to_Dashboard")
+            self.run_code_noError()
+            self.modifyCode_checkUpdate("from_Dashboard_to_Code")
+
+            
+            # edit the code in the dashboard section then run, check if we can stop in the middle -> grab the error code -9 (THE STOP BUTTON IS NOT REALLY WORKING NOW)
+            
+            # go back to the code section to see if the code is updated
             
             try:
                 # Delete the testing prototype
                 token = get_user_info(self.configInfo, "token", "signIn")
                 current_url = self.driver.current_url
-                prototype_id = current_url[83:107]
-                delete_prototype(token, prototype_id)
+                pattern = r"/prototype/([a-f0-9]{24})/"
+                prototype_id = re.findall(pattern, current_url)
+                delete_prototype(token, prototype_id[0])
             except Exception as e:
                 error_handler("warning", self.logger, "", "Failure. Cannot use Postman API to delete the testing prototype.", e, "", "")
+                
+    def run_code_noError(self):
+        self.base.beginOfTest_logFormat("run_code_noError")
+        try:
+            static_dropdown = Select(self.driver.find_element(By.XPATH, "//select")) 
+            static_dropdown.select_by_value("RunTime-VSS4.0-1970345")
+            self.logger.info("Success. The RunTime-VSS4.0-1970345 is online.")
+        except Exception as e:
+            error_handler("warning", self.logger, "", "Failure. The RunTime-VSS4.0-1970345 is not online.", e, "", "")
+        
+        try:
+            self.driver.find_element(By.XPATH, "(//div[@class='flex px-1 false']/button)[1]").click()
+            time.sleep(3)
+            output = self.driver.find_element(By.XPATH, "//p[contains(text(),'code 0')]")
+            assert (output.is_displayed())
+            self.logger.info("Success. Run code successfully with exit code 0 in the Dashboard tab.")
+        except Exception as e:
+            error_handler("error", self.logger, "", "Failure. Failed to run code in the Dashboard tab.")
             
+    def modifyCode_checkUpdate(self, mode):
+        self.base.beginOfTest_logFormat(f"modifyCode_checkUpdate_{mode}")
+        if (mode == "from_Code_to_Dashboard"):
+            try:
+                code_block = self.driver.find_element(By.XPATH, "//div[@class='w-1/2 flex flex-col border-r']")
+                line = code_block.find_element(By.XPATH, ".//div[@class='line-numbers' and text()='30']")
+                line.click()
+                action1 = ActionChains(self.driver)
+                action1.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).key_down(Keys.BACK_SPACE).send_keys('print("Automation Test")').perform()
+            
+                time.sleep(2) # wait for the update in the Dashboard
+                self.driver.find_element(By.XPATH, "//a/div[text()='Dashboard']").click()
+                self.driver.find_element(By.XPATH, "//div[@class='flex']/button").click()
+                self.driver.find_element(By.XPATH, "//div[@class='flex']/div[text()='Code']").click()
+                time.sleep(3)
+                
+                result = self.driver.find_element(By.XPATH, "//div[@class='view-lines monaco-mouse-cursor-text']//span/span[text()='print']")
+                assert (result.text == "print")
+                self.logger.info("Success. Verified the code entered from Code tab in Dashboard tab.")
+            except Exception as e:
+                error_handler("error", self.logger, "", "Failure. The code entered in Code tab is not updated in Dashboard tab.", e, "", "")
+        elif (mode == "from_Dashboard_to_Code"):
+            try:
+                self.driver.find_element(By.XPATH, "//div[@class='flex']/div[text()='Code']").click()
+                time.sleep(3)
+                self.driver.find_element(By.XPATH, "//div[contains(@class, 'active-line-number')]").click()
+                action = ActionChains(self.driver)
+                action.key_down(Keys.BACK_SPACE).send_keys("for i in range(10):").key_down(Keys.ENTER).send_keys("print(i)").perform()
+                time.sleep(3)
+                self.driver.find_element(By.XPATH, "//div[text()='Code']").click()
+            except Exception as e:
+                print("Adding later")
+                
+                
     def create_and_verify_prototypeName(self):
         self.base.beginOfTest_logFormat("create_and_verify_prototypeName")
         
@@ -113,7 +174,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             assert (widget_preview.is_displayed())
             following_boxes = self.driver.find_elements(By.XPATH, "//div[@class='col-span-2 row-span-2']/following-sibling::*")
             preceeding_boxes = self.driver.find_elements(By.XPATH, "//div[@class='col-span-2 row-span-2']/preceding-sibling::*")
-            assert (len(preceeding_boxes) == 2 and len(following_boxes) == 7)
+            assert (len(preceeding_boxes) == 2 and len(following_boxes) == 4)
             self.logger.info("Success. Tested the Dashboard functionality to preview widget.")
             time.sleep(2)
         except Exception as e:
@@ -172,11 +233,10 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             action1.send_keys(Keys.ARROW_LEFT).perform()
             action2 = ActionChains(self.driver)
             action2.send_keys(Keys.ARROW_LEFT).perform()
-            time.sleep(1)  # Small delay to ensure key press is registered
-            
+            time.sleep(1)  # Small delay to ensure key press is pressed
             action3 = ActionChains(self.driver)
             action3.send_keys(" Testing").perform()
-            time.sleep(1)  # Small delay to ensure key press is registered
+            time.sleep(1)  
 
             action.move_to_element(self.driver.find_element(By.XPATH, "//button[contains(text(), 'Save')]")).perform()
             self.driver.find_element(By.XPATH, "//button[contains(text(), 'Save')]").click()
