@@ -1,6 +1,7 @@
 import requests
 import json
 import os
+import re
 from urllib.parse import quote
 from selenium.webdriver.common.by import By
 
@@ -101,8 +102,12 @@ def upload_file(file_path):
         return data["url"] # return the link to the document uploaded
 
 def get_instance_name(configInfo):
-    string_len = len(configInfo["web_url"])
-    return configInfo["web_url"][8: (string_len-1)]
+    pattern = r"https://(.+?)\.digital\.auto/"
+    instance = re.findall(pattern, configInfo["web_url"])
+    if (instance[0] == "autowrx"):
+        return "dev"
+    else:
+        return instance[0]
 
 def check_warning_error(file_path):
     with open(file_path, "r") as file:
@@ -111,17 +116,18 @@ def check_warning_error(file_path):
                 return True
         return False
 
-def get_user_info(config, element, mode):
+def get_user_info(configInfo, element, mode):
     if (mode == "signIn"):
-        email = config["signIn_email"]
-        password = config["correct_password"]
+        email = configInfo["signIn_email"]
+        password = configInfo["correct_password"]
     elif (mode == "signUp"):
-        email = config["signUp_email"]
-        password = config["correct_password"]
+        email = configInfo["signUp_email"]
+        password = configInfo["correct_password"]
     elif (mode == "admin"):
-        email = config["admin_email"]
-        password = config["admin_password"]
-    url = "https://backend-core-etas.digital.auto/v2/auth/login"
+        email = configInfo["admin_email"]   
+        password = configInfo["admin_password"]
+    instance = get_instance_name(configInfo)
+    url = f"https://backend-core-{instance}.digital.auto/v2/auth/login"
     sending_obj = {"email": email, "password": password}
     response = requests.post(url, json=sending_obj)
     data = json.loads(response.content)
@@ -137,18 +143,21 @@ def get_user_info(config, element, mode):
         else:
             print("Unexpected response structure:", data)
 
-def delete_model(token, model_id):
-    url = f"https://backend-core-etas.digital.auto/v2/models/{model_id}"
+def delete_model(token, model_id, configInfo):
+    instance = get_instance_name(configInfo)
+    url = f"https://backend-core-{instance}.digital.auto/v2/models/{model_id}"
     headers = {"Authorization": f"Bearer {token}"}
     requests.delete(url, headers=headers)
     
-def delete_prototype(token, prototype_id):
-    url = f"https://backend-core-etas.digital.auto/v2/prototypes/{prototype_id}"
+def delete_prototype(token, prototype_id, configInfo):
+    instance = get_instance_name(configInfo)
+    url = f"https://backend-core-{instance}.digital.auto/v2/prototypes/{prototype_id}"
     headers = {"Authorization": f"Bearer {token}"}
     requests.delete(url, headers=headers)
 
-def delete_user(admin_token, user_id):
-    url = f"https://backend-core-etas.digital.auto/v2/users/{user_id}"
+def delete_user(admin_token, user_id, configInfo):
+    instance = get_instance_name(configInfo)
+    url = f"https://backend-core-{instance}.digital.auto/v2/users/{user_id}"
     headers = {"Authorization": f"Bearer {admin_token}"}
     requests.delete(url, headers=headers)
     # data = json.loads(response.content)

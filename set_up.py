@@ -73,6 +73,7 @@ class Base():
                     failed_tests.append(line[21:])
             for handler in self.logger.handlers:
                 if isinstance(handler, logging.FileHandler):
+                    handler.stream.write(f"INSTANCE: {configInfo["web_url"]}\n")
                     handler.stream.write("SUMMARY:\n")
                     handler.stream.write(f"\tNumber of failed test cases: {countFailed} / {numOfTest}\n")
                     if (len(failed_tests) > 0):

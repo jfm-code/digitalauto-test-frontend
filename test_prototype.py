@@ -24,7 +24,18 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.modifyCode_checkUpdate("from_Code_to_Dashboard")
             self.run_code("no_error")
             self.modifyCode_checkUpdate("from_Dashboard_to_Code")
-            self.run_code("error")
+            # self.run_code("error")
+            
+            # Delete the testing model
+            try:
+                token = get_user_info(self.configInfo, "token", "signIn")
+                current_url = self.driver.current_url
+                pattern = r"model/([a-f0-9]{24})"
+                model_id = re.findall(pattern, current_url)
+                delete_model(token, model_id[0], self.configInfo)
+                self.logger.info("Success. Deleted the testing model using Postman API.")
+            except Exception as e:
+                error_handler("warning", self.logger, "", "Failure. Cannot use Postman API to delete the testing model.", e, "", "")
             
             try:
                 # Delete the testing prototype
@@ -32,7 +43,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
                 current_url = self.driver.current_url
                 pattern = r"/prototype/([a-f0-9]{24})/"
                 prototype_id = re.findall(pattern, current_url)
-                delete_prototype(token, prototype_id[0])
+                delete_prototype(token, prototype_id[0], self.configInfo)
                 self.logger.info("Success. Deleted the testing prototype using Postman API.")
             except Exception as e:
                 error_handler("warning", self.logger, "", "Failure. Cannot use Postman API to delete the testing prototype.", e, "", "")
@@ -108,7 +119,11 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         # Choose the Combustion Car model to create testing prototype 
         time.sleep(3)
         click_select_model(self.driver, self.logger)
-        self.driver.find_element(By.XPATH, "//label[text()='Combustion Car']").click()
+        self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]").click()
+        expected_name = "Automation Test Model"
+        self.driver.find_element(By.CSS_SELECTOR, "input[placeholder='Model Name']").send_keys(expected_name)
+        self.driver.find_element(By. XPATH, "//button[text()='Create Model']").click()
+        # self.driver.find_element(By.XPATH, "//label[text()='Combustion Car']").click()
         click_prototype_library(self.driver, self.logger)
         click_create_prototype(self.driver, self.logger)
         

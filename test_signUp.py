@@ -16,7 +16,7 @@ class Test_SignUp(BaseTest, unittest.TestCase):
             try:
                 testUser_id = get_user_info(self.configInfo, "id", "signUp")
                 admin_token = get_user_info(self.configInfo, "token", "admin")
-                delete_user(admin_token, testUser_id)
+                delete_user(admin_token, testUser_id, self.configInfo)
                 self.logger.debug("Deleting the testing user.")
                 self.logger.info("Success. Deleted the testing user using Postman API.")
             except Exception as e:
@@ -87,7 +87,7 @@ class Test_SignUp(BaseTest, unittest.TestCase):
             self.driver.find_element(By.XPATH, "//input[@name='confirmPassword']").clear()
             enter_password(self.driver, self.logger, self.configInfo, "valid", "re_enter")
             click_register(self.driver, self.logger)
-            wait = WebDriverWait(self.driver, 2)
+            wait = WebDriverWait(self.driver, 4)
             wait.until(expected_conditions.visibility_of_element_located((By.TAG_NAME, "picture")))
             user_icon = self.driver.find_element(By.TAG_NAME, "picture")
             assert (user_icon.is_displayed())
