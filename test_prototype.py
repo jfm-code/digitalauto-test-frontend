@@ -33,6 +33,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
                 pattern = r"/prototype/([a-f0-9]{24})/"
                 prototype_id = re.findall(pattern, current_url)
                 delete_prototype(token, prototype_id[0])
+                self.logger.info("Success. Deleted the testing prototype using Postman API.")
             except Exception as e:
                 error_handler("warning", self.logger, "", "Failure. Cannot use Postman API to delete the testing prototype.", e, "", "")
                 

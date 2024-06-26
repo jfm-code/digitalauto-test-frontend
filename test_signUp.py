@@ -18,6 +18,7 @@ class Test_SignUp(BaseTest, unittest.TestCase):
                 admin_token = get_user_info(self.configInfo, "token", "admin")
                 delete_user(admin_token, testUser_id)
                 self.logger.debug("Deleting the testing user.")
+                self.logger.info("Success. Deleted the testing user using Postman API.")
             except Exception as e:
                 error_handler("warning", self.logger, "", "Failure. Cannot use Postman API to delete the testing new account.", e, "", "")
 

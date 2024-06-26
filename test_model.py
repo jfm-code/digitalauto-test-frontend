@@ -12,9 +12,10 @@ class Test_Model(BaseTest, unittest.TestCase):
             try:
                 token = get_user_info(self.configInfo, "token", "signIn")
                 current_url = self.driver.current_url
-                pattern = r"/model/([a-f0-9]{24})/"
+                pattern = r"model/([a-f0-9]{24})"
                 model_id = re.findall(pattern, current_url)
                 delete_model(token, model_id[0])
+                self.logger.info("Success. Deleted the testing model using Postman API.")
             except Exception as e:
                 error_handler("warning", self.logger, "", "Failure. Cannot use Postman API to delete the testing model.", e, "", "")
     
