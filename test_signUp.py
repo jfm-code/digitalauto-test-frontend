@@ -12,15 +12,7 @@ class Test_SignUp(BaseTest, unittest.TestCase):
             time.sleep(2)
             self.signUp_success()
             
-            # Delete the testing account
-            try:
-                testUser_id = get_user_info(self.configInfo, "id", "signUp")
-                admin_token = get_user_info(self.configInfo, "token", "admin")
-                delete_user(admin_token, testUser_id, self.configInfo)
-                self.logger.debug("Deleting the testing user.")
-                self.logger.info("Success. Deleted the testing user using Postman API.")
-            except Exception as e:
-                error_handler("warning", self.logger, "", "Failure. Cannot use Postman API to delete the testing new account.", e, "", "")
+            delete_testing_object("account", self.driver, self.logger, self.configInfo)
 
     def open_SignUp_popup(self):
         self.base.beginOfTest_logFormat("open_SignUp_popup")
@@ -95,6 +87,7 @@ class Test_SignUp(BaseTest, unittest.TestCase):
             self.logger.info("Success. Tested registering a new account.")
         except Exception as e:
             error_handler("error", self.logger, "", "Failure. Cannot register a new account.", e, "", "")
+            self.driver.get_screenshot_as_file("screenshot-failed-register.png")
                     
     # Test case 5: Enter all info but invalid email address, catch the message -> this is failing
     

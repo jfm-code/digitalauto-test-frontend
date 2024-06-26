@@ -25,28 +25,9 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.run_code("no_error")
             self.modifyCode_checkUpdate("from_Dashboard_to_Code")
             # self.run_code("error")
-            
-            # Delete the testing model
-            try:
-                token = get_user_info(self.configInfo, "token", "signIn")
-                current_url = self.driver.current_url
-                pattern = r"model/([a-f0-9]{24})"
-                model_id = re.findall(pattern, current_url)
-                delete_model(token, model_id[0], self.configInfo)
-                self.logger.info("Success. Deleted the testing model using Postman API.")
-            except Exception as e:
-                error_handler("warning", self.logger, "", "Failure. Cannot use Postman API to delete the testing model.", e, "", "")
-            
-            try:
-                # Delete the testing prototype
-                token = get_user_info(self.configInfo, "token", "signIn")
-                current_url = self.driver.current_url
-                pattern = r"/prototype/([a-f0-9]{24})/"
-                prototype_id = re.findall(pattern, current_url)
-                delete_prototype(token, prototype_id[0], self.configInfo)
-                self.logger.info("Success. Deleted the testing prototype using Postman API.")
-            except Exception as e:
-                error_handler("warning", self.logger, "", "Failure. Cannot use Postman API to delete the testing prototype.", e, "", "")
+        
+            delete_testing_object("prototype", self.driver, self.logger, self.configInfo)
+            delete_testing_object("model", self.driver, self.logger, self.configInfo)
                 
     def run_code(self, mode):
         self.base.beginOfTest_logFormat(f"run_code_{mode}")
@@ -284,7 +265,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
                     found = True
                     break
             if (found is False):
-                self.logger.debug("Did not find the span with text 'Builtin Testing'")
+                raise Exception("Did not find the span with text 'Builtin Testing'")
             else:
                 assert (span.text == '"Builtin Testing"')
                 self.logger.info("Success. Tested the case of editing the widget config text.")

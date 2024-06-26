@@ -77,10 +77,10 @@ class Base():
                     handler.stream.write("SUMMARY:\n")
                     handler.stream.write(f"\tNumber of failed test cases: {countFailed} / {numOfTest}\n")
                     if (len(failed_tests) > 0):
-                        handler.stream.write("Test cases that failed:\n")
+                        handler.stream.write("\tTest cases that failed:\n")
                         for i in range(0, len(failed_tests), 2):
-                            handler.stream.write(f"\t{failed_tests[i]}")
-                            handler.stream.write(f"\t\t{failed_tests[i+1]}")
+                            handler.stream.write(f"\t\t{failed_tests[i]}")
+                            handler.stream.write(f"\t\t\t{failed_tests[i+1]}")
     
     def start_timer(self):
         self.start_time = datetime.now()

@@ -67,6 +67,28 @@ def error_handler(level, logger, configInfo, error_message, exception, email_con
     elif (level == "warning"):
         logger.warning(f"{error_message}: {exception}")
     
+def delete_testing_object(type, driver, logger, configInfo):
+    try:
+        if (type == "account"):
+            testUser_id = get_user_info(configInfo, "id", "signUp")
+            admin_token = get_user_info(configInfo, "token", "admin")
+            delete_user(admin_token, testUser_id, configInfo)
+        else:
+            current_url = driver.current_url
+            token = get_user_info(configInfo, "token", "signIn")  
+            if (type == "model"):
+                pattern = r"model/([a-f0-9]{24})"
+            elif (type == "prototype"):
+                pattern = r"/prototype/([a-f0-9]{24})/"
+            id = re.findall(pattern, current_url)
+            resulting_json = delete_model_prototype(type, token, id[0], configInfo)
+            if (resulting_json == {}):
+                logger.info(f"Success. Deleted the testing {type} using Postman API.")
+            else:
+                raise Exception(f"Resulting JSON when deleting {type} is: {resulting_json}")
+    except Exception as e:
+        error_handler("warning", logger, "", f"Failure. Cannot use Postman API to delete the testing {type}.", e, "", "")
+
 # Postman helper functions
 def send_email(configInfo, email_content, email_subject, mode):
     if (mode == "now"):
@@ -143,23 +165,25 @@ def get_user_info(configInfo, element, mode):
         else:
             print("Unexpected response structure:", data)
 
-def delete_model(token, model_id, configInfo):
+def delete_model_prototype(type, token, id, configInfo):
     instance = get_instance_name(configInfo)
-    url = f"https://backend-core-{instance}.digital.auto/v2/models/{model_id}"
+    url = f"https://backend-core-{instance}.digital.auto/v2/{type}s/{id}"
     headers = {"Authorization": f"Bearer {token}"}
-    requests.delete(url, headers=headers)
-    
-def delete_prototype(token, prototype_id, configInfo):
-    instance = get_instance_name(configInfo)
-    url = f"https://backend-core-{instance}.digital.auto/v2/prototypes/{prototype_id}"
-    headers = {"Authorization": f"Bearer {token}"}
-    requests.delete(url, headers=headers)
+    response = requests.delete(url, headers=headers)
+    if response.content:
+        data = json.loads(response.content)
+    else:
+        data = {}
+    return data
 
 def delete_user(admin_token, user_id, configInfo):
     instance = get_instance_name(configInfo)
     url = f"https://backend-core-{instance}.digital.auto/v2/users/{user_id}"
     headers = {"Authorization": f"Bearer {admin_token}"}
-    requests.delete(url, headers=headers)
-    # data = json.loads(response.content)
-    # return data
+    response = requests.delete(url, headers=headers)
+    if response.content:
+        data = json.loads(response.content)
+    else:
+        data = {}
+    return data
 
