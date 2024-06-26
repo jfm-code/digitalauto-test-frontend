@@ -1,3 +1,4 @@
+# NOT DONE
 from util import *
 
 class Test_Prototype(BaseTest, unittest.TestCase):
@@ -19,14 +20,11 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.edit_widget()
             time.sleep(3)
             self.delete_widget()
+            
             self.modifyCode_checkUpdate("from_Code_to_Dashboard")
-            self.run_code_noError()
+            self.run_code("no_error")
             self.modifyCode_checkUpdate("from_Dashboard_to_Code")
-
-            
-            # edit the code in the dashboard section then run, check if we can stop in the middle -> grab the error code -9 (THE STOP BUTTON IS NOT REALLY WORKING NOW)
-            
-            # go back to the code section to see if the code is updated
+            self.run_code("error")
             
             try:
                 # Delete the testing prototype
@@ -38,8 +36,8 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             except Exception as e:
                 error_handler("warning", self.logger, "", "Failure. Cannot use Postman API to delete the testing prototype.", e, "", "")
                 
-    def run_code_noError(self):
-        self.base.beginOfTest_logFormat("run_code_noError")
+    def run_code(self, mode):
+        self.base.beginOfTest_logFormat(f"run_code_{mode}")
         try:
             static_dropdown = Select(self.driver.find_element(By.XPATH, "//select")) 
             static_dropdown.select_by_value("RunTime-VSS4.0-1970345")
@@ -47,15 +45,26 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         except Exception as e:
             error_handler("warning", self.logger, "", "Failure. The RunTime-VSS4.0-1970345 is not online.", e, "", "")
         
-        try:
-            self.driver.find_element(By.XPATH, "(//div[@class='flex px-1 false']/button)[1]").click()
-            time.sleep(3)
-            output = self.driver.find_element(By.XPATH, "//p[contains(text(),'code 0')]")
-            assert (output.is_displayed())
-            self.logger.info("Success. Run code successfully with exit code 0 in the Dashboard tab.")
-        except Exception as e:
-            error_handler("error", self.logger, "", "Failure. Failed to run code in the Dashboard tab.")
-            
+        if (mode == "no_error"):
+            try:
+                self.driver.find_element(By.XPATH, "(//div[@class='flex px-1 false']/button)[1]").click()
+                time.sleep(3)
+                output = self.driver.find_element(By.XPATH, "//p[contains(text(),'code 0')]")
+                assert (output.is_displayed())
+                self.logger.info("Success. Run code successfully with exit code 0 in the Dashboard tab.")
+            except Exception as e:
+                error_handler("error", self.logger, "", "Failure. Failed to run code in the Dashboard tab.", e, "", "")
+        elif (mode == "error"):
+            try:
+                self.driver.find_element(By.XPATH, "(//div[@class='flex px-1 false']/button)[1]").click()
+                time.sleep(5) # wait for some output is printed
+                self.driver.find_element(By.XPATH, "(//div[@class='flex px-1 false']/button)[2]").click()
+                time.sleep(2) # wait for the error exit code to be appeared
+                # NOT DONE
+                # observe and grab the error exit code
+            except Exception as e:
+                error_handler("error", self.logger, "", "Failure. Failed to stop the executing code and return error exit code.", e, "", "")
+                
     def modifyCode_checkUpdate(self, mode):
         self.base.beginOfTest_logFormat(f"modifyCode_checkUpdate_{mode}")
         if (mode == "from_Code_to_Dashboard"):
@@ -66,7 +75,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
                 action1 = ActionChains(self.driver)
                 action1.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).key_down(Keys.BACK_SPACE).send_keys('print("Automation Test")').perform()
             
-                time.sleep(2) # wait for the update in the Dashboard
+                time.sleep(2) # wait for the update in the Dashboard tab
                 self.driver.find_element(By.XPATH, "//a/div[text()='Dashboard']").click()
                 self.driver.find_element(By.XPATH, "//div[@class='flex']/button").click()
                 self.driver.find_element(By.XPATH, "//div[@class='flex']/div[text()='Code']").click()
@@ -84,11 +93,13 @@ class Test_Prototype(BaseTest, unittest.TestCase):
                 self.driver.find_element(By.XPATH, "//div[contains(@class, 'active-line-number')]").click()
                 action = ActionChains(self.driver)
                 action.key_down(Keys.BACK_SPACE).send_keys("for i in range(10):").key_down(Keys.ENTER).send_keys("print(i)").perform()
-                time.sleep(3)
-                self.driver.find_element(By.XPATH, "//div[text()='Code']").click()
-            except Exception as e:
-                print("Adding later")
                 
+                time.sleep(3) # wait for the update in the Code tab
+                # NOT DONE 
+                # go to the Code tab to check
+                # then go back to the Dashboard tab, click to open run code section
+            except Exception as e:
+                error_handler("error", self.logger, "", "Failure. The code entered in Dashboard tab is not updated in Code tab.", e, "", "")
                 
     def create_and_verify_prototypeName(self):
         self.base.beginOfTest_logFormat("create_and_verify_prototypeName")
