@@ -10,6 +10,8 @@ class Test_SignUp(BaseTest, unittest.TestCase):
             time.sleep(2)
             self.signUp_fail_confirmPassword()
             time.sleep(2)
+            self.signUp_fail_password_notLongEnough()
+            time.sleep(2)
             self.signUp_success()
             
             delete_testing_object("user", self.driver, self.logger, self.configInfo)
@@ -71,16 +73,34 @@ class Test_SignUp(BaseTest, unittest.TestCase):
         except Exception as e:
             error_handler("error", self.logger, "", "Failure. Confirm password was different from entered password. Broken implementation", e, "", "")
 
+    def signUp_fail_password_notLongEnough(self):
+        self.base.beginOfTest_logFormat("signUp_fail_password_notLongEnough")
+        try:
+            self.driver.find_element(By.XPATH, "//input[@name='password']").clear()
+            self.driver.find_element(By.XPATH, "//input[@name='password']").send_keys("pass")
+            self.driver.find_element(By.XPATH, "//input[@name='confirmPassword']").clear()
+            self.driver.find_element(By.XPATH, "//input[@name='confirmPassword']").send_keys("pass")
+            click_register(self.driver, self.logger)
+            expected_message = 'password must be at least 8 characters'
+            wait = WebDriverWait(self.driver, 3)
+            wait.until(expected_conditions.visibility_of_element_located((By.XPATH, f"//label[text()='{expected_message}']")))
+            message = self.driver.find_element(By.XPATH, f"//label[text()='{expected_message}']").text
+            assert (message == expected_message)
+            self.logger.info("Success. Tested the case of too short password entered.")
+        except Exception as e:
+            error_handler("error", self.logger, "", "Failure. Too short password passed. Broken implementation.", e, "", "")
+
     def signUp_success(self):
         self.base.beginOfTest_logFormat("signUp_success")
         try:
             self.driver.find_element(By.XPATH, "//input[@name='email']").clear()
             enter_email(self.driver, self.logger, self.configInfo, self.configInfo["signUp_email"])
+            self.driver.find_element(By.XPATH, "//input[@name='password']").clear()
+            enter_password(self.driver, self.logger, self.configInfo, "valid", "first_enter")
             self.driver.find_element(By.XPATH, "//input[@name='confirmPassword']").clear()
             enter_password(self.driver, self.logger, self.configInfo, "valid", "re_enter")
             click_register(self.driver, self.logger)
-            wait = WebDriverWait(self.driver, 4)
-            wait.until(expected_conditions.visibility_of_element_located((By.TAG_NAME, "picture")))
+            time.sleep(5)
             user_icon = self.driver.find_element(By.TAG_NAME, "picture")
             assert (user_icon.is_displayed())
             self.logger.debug("Saw the user icon")
@@ -88,7 +108,3 @@ class Test_SignUp(BaseTest, unittest.TestCase):
         except Exception as e:
             error_handler("error", self.logger, "", "Failure. Cannot register a new account.", e, "", "")
             self.driver.get_screenshot_as_file("screenshot-failed-register.png")
-                    
-    # Test case 5: Enter all info but invalid email address, catch the message -> this is failing
-    
-    # Test case 6: Password has at least 8 characters -> is there any other conditions for password?

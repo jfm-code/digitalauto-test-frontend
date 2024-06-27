@@ -11,6 +11,8 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             time.sleep(5)
             
             self.create_and_verify_prototypeName()
+            action = ActionChains(self.driver)
+            action.move_by_offset(100, 100).click().perform() # Click outside the pop up
             self.driver.find_element(By.XPATH, "//button[text()='Open']").click() # Open the prototype detail page
             self.use_Code_dashboardConfig()
             self.check_widgetList_content()
@@ -102,7 +104,6 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         expected_name = "Automation Test Model"
         self.driver.find_element(By.CSS_SELECTOR, "input[placeholder='Model Name']").send_keys(expected_name)
         self.driver.find_element(By. XPATH, "//button[text()='Create Model']").click()
-        # self.driver.find_element(By.XPATH, "//label[text()='Combustion Car']").click()
         click_prototype_library(self.driver, self.logger)
         click_create_prototype(self.driver, self.logger)
         
@@ -134,7 +135,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.logger.info("Success. Verified the name of the newly created prototype on the left")
         except Exception as e:
             error_handler("warning", self.logger, "", "Failure. Incorrect name of the newly created prototype on the left", e, "", "")
-            
+
         try:
             wait = WebDriverWait(self.driver, 2)
             wait.until(expected_conditions.visibility_of_element_located((By.XPATH, f"//div[@class='p-5']/div/label[text()='{expected_name}']")))
@@ -143,6 +144,18 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.logger.info("Success. Verified the name of the newly created prototype on the right")
         except Exception as e:
             error_handler("warning", self.logger, "", "Failure. Incorrect name of the newly created prototype on the right", e, "", "")
+
+        # Test case of creating a duplicate prototype
+        try:
+            click_create_prototype(self.driver, self.logger)
+            expected_name = "Automation Test Prototype"
+            self.driver.find_element(By.XPATH, "//input[@placeholder='Name']").send_keys(expected_name)
+            self.driver.find_element(By.XPATH, "//button[text()='Create']").click()
+            message = self.driver.find_element(By.XPATH, "(//label[contains(text(),'Duplicate prototype name')])[1]").text
+            assert ("Duplicate prototype name" in message)
+            self.logger.info("Success. Tested the case of creating duplicate prototype name.")
+        except Exception as e:
+            error_handler("warning", self.logger, "", "Failure. Duplicate prototoype name passed. Broken implementation.", e, "", "")
 
     def use_Code_dashboardConfig(self):
         self.base.beginOfTest_logFormat("use_Code_dashboardConfig")

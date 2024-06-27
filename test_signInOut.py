@@ -43,6 +43,7 @@ class Test_SignIn_SignOut(BaseTest, unittest.TestCase):
             self.driver.find_element(By.XPATH, "//input[@name='password']").clear()
             enter_password(self.driver, self.logger, self.configInfo, "valid", "first_enter")
             submit_sign_in(self.driver, self.logger)
+            time.sleep(5)
             user_icon = self.driver.find_element(By.TAG_NAME, "picture")
             assert (user_icon.is_displayed())
             self.logger.info("Success. Tested the valid login attempt.")
@@ -61,6 +62,7 @@ class Test_SignIn_SignOut(BaseTest, unittest.TestCase):
             logout_icon.click()
             self.logger.debug("Clicked the logout icon")
             signIn_button = self.driver.find_element(By.XPATH, "//button[text()='Sign in']")
+            time.sleep(5)
             assert (signIn_button.is_displayed())
             self.logger.info("Success. Tested logging out.")
         except Exception as e:
