@@ -75,7 +75,7 @@ class Base():
                 if isinstance(handler, logging.FileHandler):
                     handler.stream.write(f"INSTANCE: {configInfo["web_url"]}\n")
                     handler.stream.write("SUMMARY:\n")
-                    handler.stream.write(f"\tNumber of failed test cases: {countFailed} / {numOfTest}\n")
+                    handler.stream.write(f"\tNumber of FAILED test cases: {countFailed} / {numOfTest}\n")
                     if (len(failed_tests) > 0):
                         handler.stream.write("\tTest cases that failed:\n")
                         for i in range(0, len(failed_tests), 2):

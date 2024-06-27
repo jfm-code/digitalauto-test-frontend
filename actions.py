@@ -118,12 +118,28 @@ def send_email(configInfo, email_content, email_subject, mode):
             file_path = os.path.join("logs", filename)
             if os.path.isfile(file_path):
                 if (check_warning_error(file_path) is True):
+                    # Upload the log file and get the link
                     file_link = upload_file(file_path)
                     log_links.append(file_link)
+                    
+                    # Get the summary of the log file
+                    with open(file_path, 'r') as file:
+                        lines = file.readlines()
+                    summary_index = None
+                    for i, line in enumerate(lines):
+                        if line.startswith("SUMMARY:"):
+                            summary_index = i
+                            break
+                    if summary_index is not None:
+                        summary_content = lines[summary_index:]
+     
         if (len(log_links) > 0):
-            html_content = "<!DOCTYPE html><html lang='en'><body><p>Below are the links of the log files that report errors and warnings. Please click each link to see the report.</p><ul>"
+            html_content = "<!DOCTYPE html><html lang='en'><body><p>Below are the summaries and links of the log files that report errors and warnings. Please click each link to see the details of the report.</p><ul>"
             for i, link in enumerate(log_links, start=1):
                 html_content += f"<li><a href='{link}'>Log file {i}</a></li>"
+                for line in summary_content:
+                    html_content += f"<br>{line}</br>"
+                html_content += "<br></br>"
             html_content += "</ul></body></html>"
             encoded_html_content = quote(html_content, safe='')
             send_email(configInfo, encoded_html_content, email_subject, "now")

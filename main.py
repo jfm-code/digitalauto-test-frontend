@@ -24,11 +24,10 @@ def main():
     os.system("pytest -v -s --disable-warnings test_model.py")
     os.system("pytest -v -s --disable-warnings test_prototype.py")
     
-
 if __name__ == "__main__":
     main()
     with open('info.json') as config_file:
         configInfo = json.load(config_file)
     instance = get_instance_name(configInfo)
-    subject = f"Warnings and errors occured in the {instance}"
+    subject = f"[{instance}-instance] Warnings and errors occured"
     send_email(configInfo, "", subject, "later")

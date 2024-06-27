@@ -7,6 +7,7 @@ class Test_Model(BaseTest, unittest.TestCase):
             self.SignIn_createModel() # Also check the dropdown content inside this function
             self.check_modelVisibility() 
             self.add_member_contributor()
+            self.create_wishlist_API() # NOT DONE
             
             delete_testing_object("model", self.driver, self.logger, self.configInfo)
     
@@ -145,3 +146,9 @@ class Test_Model(BaseTest, unittest.TestCase):
         self.driver.find_element(By.XPATH, "//input[@placeholder='Search']").send_keys(input)
         result_text = self.driver.find_element(By.XPATH, "//div[@class='py-1 grow']/label").text
         assert (result_text == expected_result)
+        
+    def create_wishlist_API(self):
+        self.driver.find_element(By.XPATH, "//div[text()='Vehicle APIs']").click()
+        time.sleep(2)
+        self.driver.find_element(By.XPATH, "//button[contains(., 'Add Wishlist API')]").click()
+        self.driver.find_element(By.XPATH, "//input[@name='name']").send_keys("Testing API")
