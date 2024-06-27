@@ -12,7 +12,7 @@ class Test_SignUp(BaseTest, unittest.TestCase):
             time.sleep(2)
             self.signUp_success()
             
-            delete_testing_object("account", self.driver, self.logger, self.configInfo)
+            delete_testing_object("user", self.driver, self.logger, self.configInfo)
 
     def open_SignUp_popup(self):
         self.base.beginOfTest_logFormat("open_SignUp_popup")

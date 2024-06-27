@@ -69,23 +69,36 @@ def error_handler(level, logger, configInfo, error_message, exception, email_con
     
 def delete_testing_object(type, driver, logger, configInfo):
     try:
-        if (type == "account"):
-            testUser_id = get_user_info(configInfo, "id", "signUp")
-            admin_token = get_user_info(configInfo, "token", "admin")
-            delete_user(admin_token, testUser_id, configInfo)
+        # Get ID and token
+        if (type == "user"):
+            id = get_user_info(configInfo, "id", "signUp")
+            token = get_user_info(configInfo, "token", "admin")
         else:
-            current_url = driver.current_url
-            token = get_user_info(configInfo, "token", "signIn")  
             if (type == "model"):
                 pattern = r"model/([a-f0-9]{24})"
             elif (type == "prototype"):
                 pattern = r"/prototype/([a-f0-9]{24})/"
-            id = re.findall(pattern, current_url)
-            resulting_json = delete_model_prototype(type, token, id[0], configInfo)
-            if (resulting_json == {}):
-                logger.info(f"Success. Deleted the testing {type} using Postman API.")
-            else:
-                raise Exception(f"Resulting JSON when deleting {type} is: {resulting_json}")
+            current_url = driver.current_url
+            match = re.findall(pattern, current_url)
+            id = match[0]
+            token = get_user_info(configInfo, "token", "signIn") 
+        
+        # Request for deletion
+        instance = get_instance_name(configInfo)
+        url = f"https://backend-core-{instance}.digital.auto/v2/{type}s/{id}"
+        headers = {"Authorization": f"Bearer {token}"}
+        response = requests.delete(url, headers=headers)
+        if response.content:
+            data = json.loads(response.content)
+        else:
+            data = {}
+        
+        # Check if the deletion is success
+        if (data == {}):
+            logger.info(f"Success. Deleted the testing {type} using Postman API.")
+        else:
+            raise Exception(f"Resulting JSON when deleting {type} is: {data}")
+    
     except Exception as e:
         error_handler("warning", logger, "", f"Failure. Cannot use Postman API to delete the testing {type}.", e, "", "")
 
@@ -164,26 +177,3 @@ def get_user_info(configInfo, element, mode):
             return data["user"]["id"]
         else:
             print("Unexpected response structure:", data)
-
-def delete_model_prototype(type, token, id, configInfo):
-    instance = get_instance_name(configInfo)
-    url = f"https://backend-core-{instance}.digital.auto/v2/{type}s/{id}"
-    headers = {"Authorization": f"Bearer {token}"}
-    response = requests.delete(url, headers=headers)
-    if response.content:
-        data = json.loads(response.content)
-    else:
-        data = {}
-    return data
-
-def delete_user(admin_token, user_id, configInfo):
-    instance = get_instance_name(configInfo)
-    url = f"https://backend-core-{instance}.digital.auto/v2/users/{user_id}"
-    headers = {"Authorization": f"Bearer {admin_token}"}
-    response = requests.delete(url, headers=headers)
-    if response.content:
-        data = json.loads(response.content)
-    else:
-        data = {}
-    return data
-
