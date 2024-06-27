@@ -67,19 +67,20 @@ class Base():
                     test_name = line[6:]
                 if ("Success" in line) or ("Failure" in line):
                     numOfTest += 1
-                if ("ERROR" in line) or ("CRITICAL" in line):
+                if ("ERROR" in line) or ("CRITICAL" in line) or ("WARNING" in line):
                     countFailed += 1
                     failed_tests.append(test_name)
                     failed_tests.append(line[21:])
             for handler in self.logger.handlers:
                 if isinstance(handler, logging.FileHandler):
+                    handler.stream.write(f"INSTANCE: {configInfo["web_url"]}\n")
                     handler.stream.write("SUMMARY:\n")
-                    handler.stream.write(f"\tNumber of failed test cases: {countFailed} / {numOfTest}\n")
+                    handler.stream.write(f"\tNumber of FAILED test cases: {countFailed} / {numOfTest}\n")
                     if (len(failed_tests) > 0):
-                        handler.stream.write("Test cases that failed:\n")
+                        handler.stream.write("\tTest cases that failed:\n")
                         for i in range(0, len(failed_tests), 2):
-                            handler.stream.write(f"\t{failed_tests[i]}")
-                            handler.stream.write(f"\t\t{failed_tests[i+1]}")
+                            handler.stream.write(f"\t\t{failed_tests[i]}")
+                            handler.stream.write(f"\t\t\t{failed_tests[i+1]}")
     
     def start_timer(self):
         self.start_time = datetime.now()

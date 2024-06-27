@@ -19,8 +19,7 @@ class Test_SignIn_SignOut(BaseTest, unittest.TestCase):
             canOpen_popUp = True
             self.logger.info("Success. Can open the sign in popup.")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Cannot open the Sign In pop up", e,
-                self.configError["cannot_open_signIn_popup"], "Home")
+            error_handler("error", self.logger, "", "Failure. Cannot open the Sign In pop up", e, "", "")
         return canOpen_popUp
 
     def signIn_invalid_password(self):
@@ -35,8 +34,7 @@ class Test_SignIn_SignOut(BaseTest, unittest.TestCase):
             assert (login_error == "Incorrect email or password")
             self.logger.info("Success. Tested the invalid login attempt.")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Wrong password passed. Broken implementation", e,
-                self.configError["wrong_password_passed"], "Home")
+            error_handler("error", self.logger, "", "Failure. Wrong password passed. Broken implementation", e, "", "")
 
 
     def signIn_valid_password(self):
@@ -49,9 +47,7 @@ class Test_SignIn_SignOut(BaseTest, unittest.TestCase):
             assert (user_icon.is_displayed())
             self.logger.info("Success. Tested the valid login attempt.")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Cannot sign in with correct password. Broken implementation", e,
-                self.configError["cannot_signIn"], "Home")
-
+            error_handler("error", self.logger, "", "Failure. Cannot sign in with correct password. Broken implementation", e, "", "")
     
     def logOut(self):
         self.base.beginOfTest_logFormat("logOut")
@@ -68,5 +64,4 @@ class Test_SignIn_SignOut(BaseTest, unittest.TestCase):
             assert (signIn_button.is_displayed())
             self.logger.info("Success. Tested logging out.")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Cannot log out after signing in.", e,
-                self.configError["cannot_logOut"], "Home")
+            error_handler("error", self.logger, "", "Failure. Cannot log out after signing in.", e, "", "")

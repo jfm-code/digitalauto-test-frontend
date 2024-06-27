@@ -1,5 +1,8 @@
 import requests
 import json
+import os
+import re
+from urllib.parse import quote
 from selenium.webdriver.common.by import By
 
 def click_sign_in(driver, logger, config):
@@ -10,7 +13,7 @@ def click_sign_in(driver, logger, config):
         error_message = "Failed to load the Sign In button"
         logger.error(f"{error_message}: {e}")
         email_content = "<!DOCTYPE html><html lang='en'><body><p>Failed to load the Sign In button.</p><p>Steps to Reproduce:</p><ol><li>Navigate to the home page.</li><li>Wait to see if the Sign In button can be loaded.</li></ol></p></body></html>"
-        email_subject = "Error occured in the Home page"
+        email_subject = "Error occurred in the Home page"
         send_email(config, email_content, email_subject)
         
 def enter_name(driver, logger, config):
@@ -53,35 +56,129 @@ def click_create_prototype(driver, logger):
     driver.find_element(By.XPATH, "//button[text()='Create New Prototype']").click()
     logger.debug("Clicked the Create New Prototype button")
         
-def error_handler(logger, configInfo, error_message, exception, email_content, place_occur):
-    logger.error(f"{error_message}: {exception}")
-    instance = "local machine"
-    if ("autowrx-etas.digital.auto" in configInfo["web_url"]):
-        instance = "autowrx-etas.digital.auto"
-    email_subject = f"Error occured in the {place_occur} page of {instance}"
-    send_email(configInfo, email_content, email_subject)
+def error_handler(level, logger, configInfo, error_message, exception, email_content, place_occur):
+    if (level == "critical"):
+        logger.critical(f"{error_message}: {exception}")
+        instance = get_instance_name(configInfo)
+        email_subject = f"A critical error occurred in the {place_occur} page of {instance}"
+        send_email(configInfo, email_content, email_subject, "now")
+    elif (level == "error"):
+        logger.error(f"{error_message}: {exception}")
+    elif (level == "warning"):
+        logger.warning(f"{error_message}: {exception}")
     
+def delete_testing_object(type, driver, logger, configInfo):
+    try:
+        # Get ID and token
+        if (type == "user"):
+            id = get_user_info(configInfo, "id", "signUp")
+            token = get_user_info(configInfo, "token", "admin")
+        else:
+            if (type == "model"):
+                pattern = r"model/([a-f0-9]{24})"
+            elif (type == "prototype"):
+                pattern = r"/prototype/([a-f0-9]{24})/"
+            current_url = driver.current_url
+            match = re.findall(pattern, current_url)
+            id = match[0]
+            token = get_user_info(configInfo, "token", "signIn") 
+        
+        # Request for deletion
+        instance = get_instance_name(configInfo)
+        url = f"https://backend-core-{instance}.digital.auto/v2/{type}s/{id}"
+        headers = {"Authorization": f"Bearer {token}"}
+        response = requests.delete(url, headers=headers)
+        if response.content:
+            data = json.loads(response.content)
+        else:
+            data = {}
+        
+        # Check if the deletion is success
+        if (data == {}):
+            logger.info(f"Success. Deleted the testing {type} using Postman API.")
+        else:
+            raise Exception(f"Resulting JSON when deleting {type} is: {data}")
+    
+    except Exception as e:
+        error_handler("warning", logger, "", f"Failure. Cannot use Postman API to delete the testing {type}.", e, "", "")
+
 # Postman helper functions
-def send_email(config, email_content, email_subject):
-    url = config["email_url"]
-    sending_obj = {
-        "to": config["developer_email"],
-        "subject": email_subject,
-        "content": email_content
-    }
-    requests.post(url, json = sending_obj)
-    
-def get_user_info(config, element, mode):
+def send_email(configInfo, email_content, email_subject, mode):
+    if (mode == "now"):
+        url = configInfo["email_url"]
+        sending_obj = {
+            "to": configInfo["developer_email"],
+            "subject": email_subject,
+            "content": email_content
+        }
+        requests.post(url, json = sending_obj)
+    elif (mode == "later"):
+        log_links = []
+        for filename in os.listdir("logs"):
+            file_path = os.path.join("logs", filename)
+            if os.path.isfile(file_path):
+                if (check_warning_error(file_path) is True):
+                    # Upload the log file and get the link
+                    file_link = upload_file(file_path)
+                    log_links.append(file_link)
+                    
+                    # Get the summary of the log file
+                    with open(file_path, 'r') as file:
+                        lines = file.readlines()
+                    summary_index = None
+                    for i, line in enumerate(lines):
+                        if line.startswith("SUMMARY:"):
+                            summary_index = i
+                            break
+                    if summary_index is not None:
+                        summary_content = lines[summary_index:]
+     
+        if (len(log_links) > 0):
+            html_content = "<!DOCTYPE html><html lang='en'><body><p>Below are the summaries and links of the log files that report errors and warnings. Please click each link to see the details of the report.</p><ul>"
+            for i, link in enumerate(log_links, start=1):
+                html_content += f"<li><a href='{link}'>Log file {i}</a></li>"
+                for line in summary_content:
+                    html_content += f"<br>{line}</br>"
+                html_content += "<br></br>"
+            html_content += "</ul></body></html>"
+            encoded_html_content = quote(html_content, safe='')
+            send_email(configInfo, encoded_html_content, email_subject, "now")
+
+def upload_file(file_path):
+    with open(file_path, 'rb') as file:
+        url = "https://upload.digitalauto.tech/upload/store-be"
+        files = {'file': (file_path, file, 'multipart/form-data')}
+        response = requests.post(url, files=files, verify=False)
+        data = json.loads(response.content)
+        return data["url"] # return the link to the document uploaded
+
+def get_instance_name(configInfo):
+    pattern = r"https://(.+?)\.digital\.auto/"
+    instance = re.findall(pattern, configInfo["web_url"])
+    if (instance[0] == "autowrx"):
+        return "dev"
+    else:
+        return instance[0]
+
+def check_warning_error(file_path):
+    with open(file_path, "r") as file:
+        for line in file.readlines():
+            if ("ERROR" in line) or ("WARNING" in line):
+                return True
+        return False
+
+def get_user_info(configInfo, element, mode):
     if (mode == "signIn"):
-        email = config["signIn_email"]
-        password = config["correct_password"]
+        email = configInfo["signIn_email"]
+        password = configInfo["correct_password"]
     elif (mode == "signUp"):
-        email = config["signUp_email"]
-        password = config["correct_password"]
+        email = configInfo["signUp_email"]
+        password = configInfo["correct_password"]
     elif (mode == "admin"):
-        email = config["admin_email"]
-        password = config["admin_password"]
-    url = "https://backend-core-etas.digital.auto/v2/auth/login"
+        email = configInfo["admin_email"]   
+        password = configInfo["admin_password"]
+    instance = get_instance_name(configInfo)
+    url = f"https://backend-core-{instance}.digital.auto/v2/auth/login"
     sending_obj = {"email": email, "password": password}
     response = requests.post(url, json=sending_obj)
     data = json.loads(response.content)
@@ -96,21 +193,3 @@ def get_user_info(config, element, mode):
             return data["user"]["id"]
         else:
             print("Unexpected response structure:", data)
-
-def delete_model(token, model_id):
-    url = f"https://backend-core-etas.digital.auto/v2/models/{model_id}"
-    headers = {"Authorization": f"Bearer {token}"}
-    requests.delete(url, headers=headers)
-    
-def delete_prototype(token, prototype_id):
-    url = f"https://backend-core-etas.digital.auto/v2/prototypes/{prototype_id}"
-    headers = {"Authorization": f"Bearer {token}"}
-    requests.delete(url, headers=headers)
-    
-def delete_user(admin_token, user_id):
-    url = f"https://backend-core-etas.digital.auto/v2/users/{user_id}"
-    headers = {"Authorization": f"Bearer {admin_token}"}
-    response = requests.delete(url, headers=headers)
-    # data = json.loads(response.content)
-    # return data
-

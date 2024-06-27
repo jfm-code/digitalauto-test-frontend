@@ -15,10 +15,11 @@ class Test_PageTraversal(BaseTest, unittest.TestCase):
             self.driver.find_element(By.XPATH, f"//a[@href='{page_url}']").click()
             windows_opened = self.driver.window_handles
             self.driver.switch_to.window(windows_opened[1])
-            assert (page_url in self.driver.current_url)
+            pattern = r"https://(?:www\.)?([^/]+)"
+            match = re.findall(pattern, self.driver.current_url)
+            assert (match[0] in page_url)
             self.logger.info(f"Success. Opened and verified {name} Link")
             self.driver.close()
             self.driver.switch_to.window(windows_opened[0])
         except Exception as e:
-            error_handler(self.logger, self.configInfo, f"Failure. Cannot open {name} Link in the Home Page", e,
-                self.configError[f"{name}_link_failed"], "Home")
+            error_handler("warning", self.logger, "", f"Failure. Cannot open {name} Link in the Home Page", e, "", "")

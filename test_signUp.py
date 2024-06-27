@@ -11,6 +11,8 @@ class Test_SignUp(BaseTest, unittest.TestCase):
             self.signUp_fail_confirmPassword()
             time.sleep(2)
             self.signUp_success()
+            
+            delete_testing_object("user", self.driver, self.logger, self.configInfo)
 
     def open_SignUp_popup(self):
         self.base.beginOfTest_logFormat("open_SignUp_popup")
@@ -22,8 +24,7 @@ class Test_SignUp(BaseTest, unittest.TestCase):
             canOpen_popUp = True
             self.logger.info("Success. Can open the register popup.")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Cannot open the Register pop up", e,
-                self.configError["cannot_open_register_popup"], "Home")
+            error_handler("error", self.logger, "", "Failure. Cannot open the Register pop up", e, "", "")
         return canOpen_popUp
     
     def signUp_fail_lackOneField(self):
@@ -40,8 +41,7 @@ class Test_SignUp(BaseTest, unittest.TestCase):
             assert (message == expected_message)
             self.logger.info("Success. Tested the case of not entered the email field.")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Empty email field but can still registered. Broken implementation", e,
-                self.configError["empty_email_passed"], "Home")
+            error_handler("error", self.logger, "", "Failure. Empty email field but can still registered. Broken implementation", e, "", "")
             
     def signUp_fail_existingEmail(self):
         self.base.beginOfTest_logFormat("signUp_fail_existingEmail")
@@ -54,8 +54,7 @@ class Test_SignUp(BaseTest, unittest.TestCase):
             assert (message == "Email already taken")
             self.logger.info("Success. Tested the case of using existing email.")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Existing email was used to sign up the account. Broken implementation", e,
-                self.configError["existing_email_passed"], "Home")
+            error_handler("error", self.logger, "", "Failure. Existing email was used to sign up the account. Broken implementation", e, "", "")
 
     def signUp_fail_confirmPassword(self):
         self.base.beginOfTest_logFormat("signUp_fail_confirmPassword")
@@ -70,8 +69,7 @@ class Test_SignUp(BaseTest, unittest.TestCase):
             assert (message == expected_message)
             self.logger.info("Success. Tested the case of different entered password and confirmed password.")
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Confirm password was different from entered password. Broken implementation", e,
-                self.configError["incorrect_confirm_password"], "Home") 
+            error_handler("error", self.logger, "", "Failure. Confirm password was different from entered password. Broken implementation", e, "", "")
 
     def signUp_success(self):
         self.base.beginOfTest_logFormat("signUp_success")
@@ -81,23 +79,15 @@ class Test_SignUp(BaseTest, unittest.TestCase):
             self.driver.find_element(By.XPATH, "//input[@name='confirmPassword']").clear()
             enter_password(self.driver, self.logger, self.configInfo, "valid", "re_enter")
             click_register(self.driver, self.logger)
-            wait = WebDriverWait(self.driver, 2)
+            wait = WebDriverWait(self.driver, 4)
             wait.until(expected_conditions.visibility_of_element_located((By.TAG_NAME, "picture")))
             user_icon = self.driver.find_element(By.TAG_NAME, "picture")
             assert (user_icon.is_displayed())
             self.logger.debug("Saw the user icon")
             self.logger.info("Success. Tested registering a new account.")
-            
-            # Delete the testing account
-            testUser_id = get_user_info(self.configInfo, "id", "signUp")
-            admin_token = get_user_info(self.configInfo, "token", "admin")
-            delete_user(admin_token, testUser_id)
-            self.logger.debug("Deleting the testing user.")
-    
         except Exception as e:
-            error_handler(self.logger, self.configInfo, "Failure. Cannot register a new account.", e,
-                self.configError["cannot_register_account"], "Home")
-                
+            error_handler("error", self.logger, "", "Failure. Cannot register a new account.", e, "", "")
+            self.driver.get_screenshot_as_file("screenshot-failed-register.png")
                     
     # Test case 5: Enter all info but invalid email address, catch the message -> this is failing
     
