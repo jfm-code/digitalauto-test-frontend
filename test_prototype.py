@@ -14,6 +14,9 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             action = ActionChains(self.driver)
             action.move_by_offset(100, 100).click().perform() # Click outside the pop up
             self.driver.find_element(By.XPATH, "//button[text()='Open']").click() # Open the prototype detail page
+            
+            self.edit_prototype()
+            time.sleep(5)
             self.use_Code_dashboardConfig()
             self.check_widgetList_content()
             self.add_widget()
@@ -26,10 +29,48 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.modifyCode_checkUpdate("from_Code_to_Dashboard")
             self.run_code("no_error")
             self.modifyCode_checkUpdate("from_Dashboard_to_Code")
-            # self.run_code("error")
+            self.run_code("error")
         
             delete_testing_object("prototype", self.driver, self.logger, self.configInfo)
             delete_testing_object("model", self.driver, self.logger, self.configInfo)
+            
+    def edit_prototype(self):
+        self.base.beginOfTest_logFormat("edit_prototype")
+        try:
+            # edit the information
+            self.driver.find_element(By.XPATH, "//button[normalize-space()='Edit Prototype']").click()
+            self.driver.find_element(By.XPATH, "//div/label[text()='Problem']/following-sibling::div/div/input").send_keys("Testing Problem")
+            self.driver.find_element(By.XPATH, "//div/label[text()='Says who?']/following-sibling::div/div/input").send_keys("Testing People")
+            self.driver.find_element(By.XPATH, "//div/label[text()='Solution']/following-sibling::div/div/input").send_keys("Testing Solution")
+            complexity = self.driver.find_element(By.XPATH, "//label[text()='Complexity']/following-sibling::div/label/button[@role='combobox']")
+            complexity.click()
+            action = ActionChains(self.driver)
+            action.move_to_element(complexity).move_by_offset(0,100).click().perform()
+            status = self.driver.find_element(By.XPATH, "//label[text()='Status']/following-sibling::div/label/button[@role='combobox']")
+            status.click()
+            action1 = ActionChains(self.driver)
+            action1.move_to_element(status).move_by_offset(0,100).click().perform()
+            self.driver.find_element(By.XPATH, "//button[text()=' Change Image']").click()
+            self.driver.find_element(By.XPATH, "//input[@type='file']").send_keys(self.configInfo["test_image_path"])
+            self.driver.find_element(By.XPATH, "//button[text()='Save']").click()
+            
+            # verify the changes
+            object = self.driver.find_element(By.XPATH, "//label[text()='Testing Problem']")
+            assert (object.is_displayed())
+            object = self.driver.find_element(By.XPATH, "//label[text()='Testing People']")
+            assert (object.is_displayed())
+            object = self.driver.find_element(By.XPATH, "//label[text()='Testing Solution']")
+            assert (object.is_displayed())
+            object = self.driver.find_element(By.XPATH, "//label[text()='Released']")
+            assert (object.is_displayed())
+            object = self.driver.find_element(By.XPATH, "//label[text()='Low']")
+            assert (object.is_displayed())
+            object = self.driver.find_element(By.XPATH, "//div/img[contains(@src, 'https://upload.digitalauto.tech/data')]")
+            assert (object.is_displayed())
+            
+            self.logger.info("Success. Edited succesfully the information of prototype.")
+        except Exception as e:
+            error_handler("warning", self.logger, "", "Failure. Failed to edit the information of prototype.", e, "", "")
                 
     def run_code(self, mode):
         self.base.beginOfTest_logFormat(f"run_code_{mode}")
@@ -213,6 +254,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         self.base.beginOfTest_logFormat("add_widget")
         try:
             self.driver.find_element(By.XPATH, "(//div[contains(text(), 'Marketplace')])[2]").click()
+            time.sleep(3)
             self.driver.find_element(By.XPATH, "//label[text()='Simple Wiper Widget']").click()
             self.driver.find_element(By.XPATH, "//button[text()='Add selected widget']").click()
             widget_text = self.driver.find_element(By.XPATH, "//div[text()='Simple Wiper Widget']").text
