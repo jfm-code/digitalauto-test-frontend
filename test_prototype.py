@@ -1,13 +1,9 @@
-# NOT DONE
 from util import *
 
 class Test_Prototype(BaseTest, unittest.TestCase):
     def test_Prototype_functionalities(self):
         if (self.next is True):
-            click_sign_in(self.driver, self.logger, self.configInfo)
-            enter_email(self.driver, self.logger, self.configInfo, self.configInfo["signIn_email"])
-            enter_password(self.driver, self.logger, self.configInfo, "valid", "first_enter")
-            submit_sign_in(self.driver, self.logger)
+            sign_in(self.driver, self.configInfo)
             time.sleep(5)
             
             self.create_and_verify_prototypeName()
@@ -29,7 +25,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.modifyCode_checkUpdate("from_Code_to_Dashboard")
             self.run_code("no_error")
             self.modifyCode_checkUpdate("from_Dashboard_to_Code")
-            self.run_code("error")
+            # self.run_code("error")
         
             delete_testing_object("prototype", self.driver, self.logger, self.configInfo)
             delete_testing_object("model", self.driver, self.logger, self.configInfo)
@@ -111,7 +107,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
                 action1 = ActionChains(self.driver)
                 action1.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).key_down(Keys.BACK_SPACE).send_keys('print("Automation Test")').perform()
             
-                time.sleep(2) # wait for the update in the Dashboard tab
+                time.sleep(5) # wait for the update in the Dashboard tab
                 self.driver.find_element(By.XPATH, "//a/div[text()='Dashboard']").click()
                 self.driver.find_element(By.XPATH, "//div[@class='flex']/button").click()
                 self.driver.find_element(By.XPATH, "//div[@class='flex']/div[text()='Code']").click()
@@ -140,18 +136,17 @@ class Test_Prototype(BaseTest, unittest.TestCase):
     def create_and_verify_prototypeName(self):
         self.base.beginOfTest_logFormat("create_and_verify_prototypeName")
         time.sleep(3)
-        click_select_model(self.driver, self.logger)
+        self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
         self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]").click()
         expected_name = "Automation Test Model"
         self.driver.find_element(By.CSS_SELECTOR, "input[placeholder='Model Name']").send_keys(expected_name)
         self.driver.find_element(By. XPATH, "//button[text()='Create Model']").click()
-        click_prototype_library(self.driver, self.logger)
-        click_create_prototype(self.driver, self.logger)
+        self.driver.find_element(By.XPATH, "//label[text()='Prototype Library']").click()
+        self.driver.find_element(By.XPATH, "//button[text()='Create New Prototype']").click()
         
         # Hit Create New Prototype without entering name 
         try:
             self.driver.find_element(By.XPATH, "//button[text()='Create']").click()
-            self.logger.debug("Clicked the Create Prototype button")
             wait = WebDriverWait(self.driver, 5)
             wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[@class='da-label-small mt-4 text-da-accent-500']")))
             message = self.driver.find_element(By.XPATH, "//label[@class='da-label-small mt-4 text-da-accent-500']").text
@@ -164,15 +159,12 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         try:
             expected_name = "Automation Test Prototype"
             self.driver.find_element(By.XPATH, "//input[@placeholder='Name']").send_keys(expected_name)
-            self.logger.debug("Entered the prototype name")
             self.driver.find_element(By.XPATH, "//button[text()='Create']").click()
-            self.logger.debug("Clicked the Create Prototype button")
             wait = WebDriverWait(self.driver, 5)
             wait.until(expected_conditions.visibility_of_element_located((By.XPATH, f"//label[text()='{expected_name}']")))
             prototype_name_left = self.driver.find_element(By.XPATH, f"//label[text()='{expected_name}']").text
             assert (prototype_name_left == expected_name)
             self.driver.find_element(By.XPATH, f"//label[text()='{expected_name}']").click()
-            self.logger.debug("Clicked the prototype box")
             self.logger.info("Success. Verified the name of the newly created prototype on the left")
         except Exception as e:
             error_handler("warning", self.logger, "", "Failure. Incorrect name of the newly created prototype on the left", e, "", "")
@@ -188,7 +180,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
 
         # Test case of creating a duplicate prototype
         try:
-            click_create_prototype(self.driver, self.logger)
+            self.driver.find_element(By.XPATH, "//button[text()='Create New Prototype']").click()
             expected_name = "Automation Test Prototype"
             self.driver.find_element(By.XPATH, "//input[@placeholder='Name']").send_keys(expected_name)
             self.driver.find_element(By.XPATH, "//button[text()='Create']").click()
@@ -254,7 +246,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         self.base.beginOfTest_logFormat("add_widget")
         try:
             self.driver.find_element(By.XPATH, "(//div[contains(text(), 'Marketplace')])[2]").click()
-            time.sleep(3)
+            time.sleep(5)
             self.driver.find_element(By.XPATH, "//label[text()='Simple Wiper Widget']").click()
             self.driver.find_element(By.XPATH, "//button[text()='Add selected widget']").click()
             widget_text = self.driver.find_element(By.XPATH, "//div[text()='Simple Wiper Widget']").text

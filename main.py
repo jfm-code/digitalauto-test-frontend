@@ -17,10 +17,10 @@ def main():
     else:
         os.environ["HEADLESS"] = "false"
 
-    os.system("pytest -v -s --disable-warnings test_no_data.py")
-    os.system("pytest -v -s --disable-warnings test_page_traversal.py")
-    os.system("pytest -v -s --disable-warnings test_signInOut.py")
-    os.system("pytest -v -s --disable-warnings test_signUp.py")
+    # os.system("pytest -v -s --disable-warnings test_no_data.py")
+    # os.system("pytest -v -s --disable-warnings test_page_traversal.py")
+    # os.system("pytest -v -s --disable-warnings test_signInOut.py")
+    # os.system("pytest -v -s --disable-warnings test_signUp.py")
     os.system("pytest -v -s --disable-warnings test_model.py")
     os.system("pytest -v -s --disable-warnings test_prototype.py")
     

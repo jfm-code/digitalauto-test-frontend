@@ -18,7 +18,7 @@ class Test_Model(BaseTest, unittest.TestCase):
         signIn_button = self.driver.find_element(By.XPATH, "//button[text()='Sign in']")
         if (signIn_button.is_displayed()):
             self.logger.debug("User is not signing in")
-            click_select_model(self.driver, self.logger)
+            self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
             try:
                 createModel_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]")
                 if (createModel_button.is_displayed()):
@@ -28,27 +28,18 @@ class Test_Model(BaseTest, unittest.TestCase):
                 self.logger.info("Success. Tested the case of not seeing the 'Create New Model' button when not signing in")
     
     def SignIn_createModel(self):
-        self.base.beginOfTest_logFormat("SignIn_createModel")
-        self.logger.info("Started creating new model when signing in")
-        
-        click_sign_in(self.driver, self.logger, self.configInfo)
-        enter_email(self.driver, self.logger, self.configInfo, self.configInfo["signIn_email"])
-        enter_password(self.driver, self.logger, self.configInfo, "valid", "first_enter")
-        submit_sign_in(self.driver, self.logger)
-
-        time.sleep(5) # Explicit wait doesn't work here
-        click_select_model(self.driver, self.logger)
+        self.base.beginOfTest_logFormat("SignIn_createModel")        
+        sign_in(self.driver, self.configInfo)
+        time.sleep(5)
+        self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
         self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]").click()
-        self.logger.debug("Clicked the Create New Model button")
         wait = WebDriverWait(self.driver, 5)
         wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//img[@src='/imgs/profile.png']")))
-        
         self.check_dropdownContent()
         
         # Hit Create New Model button without entering name
         try:
             self.driver.find_element(By. XPATH, "//button[text()='Create Model']").click()
-            self.logger.debug("Submitted the Create Model button")
             wait = WebDriverWait(self.driver, 2)
             wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[@class='da-label-small mt-2 text-da-accent-500']")))
             message = self.driver.find_element(By.XPATH, "//label[@class='da-label-small mt-2 text-da-accent-500']").text
@@ -61,9 +52,7 @@ class Test_Model(BaseTest, unittest.TestCase):
         try:
             expected_name = "Automation Test Model"
             self.driver.find_element(By.CSS_SELECTOR, "input[placeholder='Model Name']").send_keys(expected_name)
-            self.logger.debug("Entered the name for the new model")
             self.driver.find_element(By. XPATH, "//button[text()='Create Model']").click()
-            self.logger.debug("Submitted the Create Model button")
             wait = WebDriverWait(self.driver, 4)
             wait.until(expected_conditions.visibility_of_element_located((By.XPATH, f"//label[text()='{expected_name}']")))
             self.logger.debug("Created a new model")
@@ -179,7 +168,6 @@ class Test_Model(BaseTest, unittest.TestCase):
     def create_delete_discussion(self):
         self.base.beginOfTest_logFormat("create_delete_discussion")
         try:
-            self.driver.find_element(By.XPATH, "//div[text()='Discussions']").click()
             self.driver.find_element(By.TAG_NAME, "textarea").send_keys("Automation Test Discussion")
             self.driver.find_element(By.XPATH, "//button[text()='Submit']").click()
             time.sleep(2)
