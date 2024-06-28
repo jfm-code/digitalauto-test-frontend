@@ -11,7 +11,7 @@ class Test_SignIn_SignOut(BaseTest, unittest.TestCase):
             
     def open_SignIn_popup(self):
         self.base.beginOfTest_logFormat("open_SignIn_popup")
-        click_sign_in(self.driver, self.logger, self.configInfo)
+        self.driver.find_element(By.XPATH, "//button[text()='Sign in']").click()
         canOpen_popUp = False
         try:
             popup = self.driver.find_element(By.TAG_NAME, "form")
@@ -25,9 +25,9 @@ class Test_SignIn_SignOut(BaseTest, unittest.TestCase):
     def signIn_invalid_password(self):
         self.base.beginOfTest_logFormat("signIn_invalid_password")
         try:
-            enter_email(self.driver, self.logger, self.configInfo, self.configInfo["signIn_email"])
-            enter_password(self.driver, self.logger, self.configInfo, "invalid", "first_enter")
-            submit_sign_in(self.driver, self.logger)
+            self.driver.find_element(By.XPATH, "//input[@name='email']").send_keys(self.configInfo["signIn_email"])
+            enter_password(self.driver, self.configInfo, "invalid", "first_enter")
+            self.driver.find_element(By.XPATH, "//button[@type='submit']").click()
             wait = WebDriverWait(self.driver, 2)
             wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[text()='Incorrect email or password']")))
             login_error = self.driver.find_element(By.XPATH, "//label[text()='Incorrect email or password']").text
@@ -41,8 +41,9 @@ class Test_SignIn_SignOut(BaseTest, unittest.TestCase):
         self.base.beginOfTest_logFormat("signIn_valid_password")
         try:
             self.driver.find_element(By.XPATH, "//input[@name='password']").clear()
-            enter_password(self.driver, self.logger, self.configInfo, "valid", "first_enter")
-            submit_sign_in(self.driver, self.logger)
+            enter_password(self.driver, self.configInfo, "valid", "first_enter")
+            self.driver.find_element(By.XPATH, "//button[@type='submit']").click()
+            time.sleep(5)
             user_icon = self.driver.find_element(By.TAG_NAME, "picture")
             assert (user_icon.is_displayed())
             self.logger.info("Success. Tested the valid login attempt.")
@@ -61,6 +62,7 @@ class Test_SignIn_SignOut(BaseTest, unittest.TestCase):
             logout_icon.click()
             self.logger.debug("Clicked the logout icon")
             signIn_button = self.driver.find_element(By.XPATH, "//button[text()='Sign in']")
+            time.sleep(5)
             assert (signIn_button.is_displayed())
             self.logger.info("Success. Tested logging out.")
         except Exception as e:

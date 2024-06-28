@@ -9,7 +9,7 @@ class Test_NoData(BaseTest, unittest.TestCase):
     def count_numOf_models(self):
         self.base.beginOfTest_logFormat("count_numOf_models")
         try:
-            click_select_model(self.driver, self.logger)
+            self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
             models = self.driver.find_elements(By.XPATH, "//div/a/div")
             assert (len(models) > 0)
             self.logger.info("Success. Tested the number of model components in model page")
