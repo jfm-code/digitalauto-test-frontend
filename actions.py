@@ -5,26 +5,13 @@ import re
 from urllib.parse import quote
 from selenium.webdriver.common.by import By
 
-def click_sign_in(driver, logger, config):
-    try:
-        driver.find_element(By.XPATH, "//button[text()='Sign in']").click()
-        logger.debug("Clicked the Sign In button")
-    except Exception as e:
-        error_message = "Failed to load the Sign In button"
-        logger.error(f"{error_message}: {e}")
-        email_content = "<!DOCTYPE html><html lang='en'><body><p>Failed to load the Sign In button.</p><p>Steps to Reproduce:</p><ol><li>Navigate to the home page.</li><li>Wait to see if the Sign In button can be loaded.</li></ol></p></body></html>"
-        email_subject = "Error occurred in the Home page"
-        send_email(config, email_content, email_subject)
-        
-def enter_name(driver, logger, config):
-    driver.find_element(By.XPATH, "//input[@name='fullName']").send_keys(config["signUp_name"])
-    logger.debug("Entered name")
+def sign_in(driver, configInfo):
+    driver.find_element(By.XPATH, "//button[text()='Sign in']").click()
+    driver.find_element(By.XPATH, "//input[@name='email']").send_keys(configInfo["signIn_email"])
+    enter_password(driver, configInfo, "valid", "first_enter")
+    driver.find_element(By.XPATH, "//button[@type='submit']").click()
 
-def enter_email(driver, logger, config, email_input):
-    driver.find_element(By.XPATH, "//input[@name='email']").send_keys(email_input)
-    logger.debug("Entered email")
-
-def enter_password(driver, logger, config, validity, mode):
+def enter_password(driver, config, validity, mode):
     if (validity == "valid"):
         pass_to_enter = config["correct_password"]
     elif (validity == "invalid"):
@@ -34,27 +21,6 @@ def enter_password(driver, logger, config, validity, mode):
     elif (mode == "re_enter"):
         path = "//input[@name='confirmPassword']"
     driver.find_element(By.XPATH, path).send_keys(pass_to_enter)
-    logger.debug(f"Entered {validity} password")
-
-def submit_sign_in(driver, logger):
-    driver.find_element(By.XPATH, "//button[@type='submit']").click()
-    logger.debug("Clicked the Submit button")
-    
-def click_register(driver, logger):
-    driver.find_element(By.XPATH, "//button[text()='Register']").click()
-    logger.debug("Clicked the Register button")
-    
-def click_select_model(driver, logger):
-    driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
-    logger.debug("Clicked the Select Model button")
-
-def click_prototype_library(driver, logger):
-    driver.find_element(By.XPATH, "//label[text()='Prototype Library']").click()
-    logger.debug("Clicked the Prototype Library button")
-    
-def click_create_prototype(driver, logger):
-    driver.find_element(By.XPATH, "//button[text()='Create New Prototype']").click()
-    logger.debug("Clicked the Create New Prototype button")
         
 def error_handler(level, logger, configInfo, error_message, exception, email_content, place_occur):
     if (level == "critical"):
@@ -102,7 +68,6 @@ def delete_testing_object(type, driver, logger, configInfo):
     except Exception as e:
         error_handler("warning", logger, "", f"Failure. Cannot use Postman API to delete the testing {type}.", e, "", "")
 
-# Postman helper functions
 def send_email(configInfo, email_content, email_subject, mode):
     if (mode == "now"):
         url = configInfo["email_url"]

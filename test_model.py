@@ -7,7 +7,8 @@ class Test_Model(BaseTest, unittest.TestCase):
             self.SignIn_createModel() # Also check the dropdown content inside this function
             self.check_modelVisibility() 
             self.add_member_contributor()
-            self.create_wishlist_API() # NOT DONE
+            self.create_delete_wishlist_API() # Also create and delete discussion
+            self.use_API_filter()
             
             delete_testing_object("model", self.driver, self.logger, self.configInfo)
     
@@ -17,7 +18,7 @@ class Test_Model(BaseTest, unittest.TestCase):
         signIn_button = self.driver.find_element(By.XPATH, "//button[text()='Sign in']")
         if (signIn_button.is_displayed()):
             self.logger.debug("User is not signing in")
-            click_select_model(self.driver, self.logger)
+            self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
             try:
                 createModel_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]")
                 if (createModel_button.is_displayed()):
@@ -27,27 +28,18 @@ class Test_Model(BaseTest, unittest.TestCase):
                 self.logger.info("Success. Tested the case of not seeing the 'Create New Model' button when not signing in")
     
     def SignIn_createModel(self):
-        self.base.beginOfTest_logFormat("SignIn_createModel")
-        self.logger.info("Started creating new model when signing in")
-        
-        click_sign_in(self.driver, self.logger, self.configInfo)
-        enter_email(self.driver, self.logger, self.configInfo, self.configInfo["signIn_email"])
-        enter_password(self.driver, self.logger, self.configInfo, "valid", "first_enter")
-        submit_sign_in(self.driver, self.logger)
-
-        time.sleep(5) # Explicit wait doesn't work here
-        click_select_model(self.driver, self.logger)
+        self.base.beginOfTest_logFormat("SignIn_createModel")        
+        sign_in(self.driver, self.configInfo)
+        time.sleep(5)
+        self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
         self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]").click()
-        self.logger.debug("Clicked the Create New Model button")
         wait = WebDriverWait(self.driver, 5)
         wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//img[@src='/imgs/profile.png']")))
-        
         self.check_dropdownContent()
         
         # Hit Create New Model button without entering name
         try:
             self.driver.find_element(By. XPATH, "//button[text()='Create Model']").click()
-            self.logger.debug("Submitted the Create Model button")
             wait = WebDriverWait(self.driver, 2)
             wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[@class='da-label-small mt-2 text-da-accent-500']")))
             message = self.driver.find_element(By.XPATH, "//label[@class='da-label-small mt-2 text-da-accent-500']").text
@@ -60,9 +52,7 @@ class Test_Model(BaseTest, unittest.TestCase):
         try:
             expected_name = "Automation Test Model"
             self.driver.find_element(By.CSS_SELECTOR, "input[placeholder='Model Name']").send_keys(expected_name)
-            self.logger.debug("Entered the name for the new model")
             self.driver.find_element(By. XPATH, "//button[text()='Create Model']").click()
-            self.logger.debug("Submitted the Create Model button")
             wait = WebDriverWait(self.driver, 4)
             wait.until(expected_conditions.visibility_of_element_located((By.XPATH, f"//label[text()='{expected_name}']")))
             self.logger.debug("Created a new model")
@@ -70,7 +60,7 @@ class Test_Model(BaseTest, unittest.TestCase):
             assert (model_name == expected_name or model_name == 'Model "Automation Test Model" created successfully')
             self.logger.info("Success. Verified the name of the new model")
         except Exception as e:
-            error_handler("warning", self.logger, "Failure. Entered new model name is different from resulting new model name", e, "", "")
+            error_handler("warning", self.logger, self.configInfo, "Failure. Entered new model name is different from resulting new model name", e, "", "")
                     
     def check_dropdownContent(self):
         self.base.beginOfTest_logFormat("check_dropdownContent")
@@ -147,8 +137,66 @@ class Test_Model(BaseTest, unittest.TestCase):
         result_text = self.driver.find_element(By.XPATH, "//div[@class='py-1 grow']/label").text
         assert (result_text == expected_result)
         
-    def create_wishlist_API(self):
+    def create_delete_wishlist_API(self):
+        self.base.beginOfTest_logFormat("create_delete_wishlist_API")
         self.driver.find_element(By.XPATH, "//div[text()='Vehicle APIs']").click()
         time.sleep(2)
-        self.driver.find_element(By.XPATH, "//button[contains(., 'Add Wishlist API')]").click()
-        self.driver.find_element(By.XPATH, "//input[@name='name']").send_keys("Testing API")
+        try:
+            self.driver.find_element(By.XPATH, "//button[contains(., 'Add Wishlist API')]").click()
+            self.driver.find_element(By.XPATH, "//input[@name='name']").send_keys("Vehicle")
+            object = self.driver.find_element(By.XPATH, "//label[contains(text(),'API name must start with')]")
+            assert (object.text == 'API name must start with "Vehicle."')   
+            time.sleep(3)
+            self.driver.find_element(By.XPATH, "//input[@name='name']").send_keys(".AutomationTest")
+            self.driver.find_element(By.XPATH, "//button[text()='Create']").click()
+            time.sleep(2)
+            self.driver.find_element(By.TAG_NAME, "input").send_keys("Vehicle.Automation")
+            self.driver.find_element(By.XPATH, "//label[text()='Vehicle.AutomationTest']").click()
+            self.logger.info("Success. Created successfully a wishlist API.")
+        except Exception as e:
+            error_handler("error", self.logger, self.configInfo, "Failure. Cannot create a wishlist API.", e, "", "")
+        
+        self.create_delete_discussion()
+        
+        try:
+            self.driver.find_element(By.XPATH, "//div[text()='Delete Wishlist API']").click()
+            self.driver.find_element(By.XPATH, "//button[text()='Confirm']").click()
+            self.logger.info("Success. Deleted successfully a wishlist API.")
+        except Exception as e:
+            error_handler("warning", self.logger, self.configInfo, "Failure. Cannot delete a wishlist API.", e, "", "")
+        
+    def create_delete_discussion(self):
+        self.base.beginOfTest_logFormat("create_delete_discussion")
+        try:
+            self.driver.find_element(By.TAG_NAME, "textarea").send_keys("Automation Test Discussion")
+            self.driver.find_element(By.XPATH, "//button[text()='Submit']").click()
+            time.sleep(2)
+            object = self.driver.find_element(By.XPATH, "//div[@class='whitespace-pre-wrap da-label-small max-h-[200px] overflow-y-auto']")
+            assert (object.text == "Automation Test Discussion")
+            self.logger.info("Success. Created successfully a discussion.")
+        except Exception as e:
+            error_handler("warning", self.logger, self.configInfo, "Failure. Cannot create a discussion.", e, "", "")
+            
+        try:
+            self.driver.find_element(By.XPATH, "//div[@class='inline-flex']/span/button[@class='da-btn da-btn-plain da-btn-sm']").click()
+            self.driver.find_element(By.XPATH, "//button[text()=' Delete']").click()
+            self.driver.find_element(By.XPATH, "//button[text()='Confirm']").click()
+            time.sleep(2)
+            self.logger.info("Success. Deleted successfully a discussion.")
+        except Exception as e:
+            error_handler("warning", self.logger, self.configInfo, "Failure. Cannot delete a discussion.", e, "", "")
+            
+    def use_API_filter(self):
+        self.base.beginOfTest_logFormat("use_API_filter")
+        for _ in range(20):
+            self.driver.find_element(By.TAG_NAME, "input").send_keys(Keys.BACK_SPACE)
+        self.driver.find_element(By.TAG_NAME, "input").send_keys("Vehicle.Body")
+        time.sleep(2)
+        self.driver.find_element(By.XPATH, "//button[normalize-space()='Filter']").click()
+        self.driver.find_element(By.XPATH, "//span[text()='Branch']").click()
+        self.driver.find_element(By.XPATH, "//span[text()='Actuator']").click()
+        self.driver.find_element(By.XPATH, "//span[text()='Attribute']").click()
+        numOf_sensors = self.driver.find_elements(By.XPATH, "//label[text()='sensor']")
+        assert (len(numOf_sensors) > 0)
+        time.sleep(3)
+        self.driver.find_element(By.XPATH, "//label[text()='COVESA VSS 4.1']").click()
