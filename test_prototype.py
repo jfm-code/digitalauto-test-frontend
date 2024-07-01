@@ -136,11 +136,8 @@ class Test_Prototype(BaseTest, unittest.TestCase):
     def create_and_verify_prototypeName(self):
         self.base.beginOfTest_logFormat("create_and_verify_prototypeName")
         time.sleep(3)
-        self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
-        self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]").click()
-        expected_name = "Automation Test Model"
-        self.driver.find_element(By.CSS_SELECTOR, "input[placeholder='Model Name']").send_keys(expected_name)
-        self.driver.find_element(By. XPATH, "//button[text()='Create Model']").click()
+        create_new_model(self.driver, "Automation Test Model")
+        time.sleep(3)
         self.driver.find_element(By.XPATH, "//label[text()='Prototype Library']").click()
         self.driver.find_element(By.XPATH, "//button[text()='Create New Prototype']").click()
         
@@ -195,11 +192,12 @@ class Test_Prototype(BaseTest, unittest.TestCase):
 
         self.driver.find_element(By.XPATH, "//div[text()='Code']").click()
         self.driver.find_element(By.XPATH, "//div[text()='Dashboard Config']").click()
-        self.driver.find_element(By.XPATH, "//div[text()='1']").click()
-        self.driver.find_element(By.XPATH, "//div[text()='3']").click()
-        self.driver.find_element(By.XPATH, "//div[text()='4']").click()
-        self.driver.find_element(By.XPATH, "//div[text()='8']").click()
-        self.driver.find_element(By.XPATH, "//div[text()='9']").click()
+        
+        self.driver.find_element(By.XPATH, "//div[contains(@class,'border')][normalize-space()='1']").click()
+        self.driver.find_element(By.XPATH, "//div[contains(@class,'border')][normalize-space()='3']").click()
+        self.driver.find_element(By.XPATH, "//div[contains(@class,'border')][normalize-space()='4']").click()
+        self.driver.find_element(By.XPATH, "//div[contains(@class,'border')][normalize-space()='8']").click()
+        self.driver.find_element(By.XPATH, "//div[contains(@class,'border')][normalize-space()='9']").click()
         
         try:
             add_widget_btn = self.driver.find_element(By.XPATH, "//button[text()='Add widget']")
@@ -210,7 +208,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.logger.info("Success. The 'Add widget' button did not appear when invalid boxes are selected.")
             
         try:
-            self.driver.find_element(By.XPATH, "//div[@class='flex-1 flex flex-col w-full overflow-hidden']/div/div/div[text()='1']").click()
+            self.driver.find_element(By.XPATH, "//div[contains(@class,'border')][normalize-space()='1']").click()
             self.driver.find_element(By.XPATH, "//button[text()='Add widget']").click()
             self.logger.info("Success. The 'Add widget' button appeared when valid boxes are selected")
         except Exception as e:

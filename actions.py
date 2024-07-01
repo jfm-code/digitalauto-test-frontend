@@ -22,6 +22,12 @@ def enter_password(driver, config, validity, mode):
         path = "//input[@name='confirmPassword']"
     driver.find_element(By.XPATH, path).send_keys(pass_to_enter)
         
+def create_new_model(driver, model_name):
+    driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
+    driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]").click()
+    driver.find_element(By.CSS_SELECTOR, "input[placeholder='Model Name']").send_keys(model_name)
+    driver.find_element(By. XPATH, "//button[text()='Create Model']").click()
+
 def error_handler(level, logger, configInfo, error_message, exception, email_content, place_occur):
     if (level == "critical"):
         logger.critical(f"{error_message}: {exception}")
@@ -32,7 +38,7 @@ def error_handler(level, logger, configInfo, error_message, exception, email_con
         logger.error(f"{error_message}: {exception}")
     elif (level == "warning"):
         logger.warning(f"{error_message}: {exception}")
-    
+
 def delete_testing_object(type, driver, logger, configInfo):
     try:
         # Get ID and token
