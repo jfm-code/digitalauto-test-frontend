@@ -9,8 +9,8 @@ class Test_Model(BaseTest, unittest.TestCase):
             self.add_member_contributor()
             self.create_delete_wishlist_API() # Also create and delete discussion
             self.use_API_filter()
-            
-            delete_testing_object("model", self.driver, self.logger, self.configInfo)
+            self.create_maximumModels()
+            self.delete_testing_models()
     
     def noSignIn_createModel(self):
         self.base.beginOfTest_logFormat("noSignIn_createModel")
@@ -50,14 +50,14 @@ class Test_Model(BaseTest, unittest.TestCase):
             
         # Hit Create New Model button and entering name
         try:
-            expected_name = "Automation Test Model"
+            expected_name = "Automation Test Model 1"
             self.driver.find_element(By.CSS_SELECTOR, "input[placeholder='Model Name']").send_keys(expected_name)
             self.driver.find_element(By. XPATH, "//button[text()='Create Model']").click()
             wait = WebDriverWait(self.driver, 4)
             wait.until(expected_conditions.visibility_of_element_located((By.XPATH, f"//label[text()='{expected_name}']")))
             self.logger.debug("Created a new model")
             model_name = self.driver.find_element(By.XPATH, f"//label[text()='{expected_name}']").text
-            assert (model_name == expected_name or model_name == 'Model "Automation Test Model" created successfully')
+            assert (model_name == expected_name or model_name == 'Model "Automation Test Model 1" created successfully')
             self.logger.info("Success. Verified the name of the new model")
         except Exception as e:
             error_handler("warning", self.logger, self.configInfo, "Failure. Entered new model name is different from resulting new model name", e, "", "")
@@ -188,15 +188,71 @@ class Test_Model(BaseTest, unittest.TestCase):
             
     def use_API_filter(self):
         self.base.beginOfTest_logFormat("use_API_filter")
-        for _ in range(20):
-            self.driver.find_element(By.TAG_NAME, "input").send_keys(Keys.BACK_SPACE)
-        self.driver.find_element(By.TAG_NAME, "input").send_keys("Vehicle.Body")
-        time.sleep(2)
-        self.driver.find_element(By.XPATH, "//button[normalize-space()='Filter']").click()
-        self.driver.find_element(By.XPATH, "//span[text()='Branch']").click()
-        self.driver.find_element(By.XPATH, "//span[text()='Actuator']").click()
-        self.driver.find_element(By.XPATH, "//span[text()='Attribute']").click()
-        numOf_sensors = self.driver.find_elements(By.XPATH, "//label[text()='sensor']")
-        assert (len(numOf_sensors) > 0)
+        try:
+            for _ in range(20):
+                self.driver.find_element(By.TAG_NAME, "input").send_keys(Keys.BACK_SPACE)
+            self.driver.find_element(By.TAG_NAME, "input").send_keys("Vehicle.Body")
+            time.sleep(2)
+            self.driver.find_element(By.XPATH, "//button[normalize-space()='Filter']").click()
+            self.driver.find_element(By.XPATH, "//span[text()='Branch']").click()
+            self.driver.find_element(By.XPATH, "//span[text()='Actuator']").click()
+            self.driver.find_element(By.XPATH, "//span[text()='Attribute']").click()
+            numOf_sensors = self.driver.find_elements(By.XPATH, "//label[text()='sensor']")
+            assert (len(numOf_sensors) > 0)
+            self.logger.info("Success. The API filter is working properly.")
+        except Exception as e:
+            error_handler("error", self.logger, "", "Failure. The API filter is not working properly.", e, "", "")
         time.sleep(3)
-        self.driver.find_element(By.XPATH, "//label[text()='COVESA VSS 4.1']").click()
+        
+        try:
+            self.driver.find_element(By.XPATH, "//label[text()='COVESA VSS 4.1']").click()
+            self.driver.find_element(By.XPATH, "//span[text()='Branch']")
+            error_handler("warning", self.logger, "", "Failure. Cannot close the API popup filter when clicking outside the popup.", e, "", "")
+        except Exception as e:
+            self.logger.info("Success. Closed successfully the API popup filter when clicking outside the popup.")
+
+    def create_maximumModels(self):
+        self.base.beginOfTest_logFormat("create_maximumModels")
+        try:
+            self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
+            self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]").click()
+            self.driver.find_element(By.CSS_SELECTOR, "input[placeholder='Model Name']").send_keys("Automation Test Model 2")
+            self.driver.find_element(By. XPATH, "//button[text()='Create Model']").click()
+            time.sleep(3)
+            self.driver.back()
+            self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]").click()
+            self.driver.find_element(By.CSS_SELECTOR, "input[placeholder='Model Name']").send_keys("Automation Test Model 3")
+            self.driver.find_element(By. XPATH, "//button[text()='Create Model']").click()
+            time.sleep(3)
+            self.driver.back()
+            self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]").click()
+            self.driver.find_element(By.CSS_SELECTOR, "input[placeholder='Model Name']").send_keys("Automation Test Model 4")
+            self.driver.find_element(By. XPATH, "//button[text()='Create Model']").click()
+            
+            wait = WebDriverWait(self.driver, 2)
+            wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//label[@class='da-label-small mt-2 text-da-accent-500']")))
+            message = self.driver.find_element(By.XPATH, "//label[@class='da-label-small mt-2 text-da-accent-500']").text
+            assert (message == "Users are limited to 3 models")
+            self.logger.info("Success. Tested the case of creating maximum number of models.")
+        except Exception as e:
+            error_handler("warning", self.logger, "", "Failure. User can create more than 3 models.", e, "", "")
+        
+    def delete_testing_models(self): # this is not a test case, do not need try-except block
+        self.base.beginOfTest_logFormat("delete_testing_models")
+        action = ActionChains(self.driver)
+        action.move_by_offset(100, 100).click().perform() # Click outside the pop up
+        self.driver.refresh()
+        self.driver.find_element(By.XPATH, "//label[text()='Automation Test Model 1']").click()
+        delete_testing_object("model", self.driver, self.logger, self.configInfo)
+        print("URL: ", self.driver.current_url)
+        self.driver.back()
+        self.driver.refresh()
+        self.driver.find_element(By.XPATH, "//label[text()='Automation Test Model 2']").click()
+        delete_testing_object("model", self.driver, self.logger, self.configInfo)
+        print("URL: ", self.driver.current_url)
+        self.driver.back()
+        self.driver.refresh()
+        self.driver.find_element(By.XPATH, "//label[text()='Automation Test Model 3']").click()
+        delete_testing_object("model", self.driver, self.logger, self.configInfo)
+        print("URL: ", self.driver.current_url)
+        self.driver.back()
