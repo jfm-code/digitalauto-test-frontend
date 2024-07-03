@@ -1,6 +1,7 @@
 import os
 import json
 import argparse
+from datetime import datetime
 from actions import send_email, get_instance_name
 
 def main():
@@ -18,11 +19,11 @@ def main():
         os.environ["HEADLESS"] = "false"
 
     # os.system("pytest -v -s --disable-warnings test_no_data.py")
-    # os.system("pytest -v -s --disable-warnings test_page_traversal.py")
+    os.system("pytest -v -s --disable-warnings test_page_traversal.py")
     # os.system("pytest -v -s --disable-warnings test_signInOut.py")
     # os.system("pytest -v -s --disable-warnings test_signUp.py")
-    os.system("pytest -v -s --disable-warnings test_model.py")
-    os.system("pytest -v -s --disable-warnings test_prototype.py")
+    # os.system("pytest -v -s --disable-warnings test_model.py")
+    # os.system("pytest -v -s --disable-warnings test_prototype.py")
     
 if __name__ == "__main__":
     main()
@@ -30,4 +31,6 @@ if __name__ == "__main__":
         configInfo = json.load(config_file)
     instance = get_instance_name(configInfo)
     subject = f"[{instance}-instance] Warnings and errors occured"
-    send_email(configInfo, "", subject, "later")
+    current_time = str(datetime.now())
+    current_date = current_time[:10]
+    send_email(configInfo, "", subject, "later", current_date)

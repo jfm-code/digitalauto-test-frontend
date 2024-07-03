@@ -33,7 +33,7 @@ def error_handler(level, logger, configInfo, error_message, exception, email_con
         logger.critical(f"{error_message}: {exception}")
         instance = get_instance_name(configInfo)
         email_subject = f"A critical error occurred in the {place_occur} page of {instance}"
-        send_email(configInfo, email_content, email_subject, "now")
+        send_email(configInfo, email_content, email_subject, "now", "")
     elif (level == "error"):
         logger.error(f"{error_message}: {exception}")
     elif (level == "warning"):
@@ -74,7 +74,7 @@ def delete_testing_object(type, driver, logger, configInfo):
     except Exception as e:
         error_handler("warning", logger, "", f"Failure. Cannot use Postman API to delete the testing {type}.", e, "", "")
 
-def send_email(configInfo, email_content, email_subject, mode):
+def send_email(configInfo, email_content, email_subject, mode, date):
     if (mode == "now"):
         url = configInfo["email_url"]
         sending_obj = {
@@ -88,7 +88,7 @@ def send_email(configInfo, email_content, email_subject, mode):
         for filename in os.listdir("logs"):
             file_path = os.path.join("logs", filename)
             if os.path.isfile(file_path):
-                if (check_warning_error(file_path) is True):
+                if ((check_warning_error(file_path) is True) and (file_path[5:15] == date)):
                     # Upload the log file and get the link
                     file_link = upload_file(file_path)
                     log_links.append(file_link)
@@ -113,7 +113,7 @@ def send_email(configInfo, email_content, email_subject, mode):
                 html_content += "<br></br>"
             html_content += "</ul></body></html>"
             encoded_html_content = quote(html_content, safe='')
-            send_email(configInfo, encoded_html_content, email_subject, "now")
+            send_email(configInfo, encoded_html_content, email_subject, "now", "")
 
 def upload_file(file_path):
     with open(file_path, 'rb') as file:

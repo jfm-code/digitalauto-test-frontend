@@ -17,7 +17,7 @@ class Test_PageTraversal(BaseTest, unittest.TestCase):
             self.driver.switch_to.window(windows_opened[1])
             pattern = r"https://(?:www\.)?([^/]+)"
             match = re.findall(pattern, self.driver.current_url)
-            assert (match[0] in page_url)
+            assert (match[0] not in page_url)
             self.logger.info(f"Success. Opened and verified {name} Link")
             self.driver.close()
             self.driver.switch_to.window(windows_opened[0])
