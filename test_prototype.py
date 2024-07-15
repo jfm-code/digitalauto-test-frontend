@@ -61,7 +61,9 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             assert (object.is_displayed())
             object = self.driver.find_element(By.XPATH, "//label[text()='Low']")
             assert (object.is_displayed())
-            object = self.driver.find_element(By.XPATH, "//div/img[contains(@src, 'https://upload.digitalauto.tech/data')]")
+            wait = WebDriverWait(self.driver, 3)
+            wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//img[contains(@src, 'https://backend-core-dev.digital.auto/v2/file/data/store-be')]")))
+            object = self.driver.find_element(By.XPATH, "//img[contains(@src, 'https://backend-core-dev.digital.auto/v2/file/data/store-be')]")
             assert (object.is_displayed())
             
             self.logger.info("Success. Edited succesfully the information of prototype.")

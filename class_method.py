@@ -1,5 +1,4 @@
 import json
-import datetime
 from set_up import Base  # Importing the Base class
 
 class BaseTest:
@@ -27,4 +26,3 @@ class BaseTest:
 
     def tearDown(self):
         self.base.clean_up()
-        
