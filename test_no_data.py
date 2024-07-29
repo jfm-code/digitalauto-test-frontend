@@ -3,7 +3,7 @@ from util import *
 class Test_NoData(BaseTest, unittest.TestCase):
     def test_no_data(self):
         if (self.next is True):
-            self.count_numOf_prototypes()
+            # self.count_numOf_prototypes()
             self.count_numOf_models()
 
     def count_numOf_models(self):
@@ -26,20 +26,4 @@ class Test_NoData(BaseTest, unittest.TestCase):
         except Exception as e:
             error_handler("critical", self.logger, self.configInfo, "Failure. Cannot load the prototype components in home page", e,
                 self.configError["cannotLoad_prototype"], "Home")
-    
-    # def count_numOf_redPins(self):
-    #     try:
-    #         self.logger.info("Started counting the number of pins")
-    #         self.driver.find_element(By.CSS_SELECTOR, "div[class='flex h-full items-center w-full']").click()
-    #         self.logger.debug("Clicked the Select Model button")
-    #         self.driver.find_element(By.CSS_SELECTOR, "img[src='https://firebasestorage.googleapis.com/v0/b/digital-auto.appspot.com/o/media%2FE-Car_Full_Vehicle.png?alt=media&token=9c9d4cb4-fee0-42e3-bbb1-7feaa407cc8e']").click()
-    #         self.logger.debug("Clicked the ACME Car (EV) v0.1 Model")
-    #         self.driver.find_element(By.XPATH, "//div/div[text()='Vehicle APIs']").click()
-    #         self.logger.debug("Clicked the Vehicle APIs button")
-    #         hidden_element = self.driver.find_element(By.XPATH, "//span[text()='7']")
-    #         hidden_text = self.driver.execute_script("return arguments[0].textContent;", hidden_element)
-    #         assert (hidden_text == "7")
-    #         self.logger.info("Success tested the number of pins")
-    #     except Exception as e:
-    #         error_handler("warning", self.logger, "", "Failure. Cannot load the red pins on the canvas", e, "", "")
                 

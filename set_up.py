@@ -34,7 +34,7 @@ class Base():
         log_dir = configInfo.get("log_dir", "logs")  # Default to "logs" if not specified
         os.makedirs(log_dir, exist_ok=True)  # Ensure the log directory exists
         self.log_file_name = os.path.join(log_dir, f"{timestamp}.log")
-        self.logger = logging.getLogger(      )
+        self.logger = logging.getLogger()
         fileHandler = logging.FileHandler(self.log_file_name)
         formatter = logging.Formatter(f"{timestamp} :%(levelname)s: %(filename)s :%(message)s")
         fileHandler.setFormatter(formatter)

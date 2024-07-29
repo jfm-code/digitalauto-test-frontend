@@ -34,10 +34,11 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         self.base.beginOfTest_logFormat("edit_prototype")
         try:
             # edit the information
+            self.driver.find_element(By.XPATH, "//button[normalize-space()='Prototype Action']").click()
             self.driver.find_element(By.XPATH, "//button[normalize-space()='Edit Prototype']").click()
             self.driver.find_element(By.XPATH, "//div/label[text()='Problem']/following-sibling::div/div/input").send_keys("Testing Problem")
             self.driver.find_element(By.XPATH, "//div/label[text()='Says who?']/following-sibling::div/div/input").send_keys("Testing People")
-            self.driver.find_element(By.XPATH, "//div/label[text()='Solution']/following-sibling::div/div/input").send_keys("Testing Solution")
+            self.driver.find_element(By.XPATH, "//div/label[text()='Solution']/following-sibling::div/label/textarea").send_keys("Testing Solution")
             complexity = self.driver.find_element(By.XPATH, "//label[text()='Complexity']/following-sibling::div/label/button[@role='combobox']")
             complexity.click()
             action = ActionChains(self.driver)
@@ -46,7 +47,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             status.click()
             action1 = ActionChains(self.driver)
             action1.move_to_element(status).move_by_offset(0,100).click().perform()
-            self.driver.find_element(By.XPATH, "//button[text()=' Change Image']").click()
+            self.driver.find_element(By.XPATH, "//button[text()=' Update Image']").click()
             self.driver.find_element(By.XPATH, "//input[@type='file']").send_keys(self.configInfo["test_image_path"])
             self.driver.find_element(By.XPATH, "//button[text()='Save']").click()
             
@@ -62,8 +63,8 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             object = self.driver.find_element(By.XPATH, "//label[text()='Low']")
             assert (object.is_displayed())
             wait = WebDriverWait(self.driver, 3)
-            wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//img[contains(@src, 'https://backend-core-dev.digital.auto/v2/file/data/store-be')]")))
-            object = self.driver.find_element(By.XPATH, "//img[contains(@src, 'https://backend-core-dev.digital.auto/v2/file/data/store-be')]")
+            wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//img[contains(@src, 'https://upload.digitalauto.tech/data/store-be')]")))
+            object = self.driver.find_element(By.XPATH, "//img[contains(@src, 'https://upload.digitalauto.tech/data/store-be')]")
             assert (object.is_displayed())
             
             self.logger.info("Success. Edited succesfully the information of prototype.")
