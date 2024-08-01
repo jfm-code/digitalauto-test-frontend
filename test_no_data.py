@@ -3,7 +3,7 @@ from util import *
 class Test_NoData(BaseTest, unittest.TestCase):
     def test_no_data(self):
         if (self.next is True):
-            # self.count_numOf_prototypes()
+            self.count_numOf_prototypes()
             self.count_numOf_models()
 
     def count_numOf_models(self):
@@ -20,6 +20,8 @@ class Test_NoData(BaseTest, unittest.TestCase):
     def count_numOf_prototypes(self):
         self.base.beginOfTest_logFormat("count_numOf_prototypes")
         try:
+            sign_in(self.driver, self.configInfo)
+            time.sleep(3)
             prototypes = self.driver.find_elements(By.XPATH, "//div/a/div")
             assert (len(prototypes) > 0)
             self.logger.info("Success. Tested the number of prototype components in home page")

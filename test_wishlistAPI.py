@@ -15,10 +15,10 @@ class Test_Model(BaseTest, unittest.TestCase):
             
     def create_delete_wishlist_API(self):
         self.base.beginOfTest_logFormat("create_delete_wishlist_API")
-        self.driver.find_element(By.XPATH, "//div[text()='Vehicle APIs']").click()
+        self.driver.find_element(By.XPATH, "//div[text()='Vehicle Signals']").click()
         time.sleep(2)
         try:
-            self.driver.find_element(By.XPATH, "//button[contains(., 'Add Wishlist API')]").click()
+            self.driver.find_element(By.XPATH, "//button[contains(., 'Add Wishlist Signal')]").click()
             self.driver.find_element(By.XPATH, "//input[@name='name']").send_keys("Vehicle")
             object = self.driver.find_element(By.XPATH, "//label[contains(text(),'API name must start with')]")
             assert (object.text == 'API name must start with "Vehicle."')   
@@ -35,7 +35,7 @@ class Test_Model(BaseTest, unittest.TestCase):
         self.create_delete_discussion()
         
         try:
-            self.driver.find_element(By.XPATH, "//div[text()='Delete Wishlist API']").click()
+            self.driver.find_element(By.XPATH, "//div[text()='Delete Wishlist Signal']").click()
             self.driver.find_element(By.XPATH, "//button[text()='Confirm']").click()
             self.logger.info("Success. Deleted successfully a wishlist API.")
         except Exception as e:
