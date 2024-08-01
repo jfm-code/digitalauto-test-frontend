@@ -1,4 +1,4 @@
-from util import *
+from setup_methods.util import *
 
 class Test_SignUp(BaseTest, unittest.TestCase):
     
@@ -107,4 +107,4 @@ class Test_SignUp(BaseTest, unittest.TestCase):
             self.logger.info("Success. Tested registering a new account.")
         except Exception as e:
             error_handler("error", self.logger, "", "Failure. Cannot register a new account.", e, "", "")
-            self.driver.get_screenshot_as_file("screenshot-failed-register.png")
+            self.driver.get_screenshot_as_file("images\\screenshot-failed-register.png")

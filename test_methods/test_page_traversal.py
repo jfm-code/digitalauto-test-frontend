@@ -1,4 +1,4 @@
-from util import *
+from setup_methods.util import *
 
 class Test_PageTraversal(BaseTest, unittest.TestCase):
     def test_open_links(self):

@@ -1,4 +1,4 @@
-from util import *
+from setup_methods.util import *
 
 class Test_Model(BaseTest, unittest.TestCase):
     def test_Model_functionalities(self):

@@ -2,7 +2,7 @@ import os
 import json
 import argparse
 from datetime import datetime
-from actions import send_email, get_instance_name
+from setup_methods.actions import send_email, get_instance_name
 
 def main():
     parser = argparse.ArgumentParser(
@@ -18,13 +18,13 @@ def main():
     else:
         os.environ["HEADLESS"] = "false"
 
-    os.system("pytest -v -s --disable-warnings test_no_data.py")
-    os.system("pytest -v -s --disable-warnings test_page_traversal.py")
-    os.system("pytest -v -s --disable-warnings test_signInOut.py")
-    os.system("pytest -v -s --disable-warnings test_signUp.py")
-    os.system("pytest -v -s --disable-warnings test_model.py")
-    os.system("pytest -v -s --disable-warnings test_prototype.py")
-    os.system("pytest -v -s --disable-warnings test_wishlistAPI.py")
+    os.system("pytest -v -s --disable-warnings test_methods/test_no_data.py")
+    os.system("pytest -v -s --disable-warnings test_methods/test_page_traversal.py")
+    os.system("pytest -v -s --disable-warnings test_methods/test_signInOut.py")
+    os.system("pytest -v -s --disable-warnings test_methods/test_signUp.py")
+    os.system("pytest -v -s --disable-warnings test_methods/test_model.py")
+    os.system("pytest -v -s --disable-warnings test_methods/test_prototype.py")
+    os.system("pytest -v -s --disable-warnings test_methods/test_wishlistAPI.py")
     
 if __name__ == "__main__":
     main()

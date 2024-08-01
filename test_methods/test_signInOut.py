@@ -1,4 +1,4 @@
-from util import *
+from setup_methods.util import *
 
 class Test_SignIn_SignOut(BaseTest, unittest.TestCase):
     def test_SignIn_and_SignOut(self):

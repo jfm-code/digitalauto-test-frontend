@@ -11,12 +11,13 @@ with open('info.json') as config_file:
 
 class Base():
     def setup_browser(self):
+        # Setting up Headless mode
         headless_mode = os.getenv("HEADLESS", "false").lower() == "true"
         options = Options()
-
         if headless_mode:
             options.add_argument("--headless=new")
             self.logger.info("Running in headless mode")
+            
         # Setting up Chrome Browser
         self.driver = webdriver.Chrome(options=options)
         try:
@@ -29,7 +30,6 @@ class Base():
             self.next = False
 
     def setup_logger(self):
-        # Setting up Logger
         timestamp = time.strftime("%Y-%m-%d %H.%M.%S")
         log_dir = configInfo.get("log_dir", "logs")  # Default to "logs" if not specified
         os.makedirs(log_dir, exist_ok=True)  # Ensure the log directory exists
@@ -87,10 +87,9 @@ class Base():
         
     def format_time(self, input_time) -> str:
         total_seconds = int(input_time.total_seconds())
-        hours, remainder = divmod(total_seconds, 3600) #returns a pair of numbers consisting of their quotient and remainder
+        hours, remainder = divmod(total_seconds, 3600) # returns a pair of numbers consisting of their quotient and remainder
         minutes, seconds = divmod(remainder, 60)
-        # return f"{hours:02}:{minutes:02}:{seconds:02}"
-        return f"{seconds:02}"
+        return f"{seconds:02}" # If we want to get hours and minutes -> f"{hours:02}:{minutes:02}:{seconds:02}"
 
     def clean_up(self):
         time.sleep(5)

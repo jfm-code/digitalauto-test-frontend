@@ -1,5 +1,5 @@
 import json
-from set_up import Base  # Importing the Base class
+from setup_methods.set_up import Base  # Importing the Base class
 
 class BaseTest:
     @classmethod

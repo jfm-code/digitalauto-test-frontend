@@ -1,4 +1,4 @@
-from util import *
+from setup_methods.util import *
 
 class Test_NoData(BaseTest, unittest.TestCase):
     def test_no_data(self):

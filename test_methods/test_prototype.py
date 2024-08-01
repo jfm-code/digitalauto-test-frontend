@@ -1,4 +1,4 @@
-from util import *
+from setup_methods.util import *
 
 class Test_Prototype(BaseTest, unittest.TestCase):
     def test_Prototype_functionalities(self):
@@ -22,10 +22,10 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             time.sleep(3)
             self.delete_widget()
             
-            self.modifyCode_checkUpdate("from_Code_to_Dashboard")
+            self.modifyCode_checkUpdate("in_Code_tab")
             self.run_code("no_error")
-            self.modifyCode_checkUpdate("from_Dashboard_to_Code")
-            # self.run_code("error")
+            self.modifyCode_checkUpdate("in_Dashboard_tab")
+            self.run_code("error")
         
             delete_testing_object("prototype", self.driver, self.logger, self.configInfo)
             delete_testing_object("model", self.driver, self.logger, self.configInfo)
@@ -92,17 +92,18 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         elif (mode == "error"):
             try:
                 self.driver.find_element(By.XPATH, "(//div[@class='flex px-1 false']/button)[1]").click()
-                time.sleep(5) # wait for some output is printed
+                time.sleep(5)
                 self.driver.find_element(By.XPATH, "(//div[@class='flex px-1 false']/button)[2]").click()
-                time.sleep(2) # wait for the error exit code to be appeared
-                # NOT DONE
-                # observe and grab the error exit code
+                time.sleep(2)
+                output = self.driver.find_element(By.XPATH, "//p[contains(text(),'code 1')]")
+                assert (output.is_displayed())
+                self.logger.info("Success. Interrupted code successfully with exit code 1 in the Dashboard tab.")
             except Exception as e:
                 error_handler("error", self.logger, "", "Failure. Failed to stop the executing code and return error exit code.", e, "", "")
                 
     def modifyCode_checkUpdate(self, mode):
         self.base.beginOfTest_logFormat(f"modifyCode_checkUpdate_{mode}")
-        if (mode == "from_Code_to_Dashboard"):
+        if (mode == "in_Code_tab"):
             try:
                 code_block = self.driver.find_element(By.XPATH, "//div[@class='w-1/2 flex flex-col border-r']")
                 line = code_block.find_element(By.XPATH, ".//div[@class='line-numbers' and text()='30']")
@@ -121,20 +122,16 @@ class Test_Prototype(BaseTest, unittest.TestCase):
                 self.logger.info("Success. Verified the code entered from Code tab in Dashboard tab.")
             except Exception as e:
                 error_handler("error", self.logger, "", "Failure. The code entered in Code tab is not updated in Dashboard tab.", e, "", "")
-        elif (mode == "from_Dashboard_to_Code"):
+        elif (mode == "in_Dashboard_tab"):
             try:
                 self.driver.find_element(By.XPATH, "//div[@class='flex']/div[text()='Code']").click()
                 time.sleep(3)
                 self.driver.find_element(By.XPATH, "//div[contains(@class, 'active-line-number')]").click()
                 action = ActionChains(self.driver)
-                action.key_down(Keys.BACK_SPACE).send_keys("for i in range(10):").key_down(Keys.ENTER).send_keys("print(i)").perform()
-                
-                time.sleep(3) # wait for the update in the Code tab
-                # NOT DONE 
-                # go to the Code tab to check
-                # then go back to the Dashboard tab, click to open run code section
+                action.key_down(Keys.BACK_SPACE).send_keys("for i in range(10):").key_down(Keys.ENTER).send_keys("print(i)").key_down(Keys.ENTER).send_keys("time.sleep(1)").perform()
+                self.logger.info("Success. Modified code successfully in the Dashboard tab.")
             except Exception as e:
-                error_handler("error", self.logger, "", "Failure. The code entered in Dashboard tab is not updated in Code tab.", e, "", "")
+                error_handler("error", self.logger, "", "Failure. Failed to modify the code in Dashboard tab.", e, "", "")
                 
     def create_and_verify_prototypeName(self):
         self.base.beginOfTest_logFormat("create_and_verify_prototypeName")
