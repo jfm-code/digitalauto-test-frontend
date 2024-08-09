@@ -1,0 +1,18 @@
+{
+    "web_url": "link of the website that you want to test here",
+    "email_url": "link to make the http request to send an email",
+    "test_image_path": "computer path to the image file that will be used for testing",
+    "developer_email": "email of the person that error and warning emails will be sent to",
+    "signIn_email": "email of an account of the website",
+    "wrong_password": "an invalid password of the account so that the test will fail",
+    "correct_password": "the correct password of an account of the website",
+    "signUp_email": "make up an email for the testing account (this account will be deleted anyway during the test)",
+    "signUp_name": "Automation Test Account",
+    "admin_email": "email of the admin of the website",
+    "admin_password": "password of the admin of the website",
+    
+    "Bosch_link": "https://www.bosch.com/",
+    "Covesa_link": "https://www.covesa.global",
+    "Eclipse_link": "https://www.eclipse.org",
+    "Ferdinand_Steinbeis_Institut_link": "https://ferdinand-steinbeis-institut.de"
+}

@@ -9,8 +9,9 @@ class Test_NoData(BaseTest, unittest.TestCase):
     def count_numOf_models(self):
         self.base.beginOfTest_logFormat("count_numOf_models")
         try:
-            self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
-            models = self.driver.find_elements(By.XPATH, "//div/a/div")
+            self.driver.find_element(By.XPATH, "//div/label[text()='Prototyping']/ancestor::div/following-sibling::button").click()
+            self.driver.find_element(By.XPATH, "//div[text()='Public']").click()
+            models = self.driver.find_elements(By.XPATH, "//a/div/img")
             assert (len(models) > 0)
             self.logger.info("Success. Tested the number of model components in model page")
         except Exception as e:
@@ -22,7 +23,7 @@ class Test_NoData(BaseTest, unittest.TestCase):
         try:
             sign_in(self.driver, self.configInfo)
             time.sleep(3)
-            prototypes = self.driver.find_elements(By.XPATH, "//div/a/div")
+            prototypes = self.driver.find_elements(By.XPATH, "//div/a/div/div")
             assert (len(prototypes) > 0)
             self.logger.info("Success. Tested the number of prototype components in home page")
         except Exception as e:

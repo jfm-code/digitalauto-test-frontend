@@ -16,7 +16,8 @@ class Test_Model(BaseTest, unittest.TestCase):
         signIn_button = self.driver.find_element(By.XPATH, "//button[text()='Sign in']")
         if (signIn_button.is_displayed()):
             self.logger.debug("User is not signing in")
-            self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
+            self.driver.find_element(By.XPATH, "//div/label[text()='Prototyping']/ancestor::div/following-sibling::button").click()
+
             try:
                 createModel_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]")
                 if (createModel_button.is_displayed()):
@@ -29,8 +30,7 @@ class Test_Model(BaseTest, unittest.TestCase):
         self.base.beginOfTest_logFormat("SignIn_createModel")
         sign_in(self.driver, self.configInfo)
         time.sleep(5)
-        self.driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
-        self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]").click()
+        self.driver.find_element(By.XPATH, "//button[text()='Create New Model']").click()
         wait = WebDriverWait(self.driver, 5)
         wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//img[@src='/imgs/profile.png']")))
         self.check_dropdownContent()
