@@ -19,9 +19,9 @@ class Base():
             self.logger.info("Running in headless mode")
             
         # Setting up Chrome Browser
-        self.driver = webdriver.Chrome(options=options)
+        self.driver = webdriver.Chrome(executable_path=configInfo["webdriver_path"], options=options)
         try:
-            self.driver.get(configInfo["web_url"])
+            self.driver.get(configInfo['web_url'])
             self.driver.maximize_window()
             self.driver.implicitly_wait(10)  # Timeout = 10s
             self.next = True
@@ -73,7 +73,7 @@ class Base():
                     failed_tests.append(line[21:])
             for handler in self.logger.handlers:
                 if isinstance(handler, logging.FileHandler):
-                    handler.stream.write(f"INSTANCE: {configInfo["web_url"]}\n")
+                    handler.stream.write(f"INSTANCE: {configInfo['web_url']}\n")
                     handler.stream.write("SUMMARY:\n")
                     handler.stream.write(f"\tNumber of FAILED test cases: {countFailed} / {numOfTest}\n")
                     if (len(failed_tests) > 0):

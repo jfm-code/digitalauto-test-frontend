@@ -1,4 +1,5 @@
 {
+    "webdriver_path": "the path to your webdriver .exe file",
     "web_url": "link of the website that you want to test here",
     "email_url": "link to make the http request to send an email",
     "test_image_path": "computer path to the image file that will be used for testing",
