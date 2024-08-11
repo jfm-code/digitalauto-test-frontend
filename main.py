@@ -19,18 +19,10 @@ def main():
         os.environ["HEADLESS"] = "false"
         
     # test_files = ['test_no_data.py','test_page_traversal.py','test_signInOut.py','test_signUp.py','test_model.py','test_prototype.py','test_wishlistAPI.py']
-    test_files = ['test_model.py']
+    test_files = ['test_prototype.py']
     for test in test_files:
         execute_cmd = "pytest -v -s --disable-warnings test_methods/" + test
         os.system(execute_cmd)
-
-    # os.system("pytest -v -s --disable-warnings test_methods/test_no_data.py")
-    # os.system("pytest -v -s --disable-warnings test_methods/test_page_traversal.py")
-    # os.system("pytest -v -s --disable-warnings test_methods/test_signInOut.py")
-    # os.system("pytest -v -s --disable-warnings test_methods/test_signUp.py")
-    # os.system("pytest -v -s --disable-warnings test_methods/test_model.py")
-    # os.system("pytest -v -s --disable-warnings test_methods/test_prototype.py")
-    # os.system("pytest -v -s --disable-warnings test_methods/test_wishlistAPI.py")
     
 if __name__ == "__main__":
     main()
