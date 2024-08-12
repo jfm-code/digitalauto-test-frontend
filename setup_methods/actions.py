@@ -21,9 +21,13 @@ def enter_password(driver, config, validity, mode):
     elif (mode == "re_enter"):
         path = "//input[@name='confirmPassword']"
     driver.find_element(By.XPATH, path).send_keys(pass_to_enter)
-        
+
+def click_getting_started(driver):
+    getting_started_btn = driver.find_element(By.XPATH, "//div/label[text()='Prototyping']/ancestor::div/following-sibling::button")
+    driver.execute_script('arguments[0].scrollIntoView(true)', getting_started_btn) # scroll down to see the button
+    getting_started_btn.click()
+
 def create_new_model(driver, model_name):
-    driver.find_element(By.CSS_SELECTOR, "a[href='/model']").click()
     driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]").click()
     driver.find_element(By.CSS_SELECTOR, "input[placeholder='Model Name']").send_keys(model_name)
     driver.find_element(By. XPATH, "//button[text()='Create Model']").click()

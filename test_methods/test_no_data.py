@@ -9,9 +9,7 @@ class Test_NoData(BaseTest, unittest.TestCase):
     def count_numOf_models(self):
         self.base.beginOfTest_logFormat("count_numOf_models")
         try:
-            getting_started_btn = self.driver.find_element(By.XPATH, "//div/label[text()='Prototyping']/ancestor::div/following-sibling::button")
-            self.driver.execute_script('arguments[0].scrollIntoView(true)', getting_started_btn) # scroll down to see the button
-            getting_started_btn.click()
+            click_getting_started(self.driver)
             self.driver.find_element(By.XPATH, "//div[text()='Public']").click()
             models = self.driver.find_elements(By.XPATH, "//a/div/img")
             assert (len(models) > 0)

@@ -16,9 +16,7 @@ class Test_Model(BaseTest, unittest.TestCase):
         signIn_button = self.driver.find_element(By.XPATH, "//button[text()='Sign in']")
         if (signIn_button.is_displayed()):
             self.logger.debug("User is not signing in")
-            getting_started_btn = self.driver.find_element(By.XPATH, "//div/label[text()='Prototyping']/ancestor::div/following-sibling::button")
-            self.driver.execute_script('arguments[0].scrollIntoView(true)', getting_started_btn) # scroll down to see the button
-            getting_started_btn.click()
+            click_getting_started(self.driver)
 
             try:
                 createModel_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Create New Model')]")
@@ -139,14 +137,18 @@ class Test_Model(BaseTest, unittest.TestCase):
             assert (result_text == expected_result)
         except:
             self.logger.debug("Search function doesn't work properly.")
+            raise Exception
 
     def create_maximumModels(self):
         self.base.beginOfTest_logFormat("create_maximumModels")
         try:
+            self.driver.find_element(By.XPATH, "//a[text()='Vehicle Models']").click()
             create_new_model(self.driver, "Automation Test Model 2")
             time.sleep(3)
+            self.driver.find_element(By.XPATH, "//a[text()='Vehicle Models']").click()
             create_new_model(self.driver, "Automation Test Model 3")
             time.sleep(3)
+            self.driver.find_element(By.XPATH, "//a[text()='Vehicle Models']").click()
             create_new_model(self.driver, "Automation Test Model 4")
             
             wait = WebDriverWait(self.driver, 2)

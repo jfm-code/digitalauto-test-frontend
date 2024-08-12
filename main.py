@@ -18,8 +18,7 @@ def main():
     else:
         os.environ["HEADLESS"] = "false"
         
-    # test_files = ['test_no_data.py','test_page_traversal.py','test_signInOut.py','test_signUp.py','test_model.py','test_prototype.py','test_wishlistAPI.py']
-    test_files = ['test_prototype.py']
+    test_files = ['test_no_data.py','test_page_traversal.py','test_signInOut.py','test_signUp.py','test_model.py','test_prototype.py','test_wishlistAPI.py']
     for test in test_files:
         execute_cmd = "pytest -v -s --disable-warnings test_methods/" + test
         os.system(execute_cmd)

@@ -21,7 +21,7 @@ class BaseTest:
         self.logger = self.base.logger
         with open('info.json') as config_file:
             self.configInfo = json.load(config_file)
-        with open('error.json') as config_file_2:
+        with open('critical_error.json') as config_file_2:
             self.configError = json.load(config_file_2)
 
     def tearDown(self):

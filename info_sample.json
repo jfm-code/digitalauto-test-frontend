@@ -11,6 +11,7 @@
     "signUp_name": "Automation Test Account",
     "admin_email": "email of the admin of the website",
     "admin_password": "password of the admin of the website",
+    "run_timeVSS_name": "the name of the online runtime VSS",
     
     "Bosch_link": "https://www.bosch.com/",
     "Covesa_link": "https://www.covesa.global",

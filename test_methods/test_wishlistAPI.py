@@ -4,7 +4,8 @@ class Test_Model(BaseTest, unittest.TestCase):
     def test_wishlistAPI_functionalities(self):
         if (self.next is True):
             sign_in(self.driver, self.configInfo)
-            time.sleep(2)
+            time.sleep(5)
+            click_getting_started(self.driver)
             create_new_model(self.driver, "Automation Test Model")
             self.create_delete_wishlist_API()
             self.use_API_filter()
@@ -15,7 +16,7 @@ class Test_Model(BaseTest, unittest.TestCase):
             
     def create_delete_wishlist_API(self):
         self.base.beginOfTest_logFormat("create_delete_wishlist_API")
-        self.driver.find_element(By.XPATH, "//div[text()='Vehicle Signals']").click()
+        self.driver.find_element(By.XPATH, "//label[text()='Vehicle Signals']").click()
         time.sleep(2)
         try:
             self.driver.find_element(By.XPATH, "//button[contains(., 'Add Wishlist Signal')]").click()
@@ -35,6 +36,9 @@ class Test_Model(BaseTest, unittest.TestCase):
         self.create_delete_discussion()
         
         try:
+            wishlist_actions_btn = self.driver.find_element(By.XPATH, "//div[text()='Wishlist Signal Action']")
+            self.driver.execute_script('arguments[0].scrollIntoView(true)', wishlist_actions_btn)
+            wishlist_actions_btn.click()
             self.driver.find_element(By.XPATH, "//div[text()='Delete Wishlist Signal']").click()
             self.driver.find_element(By.XPATH, "//button[text()='Confirm']").click()
             self.logger.info("Success. Deleted successfully a wishlist API.")

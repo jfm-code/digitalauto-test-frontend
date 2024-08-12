@@ -29,113 +29,11 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         
             delete_testing_object("prototype", self.driver, self.logger, self.configInfo)
             delete_testing_object("model", self.driver, self.logger, self.configInfo)
-            
-    def edit_prototype(self):
-        self.base.beginOfTest_logFormat("edit_prototype")
-        try:
-            # edit the information
-            self.driver.find_element(By.XPATH, "//button[normalize-space()='Prototype Action']").click()
-            self.driver.find_element(By.XPATH, "//button[normalize-space()='Edit Prototype']").click()
-            self.driver.find_element(By.XPATH, "//div/label[text()='Problem']/following-sibling::div/div/input").send_keys("Testing Problem")
-            self.driver.find_element(By.XPATH, "//div/label[text()='Says who?']/following-sibling::div/div/input").send_keys("Testing People")
-            self.driver.find_element(By.XPATH, "//div/label[text()='Solution']/following-sibling::div/label/textarea").send_keys("Testing Solution")
-            complexity = self.driver.find_element(By.XPATH, "//label[text()='Complexity']/following-sibling::div/label/button[@role='combobox']")
-            complexity.click()
-            action = ActionChains(self.driver)
-            action.move_to_element(complexity).move_by_offset(0,100).click().perform()
-            status = self.driver.find_element(By.XPATH, "//label[text()='Status']/following-sibling::div/label/button[@role='combobox']")
-            status.click()
-            action1 = ActionChains(self.driver)
-            action1.move_to_element(status).move_by_offset(0,100).click().perform()
-            self.driver.find_element(By.XPATH, "//button[text()=' Update Image']").click()
-            self.driver.find_element(By.XPATH, "//input[@type='file']").send_keys(self.configInfo["test_image_path"])
-            self.driver.find_element(By.XPATH, "//button[text()='Save']").click()
-            
-            # verify the changes
-            object = self.driver.find_element(By.XPATH, "//label[text()='Testing Problem']")
-            assert (object.is_displayed())
-            object = self.driver.find_element(By.XPATH, "//label[text()='Testing People']")
-            assert (object.is_displayed())
-            object = self.driver.find_element(By.XPATH, "//label[text()='Testing Solution']")
-            assert (object.is_displayed())
-            object = self.driver.find_element(By.XPATH, "//label[text()='Released']")
-            assert (object.is_displayed())
-            object = self.driver.find_element(By.XPATH, "//label[text()='Low']")
-            assert (object.is_displayed())
-            wait = WebDriverWait(self.driver, 3)
-            wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//img[contains(@src, 'https://upload.digitalauto.tech/data/store-be')]")))
-            object = self.driver.find_element(By.XPATH, "//img[contains(@src, 'https://upload.digitalauto.tech/data/store-be')]")
-            assert (object.is_displayed())
-            
-            self.logger.info("Success. Edited succesfully the information of prototype.")
-        except Exception as e:
-            error_handler("warning", self.logger, "", "Failure. Failed to edit the information of prototype.", e, "", "")
-                
-    def run_code(self, mode):
-        self.base.beginOfTest_logFormat(f"run_code_{mode}")
-        try:
-            static_dropdown = Select(self.driver.find_element(By.XPATH, "//select")) 
-            static_dropdown.select_by_value("RunTime-VSS4.0-1970345")
-            self.logger.info("Success. The RunTime-VSS4.0-1970345 is online.")
-        except Exception as e:
-            error_handler("warning", self.logger, "", "Failure. The RunTime-VSS4.0-1970345 is not online.", e, "", "")
-        
-        if (mode == "no_error"):
-            try:
-                self.driver.find_element(By.XPATH, "(//div[@class='flex px-1 false']/button)[1]").click()
-                time.sleep(3)
-                output = self.driver.find_element(By.XPATH, "//p[contains(text(),'code 0')]")
-                assert (output.is_displayed())
-                self.logger.info("Success. Run code successfully with exit code 0 in the Dashboard tab.")
-            except Exception as e:
-                error_handler("error", self.logger, "", "Failure. Failed to run code in the Dashboard tab.", e, "", "")
-        elif (mode == "error"):
-            try:
-                self.driver.find_element(By.XPATH, "(//div[@class='flex px-1 false']/button)[1]").click()
-                time.sleep(5)
-                self.driver.find_element(By.XPATH, "(//div[@class='flex px-1 false']/button)[2]").click()
-                time.sleep(2)
-                output = self.driver.find_element(By.XPATH, "//p[contains(text(),'code 1')]")
-                assert (output.is_displayed())
-                self.logger.info("Success. Interrupted code successfully with exit code 1 in the Dashboard tab.")
-            except Exception as e:
-                error_handler("error", self.logger, "", "Failure. Failed to stop the executing code and return error exit code.", e, "", "")
-                
-    def modifyCode_checkUpdate(self, mode):
-        self.base.beginOfTest_logFormat(f"modifyCode_checkUpdate_{mode}")
-        if (mode == "in_Code_tab"):
-            try:
-                code_block = self.driver.find_element(By.XPATH, "//div[@class='w-1/2 flex flex-col border-r']")
-                line = code_block.find_element(By.XPATH, ".//div[@class='line-numbers' and text()='30']")
-                line.click()
-                action1 = ActionChains(self.driver)
-                action1.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).key_down(Keys.BACK_SPACE).send_keys('print("Automation Test")').perform()
-            
-                time.sleep(5) # wait for the update in the Dashboard tab
-                self.driver.find_element(By.XPATH, "//a/div[text()='Dashboard']").click()
-                self.driver.find_element(By.XPATH, "//div[@class='flex']/button").click()
-                self.driver.find_element(By.XPATH, "//div[@class='flex']/div[text()='Code']").click()
-                time.sleep(3)
-                
-                result = self.driver.find_element(By.XPATH, "//div[@class='view-lines monaco-mouse-cursor-text']//span/span[text()='print']")
-                assert (result.text == "print")
-                self.logger.info("Success. Verified the code entered from Code tab in Dashboard tab.")
-            except Exception as e:
-                error_handler("error", self.logger, "", "Failure. The code entered in Code tab is not updated in Dashboard tab.", e, "", "")
-        elif (mode == "in_Dashboard_tab"):
-            try:
-                self.driver.find_element(By.XPATH, "//div[@class='flex']/div[text()='Code']").click()
-                time.sleep(3)
-                self.driver.find_element(By.XPATH, "//div[contains(@class, 'active-line-number')]").click()
-                action = ActionChains(self.driver)
-                action.key_down(Keys.BACK_SPACE).send_keys("for i in range(10):").key_down(Keys.ENTER).send_keys("print(i)").key_down(Keys.ENTER).send_keys("time.sleep(1)").perform()
-                self.logger.info("Success. Modified code successfully in the Dashboard tab.")
-            except Exception as e:
-                error_handler("error", self.logger, "", "Failure. Failed to modify the code in Dashboard tab.", e, "", "")
-                
+    
     def create_and_verify_prototypeName(self):
         self.base.beginOfTest_logFormat("create_and_verify_prototypeName")
         time.sleep(3)
+        click_getting_started(self.driver)
         create_new_model(self.driver, "Automation Test Model")
         time.sleep(3)
         self.driver.find_element(By.XPATH, "//label[text()='Prototype Library']").click()
@@ -187,6 +85,47 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         except Exception as e:
             error_handler("warning", self.logger, "", "Failure. Duplicate prototoype name passed. Broken implementation.", e, "", "")
 
+    def edit_prototype(self):
+        self.base.beginOfTest_logFormat("edit_prototype")
+        try:
+            # edit the information
+            self.driver.find_element(By.XPATH, "//button[normalize-space()='Prototype Action']").click()
+            self.driver.find_element(By.XPATH, "//button[normalize-space()='Edit Prototype']").click()
+            self.driver.find_element(By.XPATH, "//div/label[text()='Problem']/following-sibling::div/div/input").send_keys("Testing Problem")
+            self.driver.find_element(By.XPATH, "//div/label[text()='Says who?']/following-sibling::div/div/input").send_keys("Testing People")
+            self.driver.find_element(By.XPATH, "//div/label[text()='Solution']/following-sibling::div/label/textarea").send_keys("Testing Solution")
+            complexity = self.driver.find_element(By.XPATH, "//label[text()='Complexity']/following-sibling::div/label/button[@role='combobox']")
+            complexity.click()
+            action = ActionChains(self.driver)
+            action.move_to_element(complexity).move_by_offset(0,100).click().perform()
+            status = self.driver.find_element(By.XPATH, "//label[text()='Status']/following-sibling::div/label/button[@role='combobox']")
+            status.click()
+            action1 = ActionChains(self.driver)
+            action1.move_to_element(status).move_by_offset(0,100).click().perform()
+            self.driver.find_element(By.XPATH, "//button[text()=' Update Image']").click()
+            self.driver.find_element(By.XPATH, "//input[@type='file']").send_keys(self.configInfo["test_image_path"])
+            self.driver.find_element(By.XPATH, "//button[text()='Save']").click()
+            
+            # verify the changes
+            object = self.driver.find_element(By.XPATH, "//label[text()='Testing Problem']")
+            assert (object.is_displayed())
+            object = self.driver.find_element(By.XPATH, "//label[text()='Testing People']")
+            assert (object.is_displayed())
+            object = self.driver.find_element(By.XPATH, "//label[text()='Testing Solution']")
+            assert (object.is_displayed())
+            object = self.driver.find_element(By.XPATH, "//label[text()='Released']")
+            assert (object.is_displayed())
+            object = self.driver.find_element(By.XPATH, "//label[text()='Low']")
+            assert (object.is_displayed())
+            wait = WebDriverWait(self.driver, 3)
+            wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//img[contains(@src, 'https://upload.digitalauto.tech/data/store-be')]")))
+            object = self.driver.find_element(By.XPATH, "//img[contains(@src, 'https://upload.digitalauto.tech/data/store-be')]")
+            assert (object.is_displayed())
+            
+            self.logger.info("Success. Edited succesfully the information of prototype.")
+        except Exception as e:
+            error_handler("warning", self.logger, "", "Failure. Failed to edit the information of prototype.", e, "", "")
+
     def use_Code_dashboardConfig(self):
         self.base.beginOfTest_logFormat("use_Code_dashboardConfig")
 
@@ -214,27 +153,11 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         except Exception as e:
             error_handler("error", self.logger, "", "Failure. 'Add widget' button did not appear when valid boxes are selected", e, "", "")
 
-    def use_Dashboard(self):
-        self.base.beginOfTest_logFormat("use_Dashboard")
-        try:
-            self.driver.find_element(By.XPATH, "//div[text()='Dashboard']").click()
-            wait = WebDriverWait(self.driver, 3)
-            wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//div[@class='col-span-2 row-span-2']/iframe")))
-            widget_preview = self.driver.find_element(By.XPATH, "//div[@class='col-span-2 row-span-2']/iframe")
-            assert (widget_preview.is_displayed())
-            following_boxes = self.driver.find_elements(By.XPATH, "//div[@class='col-span-2 row-span-2']/following-sibling::*")
-            preceeding_boxes = self.driver.find_elements(By.XPATH, "//div[@class='col-span-2 row-span-2']/preceding-sibling::*")
-            assert (len(preceeding_boxes) == 2 and len(following_boxes) == 4)
-            self.logger.info("Success. Tested the Dashboard functionality to preview widget.")
-            time.sleep(2)
-        except Exception as e:
-            error_handler("error", self.logger, "", "Failure. Cannot see the preview of the widget in the Dashboard.", e, "", "")
-        
     def check_widgetList_content(self):
         self.base.beginOfTest_logFormat("check_widgetList_content")
         try:
             time.sleep(2)
-            widgets = self.driver.find_elements(By.XPATH, "//div[@class='grow']/div/div")
+            widgets = self.driver.find_elements(By.XPATH, "//div/img")
             assert (len(widgets) > 0)
             self.logger.info("Success. The list of widgets is not empty.")
         except Exception as e:
@@ -252,19 +175,7 @@ class Test_Prototype(BaseTest, unittest.TestCase):
             self.logger.info("Success. Added a widget to the Dashboard Config.")
         except Exception as e:
             error_handler("error", self.logger, "", "Failure. Cannot add a widget to the Dashboard Config.", e, "", "")
-            
-    def delete_widget(self):
-        self.base.beginOfTest_logFormat("delete_widget")
-        try:
-            action = ActionChains(self.driver)
-            action.move_to_element(self.driver.find_element(By.XPATH, "//div[text()='Simple Wiper Widget']")).perform()
-            self.driver.find_element(By.XPATH, "//button[@class='da-btn da-btn-destructive da-btn-md !px-0']//*[name()='svg']").click()
-            alert_popup = self.driver.switch_to.alert
-            alert_popup.accept()
-            self.logger.info("Success. Deleted a widget in the Dashboard Config.")
-        except Exception as e:
-            error_handler("error", self.logger, "", "Failure. Cannot delete a widget in the Dashboard Config.", e, "", "")
-            
+    
     def edit_widget(self):
         self.base.beginOfTest_logFormat("edit_widget")
         self.driver.find_element(By.XPATH, "//div[text()='Code']").click()
@@ -315,3 +226,93 @@ class Test_Prototype(BaseTest, unittest.TestCase):
         
         except Exception as e:
             error_handler("error", self.logger, "", "Failure. Cannot edit the widget config text.", e, "", "")
+            
+    def delete_widget(self):
+        self.base.beginOfTest_logFormat("delete_widget")
+        try:
+            action = ActionChains(self.driver)
+            action.move_to_element(self.driver.find_element(By.XPATH, "//div[text()='Simple Wiper Widget']")).perform()
+            self.driver.find_element(By.XPATH, "//button[@class='da-btn da-btn-destructive da-btn-md !px-0']//*[name()='svg']").click()
+            alert_popup = self.driver.switch_to.alert
+            alert_popup.accept()
+            self.logger.info("Success. Deleted a widget in the Dashboard Config.")
+        except Exception as e:
+            error_handler("error", self.logger, "", "Failure. Cannot delete a widget in the Dashboard Config.", e, "", "")
+            
+    def modifyCode_checkUpdate(self, mode):
+        self.base.beginOfTest_logFormat(f"modifyCode_checkUpdate_{mode}")
+        if (mode == "in_Code_tab"):
+            try:
+                code_block = self.driver.find_element(By.XPATH, "//div[@class='w-1/2 flex flex-col border-r']")
+                line = code_block.find_element(By.XPATH, ".//div[@class='line-numbers' and text()='30']")
+                line.click()
+                action1 = ActionChains(self.driver)
+                action1.key_down(Keys.CONTROL).send_keys('a').key_up(Keys.CONTROL).key_down(Keys.BACK_SPACE).send_keys('print("Automation Test")').perform()
+            
+                time.sleep(5) # wait for the update in the Dashboard tab
+                self.driver.find_element(By.XPATH, "//a/div[text()='Dashboard']").click()
+                self.driver.find_element(By.XPATH, "//div[@class='flex']/button").click()
+                self.driver.find_element(By.XPATH, "//div[@class='flex']/div[text()='Code']").click()
+                time.sleep(3)
+                
+                result = self.driver.find_element(By.XPATH, "//div[@class='view-lines monaco-mouse-cursor-text']//span/span[text()='print']")
+                assert (result.text == "print")
+                self.logger.info("Success. Verified the code entered from Code tab in Dashboard tab.")
+            except Exception as e:
+                error_handler("error", self.logger, "", "Failure. The code entered in Code tab is not updated in Dashboard tab.", e, "", "")
+        elif (mode == "in_Dashboard_tab"):
+            try:
+                self.driver.find_element(By.XPATH, "//div[@class='flex']/div[text()='Code']").click()
+                time.sleep(3)
+                self.driver.find_element(By.XPATH, "//div[contains(@class, 'active-line-number')]").click()
+                action = ActionChains(self.driver)
+                action.key_down(Keys.BACK_SPACE).send_keys("for i in range(10):").key_down(Keys.ENTER).send_keys("print(i)").key_down(Keys.ENTER).send_keys("time.sleep(1)").perform()
+                self.logger.info("Success. Modified code successfully in the Dashboard tab.")
+            except Exception as e:
+                error_handler("error", self.logger, "", "Failure. Failed to modify the code in Dashboard tab.", e, "", "")
+            
+    def use_Dashboard(self):
+        self.base.beginOfTest_logFormat("use_Dashboard")
+        try:
+            self.driver.find_element(By.XPATH, "//div[text()='Dashboard']").click()
+            wait = WebDriverWait(self.driver, 3)
+            wait.until(expected_conditions.visibility_of_element_located((By.XPATH, "//div[@class='col-span-2 row-span-2']/iframe")))
+            widget_preview = self.driver.find_element(By.XPATH, "//div[@class='col-span-2 row-span-2']/iframe")
+            assert (widget_preview.is_displayed())
+            following_boxes = self.driver.find_elements(By.XPATH, "//div[@class='col-span-2 row-span-2']/following-sibling::*")
+            preceeding_boxes = self.driver.find_elements(By.XPATH, "//div[@class='col-span-2 row-span-2']/preceding-sibling::*")
+            assert (len(preceeding_boxes) == 2 and len(following_boxes) == 4)
+            self.logger.info("Success. Tested the Dashboard functionality to preview widget.")
+            time.sleep(2)
+        except Exception as e:
+            error_handler("error", self.logger, "", "Failure. Cannot see the preview of the widget in the Dashboard.", e, "", "")
+      
+    def run_code(self, mode):
+        self.base.beginOfTest_logFormat(f"run_code_{mode}")
+        try:
+            static_dropdown = Select(self.driver.find_element(By.XPATH, "//select")) 
+            static_dropdown.select_by_value(self.configInfo["run_timeVSS_name"])
+            self.logger.info(f"Success. The {self.configInfo["run_timeVSS_name"]} is online.")
+        except Exception as e:
+            error_handler("warning", self.logger, "", f"Failure. The {self.configInfo["run_timeVSS_name"]} is not online.", e, "", "")
+        
+        if (mode == "no_error"):
+            try:
+                self.driver.find_element(By.XPATH, "(//div[@class='flex px-1 false']/button)[1]").click()
+                time.sleep(3)
+                output = self.driver.find_element(By.XPATH, "//p[contains(text(),'code 0')]")
+                assert (output.is_displayed())
+                self.logger.info("Success. Run code successfully with exit code 0 in the Dashboard tab.")
+            except Exception as e:
+                error_handler("error", self.logger, "", "Failure. Failed to run code in the Dashboard tab.", e, "", "")
+        elif (mode == "error"):
+            try:
+                self.driver.find_element(By.XPATH, "(//div[@class='flex px-1 false']/button)[1]").click()
+                time.sleep(5)
+                self.driver.find_element(By.XPATH, "(//div[@class='flex px-1 false']/button)[2]").click()
+                time.sleep(2)
+                output = self.driver.find_element(By.XPATH, "//p[contains(text(),'code 1')]")
+                assert (output.is_displayed())
+                self.logger.info("Success. Interrupted code successfully with exit code 1 in the Dashboard tab.")
+            except Exception as e:
+                error_handler("error", self.logger, "", "Failure. Failed to stop the executing code and return error exit code.", e, "", "")
