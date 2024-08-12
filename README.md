@@ -65,3 +65,6 @@ To understand how the webdriver works, you can refer to this [slideshow](https:/
 - You'll see that selenium still has its limitations, sometimes it sees the element, sometimes it doesn't. You might want to add the *time.sleep()* or using wait methods because when the Selenium framework does everything too fast, there won't be enough time to load elements.
 
 - Another problem is that the Selenium can usually grab elements that is not visible on the current viewport, for example it can grab a button at the bottom of the webpage without scrolling down the page. But sometimes it can't grab it, and you might want to add the scrolling page until see element so that the script works (refer to the *click_getting_started()* function in the *actions.py* to see how did I scroll until an element is visible).
+
+## Contact Information
+Please contact my.giangvu@gmail.com if you need further assistance.
